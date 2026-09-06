@@ -7,4 +7,5 @@ def brand(request):
         'site_name': settings.SITE_NAME,
         'site_url': settings.SITE_URL,
         'support_email': settings.SUPPORT_EMAIL,
+        'frontend_url': settings.FRONTEND_URL,
     }

@@ -1,576 +1,1917 @@
-{% extends 'base_auth.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Create Account | {{ site_name }}{% endblock %}
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open an account | {{ site_name }}</title>
 
-{% block extra_head %}
-<style>
-    :root {
-        --tc-primary: #12325a;
-        --tc-primary-dark: #0e2a4c;
-        --tc-primary-darker: #0a2038;
+  <!-- Bootstrap CSS -->
+  <link href="{% static 'vendor/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}">
+
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  }
+
+  .register-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 15px;
+    position: relative;
+  }
+
+  .register-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/heromain.png" %}') center center no-repeat;
+    background-size: cover;
+    opacity: 0.08;
+    z-index: 1;
+  }
+
+  .register-container {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+    width: 100%;
+  }
+
+  .register-card {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+
+  /* Mobile App Header - shown only on mobile */
+  .mobile-app-header {
+    display: none;
+  }
+
+  /* Desktop Header - Clean minimal design */
+  .register-header {
+    padding: 25px 35px 20px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+
+  .register-header img {
+    height: auto;
+    max-width: 250px;
+    width: 220px;
+    margin-bottom: 15px;
+  }
+
+  .register-header h2 {
+    font-size: 1.35em;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 5px;
+  }
+
+  .register-header p {
+    color: #666;
+    font-size: 0.9em;
+    margin: 0;
+  }
+
+  /* =============================================
+     MOBILE RESPONSIVE STYLES
+     ============================================= */
+  @media (max-width: 767px) {
+    .register-page {
+      padding: 0;
+      background: linear-gradient(180deg, #12325a 0%, #1d4d85 50%, #1d4d85 100%);
+      align-items: flex-start;
     }
-    .auth-wrapper {
-        min-height: 100vh;
+
+    .register-page::before {
+      display: none;
     }
-    .auth-brand-side {
-        background: linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-primary-dark) 50%, var(--tc-primary-darker) 100%);
-        position: relative;
-        overflow: hidden;
+
+    .register-container {
+      max-width: 100%;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .auth-brand-side::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.1) 0%, transparent 40%);
-        animation: shimmer 20s ease-in-out infinite;
+
+    /* Mobile App Header */
+    .mobile-app-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 50px 30px 20px;
+      text-align: center;
     }
-    .auth-brand-side::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
-        pointer-events: none;
+
+    .mobile-app-header .mobile-header-logo {
+      width: 65px;
+      height: 65px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
-    @keyframes shimmer {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        25% { transform: translate(5%, 5%) rotate(1deg); }
-        50% { transform: translate(0, 10%) rotate(0deg); }
-        75% { transform: translate(-5%, 5%) rotate(-1deg); }
+
+    .mobile-app-header .mobile-header-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
-    .benefit-item {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 1.25rem;
-        color: rgba(255,255,255,0.95);
+
+    .mobile-app-header .app-bank-name {
+      color: #ffffff;
+      font-size: 1.3em;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
-    .benefit-icon {
-        width: 44px;
-        height: 44px;
-        background: rgba(255,255,255,0.15);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 1rem;
-        flex-shrink: 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+    .mobile-app-header .app-tagline {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.85em;
+      font-weight: 500;
+      letter-spacing: 0.5px;
     }
-    .benefit-icon i {
-        font-size: 1.1rem;
-        color: #fff;
+
+    /* Hide desktop header on mobile */
+    .register-header {
+      display: none;
     }
-    .auth-form-side {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        overflow-y: auto;
-        background: var(--bs-body-bg);
+
+    /* Register card on mobile */
+    .register-card {
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.15);
+      flex: 1;
+      margin-top: auto;
     }
-    .form-card {
-        max-width: 520px;
-        margin: 0 auto;
-        width: 100%;
-        padding: 2rem 0;
+
+    /* Progress container */
+    .progress-container {
+      padding: 18px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #f0f0f0;
     }
-    .glass-card {
-        background: rgba(255,255,255,0.7);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 8px 32px rgba(18, 50, 90, 0.08);
+
+    .progress-steps::before {
+      left: 20px;
+      right: 20px;
     }
-    [data-theme="dark"] .glass-card {
-        background: rgba(30,30,40,0.7);
-        border: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+
+    .progress-line {
+      left: 20px;
     }
-    .section-card {
-        background: rgba(255,255,255,0.5);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(18, 50, 90, 0.08);
-        border-radius: 16px;
-        margin-bottom: 1.25rem;
-        overflow: hidden;
-    }
-    [data-theme="dark"] .section-card {
-        background: rgba(40,40,50,0.5);
-        border: 1px solid rgba(255,255,255,0.08);
-    }
-    .section-card .card-header {
-        background: linear-gradient(135deg, rgba(18, 50, 90, 0.05) 0%, transparent 100%);
-        border-bottom: 1px solid rgba(18, 50, 90, 0.08);
-        padding: 0.875rem 1.25rem;
-    }
-    [data-theme="dark"] .section-card .card-header {
-        background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .section-card .card-body {
-        padding: 1.25rem;
-    }
-    .step-indicator {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 1.5rem;
-        padding: 0 1rem;
-    }
-    .step {
-        flex: 1;
-        text-align: center;
-        position: relative;
-    }
-    .step::after {
-        content: '';
-        position: absolute;
-        top: 16px;
-        left: 50%;
-        width: 100%;
-        height: 3px;
-        background: linear-gradient(90deg, var(--tc-primary) 0%, rgba(18, 50, 90, 0.2) 100%);
-        border-radius: 2px;
-    }
-    .step:last-child::after {
-        display: none;
-    }
+
     .step-circle {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: rgba(18, 50, 90, 0.1);
-        color: var(--tc-primary);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        position: relative;
-        z-index: 1;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
+      width: 32px;
+      height: 32px;
+      font-size: 0.75em;
     }
-    .step.active .step-circle {
-        background: linear-gradient(135deg, #12325a 0%, #0e2a4c 100%);
-        color: #fff;
-        box-shadow: 0 4px 15px rgba(18, 50, 90, 0.3);
-    }
+
     .step-label {
-        display: block;
-        font-size: 0.7rem;
-        color: var(--bs-secondary);
-        margin-top: 0.5rem;
-        font-weight: 500;
+      display: none;
     }
-    .form-control {
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        border: 1px solid rgba(18, 50, 90, 0.15);
-        transition: all 0.3s ease;
-        background: rgba(255,255,255,0.8);
+
+    /* Form body */
+    .register-body {
+      padding: 25px 20px;
     }
-    [data-theme="dark"] .form-control {
-        background: rgba(30,30,40,0.8);
+
+    .step-title {
+      font-size: 1.3em !important;
     }
-    .form-control:focus {
-        border-color: var(--tc-primary);
-        box-shadow: 0 0 0 4px rgba(18, 50, 90, 0.1);
+
+    .step-subtitle {
+      font-size: 0.9em !important;
     }
-    .input-group-text {
-        border-radius: 10px;
-        background: rgba(18, 50, 90, 0.05);
-        border: 1px solid rgba(18, 50, 90, 0.15);
-        color: var(--tc-primary);
+
+    /* Form fields */
+    .form-floating input,
+    .form-floating select,
+    .form-select {
+      border: none !important;
+      background: #f5f7fa !important;
+      border-radius: 12px !important;
     }
-    .password-strength {
-        height: 4px;
-        background: rgba(18, 50, 90, 0.1);
-        border-radius: 2px;
-        margin-top: 0.5rem;
-        overflow: hidden;
+
+    .form-floating input:focus,
+    .form-floating select:focus,
+    .form-select:focus {
+      background: #f0f4f8 !important;
+      box-shadow: 0 0 0 3px rgba(18, 50, 90, 0.15) !important;
     }
-    .password-strength-bar {
-        height: 100%;
-        width: 0;
-        transition: all 0.3s;
-        border-radius: 2px;
+
+    /* Field row on mobile */
+    .field-row {
+      flex-direction: column;
+      gap: 0 !important;
     }
-    .testimonial-card {
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-top: 2rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+
+    .field-row > div {
+      width: 100% !important;
     }
-    .testimonial-text {
-        font-style: italic;
-        color: rgba(255,255,255,0.9);
-        margin-bottom: 1rem;
-        line-height: 1.6;
+
+    /* Buttons */
+    .btn-next,
+    .btn-prev,
+    .btn-submit {
+      border-radius: 12px !important;
+      padding: 14px 24px !important;
     }
-    .testimonial-author {
-        display: flex;
-        align-items: center;
+
+    /* Info boxes */
+    .info-box {
+      border-radius: 12px;
+      padding: 12px 15px;
     }
-    .testimonial-avatar {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255,255,255,0.3);
-        margin-right: 0.875rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+
+    /* Section dividers */
+    .section-divider {
+      margin: 20px 0 15px !important;
     }
-    .btn-primary {
-        background: linear-gradient(135deg, #12325a 0%, #0e2a4c 100%);
-        border: none;
-        border-radius: 12px;
-        padding: 1rem;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        box-shadow: 0 4px 15px rgba(18, 50, 90, 0.3);
-        transition: all 0.3s ease;
+
+    /* Back to home - hidden on mobile */
+    .back-to-home {
+      display: none;
     }
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #0e2a4c 0%, #0a2038 100%);
-        box-shadow: 0 6px 20px rgba(18, 50, 90, 0.4);
-        transform: translateY(-1px);
+  }
+
+  /* Progress Steps */
+  .progress-container {
+    padding: 20px 35px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+  }
+
+  .progress-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 18px;
+    left: 30px;
+    right: 30px;
+    height: 3px;
+    background: #e0e0e0;
+    z-index: 1;
+  }
+
+  .progress-line {
+    position: absolute;
+    top: 18px;
+    left: 30px;
+    height: 3px;
+    background: linear-gradient(90deg, #12325a, #1d4d85);
+    z-index: 2;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+    flex: 1;
+  }
+
+  .step-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85em;
+    color: #888;
+    transition: all 0.3s ease;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .step-item.active .step-circle {
+    background: linear-gradient(135deg, #12325a, #1d4d85);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  .step-item.completed .step-circle {
+    background: #28a745;
+    color: white;
+  }
+
+  .step-item.completed .step-circle::after {
+    content: '\2713';
+  }
+
+  .step-item.completed .step-number {
+    display: none;
+  }
+
+  .step-label {
+    font-size: 0.7em;
+    color: #888;
+    margin-top: 8px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .step-item.active .step-label {
+    color: #12325a;
+    font-weight: 600;
+  }
+
+  .step-item.completed .step-label {
+    color: #28a745;
+  }
+
+  /* Form Body */
+  .register-body {
+    padding: 30px 35px;
+  }
+
+  .step-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .step-content.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-title {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 5px;
+  }
+
+  .step-subtitle {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 25px;
+  }
+
+  /* Form Fields - Standard Label + Input Design */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+  }
+
+  .form-control,
+  .form-select {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #fff !important;
+    transition: all 0.2s ease;
+  }
+
+  .form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px 10px;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #12325a;
+    box-shadow: 0 0 0 3px rgba(18, 50, 90, 0.1);
+    outline: none;
+    background-color: #fff !important;
+  }
+
+  .form-control::placeholder {
+    color: #aaa;
+  }
+
+  .form-text {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  /* Field rows for side-by-side fields */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .field-row .form-group {
+    margin-bottom: 0;
+  }
+
+  .field-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .field-row-3 .form-group {
+    margin-bottom: 0;
+  }
+
+  /* Section Divider */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 25px 0 20px;
+  }
+
+  .section-divider span {
+    font-size: 0.8em;
+    font-weight: 600;
+    color: #12325a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e5e5;
+  }
+
+  /* Info Box */
+  .info-box {
+    background: #f0f9ff;
+    border: 1px solid #b3e5fc;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .info-box i {
+    color: #12325a;
+    font-size: 1.2em;
+    margin-top: 2px;
+  }
+
+  .info-box p {
+    margin: 0;
+    font-size: 0.85em;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  /* ID Upload */
+  .id-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fafafa;
+  }
+
+  .id-upload-area:hover {
+    border-color: #12325a;
+    background: #f0f9ff;
+  }
+
+  .id-upload-area i {
+    font-size: 2.5em;
+    color: #ccc;
+    margin-bottom: 10px;
+  }
+
+  .id-upload-area:hover i {
+    color: #12325a;
+  }
+
+  .id-upload-area p {
+    margin: 0;
+    color: #888;
+    font-size: 0.9em;
+  }
+
+  .id-upload-area .upload-text {
+    color: #12325a;
+    font-weight: 500;
+  }
+
+  /* Account Type Cards */
+  .account-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .account-type-card {
+    border: 2px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .account-type-card:hover {
+    border-color: #12325a;
+    background: #f0f9ff;
+  }
+
+  .account-type-card.selected {
+    border-color: #12325a;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e1f5fe 100%);
+  }
+
+  .account-type-card i {
+    font-size: 2em;
+    color: #12325a;
+    margin-bottom: 10px;
+  }
+
+  .account-type-card h6 {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+  }
+
+  .account-type-card p {
+    font-size: 0.8em;
+    color: #888;
+    margin: 0;
+  }
+
+  .account-type-card input {
+    display: none;
+  }
+
+  /* Password Strength */
+  .password-strength {
+    height: 4px;
+    background: #e5e5e5;
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .password-strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+  }
+
+  .password-strength-bar.weak { width: 33%; background: #dc3545; }
+  .password-strength-bar.medium { width: 66%; background: #ffc107; }
+  .password-strength-bar.strong { width: 100%; background: #28a745; }
+
+  /* Review Summary */
+  .review-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .review-section h6 {
+    font-weight: 600;
+    color: #12325a;
+    margin-bottom: 12px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .review-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+  }
+
+  .review-row:last-child {
+    border-bottom: none;
+  }
+
+  .review-row .label {
+    color: #888;
+  }
+
+  .review-row .value {
+    color: #333;
+    font-weight: 500;
+  }
+
+  /* Terms Checkbox */
+  .terms-box {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .terms-box .form-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .terms-box .form-check-input {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    margin: 0;
+    margin-top: 2px;
+    border: 2px solid #12325a;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .terms-box .form-check-input:checked {
+    background-color: #12325a;
+    border-color: #12325a;
+  }
+
+  .terms-box .form-check-label {
+    font-size: 0.9em;
+    color: #555;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .terms-box a {
+    color: #12325a;
+    text-decoration: none;
+  }
+
+  .terms-box a:hover {
+    text-decoration: underline;
+  }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+  }
+
+  .btn-back {
+    flex: 0 0 auto;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.3s ease;
+  }
+
+  .btn-back:hover {
+    background: #e0e0e0;
+  }
+
+  .btn-next {
+    flex: 1;
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(18, 50, 90, 0.3);
+  }
+
+  .btn-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(18, 50, 90, 0.4);
+  }
+
+  .btn-next:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Alert Styling */
+  .alert-custom {
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideDown 0.4s ease-out;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .alert-error {
+    background-color: #f8d7da;
+    color: #842029;
+  }
+
+  .alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+
+  /* Footer Links */
+  .register-footer {
+    text-align: center;
+    padding: 20px 35px 25px;
+    border-top: 1px solid #eee;
+    background: #fafafa;
+  }
+
+  .register-footer a {
+    color: #12325a;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+
+  .register-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .copyright {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    font-size: 0.75em;
+    color: #999;
+    text-align: center;
+  }
+
+  .back-to-home {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .back-to-home a {
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+
+  .back-to-home a:hover {
+    color: white;
+    text-decoration: underline;
+  }
+
+  /* Password Toggle */
+  .password-wrapper {
+    position: relative;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 10;
+  }
+
+  .password-toggle:hover {
+    color: #12325a;
+  }
+
+  /* Inline validation error styles */
+  .invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.85em;
+    margin-top: 6px;
+    padding-left: 2px;
+  }
+
+  .form-control.is-invalid,
+  .form-select.is-invalid {
+    border-color: #dc3545;
+    background-image: none;
+  }
+
+  .form-control.is-invalid:focus,
+  .form-select.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+  }
+
+  /* Hide file input */
+  .hidden-file-input {
+    display: none;
+  }
+
+  /* Policy Modal Styles */
+  #termsModal .modal-content,
+  #privacyModal .modal-content,
+  #disclosureModal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  #termsModal .modal-header,
+  #privacyModal .modal-header,
+  #disclosureModal .modal-header {
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 18px 24px;
+  }
+
+  #termsModal .modal-title,
+  #privacyModal .modal-title,
+  #disclosureModal .modal-title {
+    font-weight: 600;
+    font-size: 1.1em;
+  }
+
+  #termsModal .modal-header .btn-close,
+  #privacyModal .modal-header .btn-close,
+  #disclosureModal .modal-header .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+  }
+
+  #termsModal .modal-header .btn-close:hover,
+  #privacyModal .modal-header .btn-close:hover,
+  #disclosureModal .modal-header .btn-close:hover {
+    opacity: 1;
+  }
+
+  #termsModal .modal-body,
+  #privacyModal .modal-body,
+  #disclosureModal .modal-body {
+    padding: 24px;
+    max-height: 75vh;
+    font-size: 0.92em;
+    line-height: 1.7;
+    color: #444;
+  }
+
+  #termsModal .modal-body h6,
+  #privacyModal .modal-body h6,
+  #disclosureModal .modal-body h6 {
+    color: #12325a;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  #termsModal .modal-body h6:first-child,
+  #privacyModal .modal-body h6:first-child,
+  #disclosureModal .modal-body h6:first-child {
+    margin-top: 0;
+  }
+
+  #termsModal .modal-body p,
+  #privacyModal .modal-body p,
+  #disclosureModal .modal-body p {
+    margin-bottom: 12px;
+  }
+
+  #termsModal .modal-body ul,
+  #privacyModal .modal-body ul,
+  #disclosureModal .modal-body ul {
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+
+  #termsModal .modal-body li,
+  #privacyModal .modal-body li,
+  #disclosureModal .modal-body li {
+    margin-bottom: 4px;
+  }
+
+  #termsModal .modal-footer,
+  #privacyModal .modal-footer,
+  #disclosureModal .modal-footer {
+    border-top: 1px solid #eee;
+    padding: 12px 24px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-footer .copyright-text {
+    font-size: 0.75em;
+    color: #999;
+    margin: 0;
+  }
+
+  #termsModal .modal-footer .btn-primary,
+  #privacyModal .modal-footer .btn-primary,
+  #disclosureModal .modal-footer .btn-primary {
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-weight: 600;
+  }
+
+  #termsModal .modal-footer .btn-primary:hover,
+  #privacyModal .modal-footer .btn-primary:hover,
+  #disclosureModal .modal-footer .btn-primary:hover {
+    box-shadow: 0 4px 12px rgba(18, 50, 90, 0.3);
+  }
+
+  /* Mobile modal adjustments */
+  @media (max-width: 767px) {
+    #termsModal .modal-dialog,
+    #privacyModal .modal-dialog,
+    #disclosureModal .modal-dialog {
+      margin: 0;
+      max-width: 100%;
+      min-height: 100vh;
     }
-    .text-primary {
-        color: var(--tc-primary) !important;
+
+    #termsModal .modal-content,
+    #privacyModal .modal-content,
+    #disclosureModal .modal-content {
+      border-radius: 0;
+      min-height: 100vh;
     }
-    a.text-primary:hover {
-        color: var(--tc-primary-dark) !important;
+
+    #termsModal .modal-header,
+    #privacyModal .modal-header,
+    #disclosureModal .modal-header {
+      border-radius: 0;
     }
-    .form-check-input:checked {
-        background-color: var(--tc-primary);
-        border-color: var(--tc-primary);
+
+    #termsModal .modal-header .btn-close,
+    #privacyModal .modal-header .btn-close,
+    #disclosureModal .modal-header .btn-close {
+      display: none;
     }
-    .trust-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 50px;
-        font-size: 0.8rem;
-        color: rgba(255,255,255,0.9);
-        margin-bottom: 1.25rem;
+
+    #termsModal .modal-body,
+    #privacyModal .modal-body,
+    #disclosureModal .modal-body {
+      max-height: calc(100vh - 120px);
+      flex: 1;
     }
-    .trust-badge i {
-        color: #10b981;
+
+    #termsModal .modal-footer,
+    #privacyModal .modal-footer,
+    #disclosureModal .modal-footer {
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 24px;
     }
+
+    .modal-footer .copyright-text {
+      order: 2;
+    }
+
+    #termsModal .modal-footer .btn-primary,
+    #privacyModal .modal-footer .btn-primary,
+    #disclosureModal .modal-footer .btn-primary {
+      width: 100%;
+      order: 1;
+    }
+  }
 </style>
-{% endblock %}
+</head>
+<body>
 
-{% block content %}
-<div class="row g-0 auth-wrapper">
-    <!-- Left Side - Branding -->
-    <div class="col-lg-5 d-none d-lg-flex auth-brand-side flex-column justify-content-center p-5">
-        <div class="position-relative z-1 px-4">
-            <!-- Trust Badge -->
-            <div class="trust-badge">
-                <i class="bi bi-shield-check"></i>
-                <span>Free & Secure Registration</span>
+<div class="register-page">
+  <div class="register-container">
+    <!-- Mobile App Header (visible only on mobile) -->
+    <div class="mobile-app-header">
+      <div class="mobile-header-logo">
+        <img src="{% static 'images/pwa/icon-192x192.png' %}" alt="{{ site_name }}">
+      </div>
+      <div class="app-bank-name">{{ site_name }}</div>
+      <div class="app-tagline">Open your account today</div>
+    </div>
+
+    <div class="register-card">
+      <!-- Header -->
+      <div class="register-header">
+        <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}">
+        <h2>Open your account</h2>
+        <p>Join {{ site_name }} in just a few steps</p>
+      </div>
+
+      <!-- Progress Steps -->
+      <div class="progress-container">
+        <div class="progress-steps">
+          <div class="progress-line" id="progressLine"></div>
+          <div class="step-item active" data-step="1">
+            <div class="step-circle"><span class="step-number">1</span></div>
+            <span class="step-label">Your details</span>
+          </div>
+          <div class="step-item" data-step="2">
+            <div class="step-circle"><span class="step-number">2</span></div>
+            <span class="step-label">Security</span>
+          </div>
+          <div class="step-item" data-step="3">
+            <div class="step-circle"><span class="step-number">3</span></div>
+            <span class="step-label">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST" id="registerForm">
+        {% csrf_token %}
+        {% csrf_token %}
+
+        <div class="register-body">
+          <!-- Error/Success Messages -->
+          
+
+          <!-- Step 1: Personal Information -->
+                    <div class="step-content active" data-step="1">
+            <h3 class="step-title">Your details</h3>
+            <div class="row">
+<div class="form-group">
+                <label class="form-label" for="first_name">First Name</label>
+                <input type="text" name="first_name" class="form-control" id="first_name" placeholder="Enter first name" required>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="last_name">Last Name</label>
+                <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Enter last name" required>
+              </div>
+<div class="form-group">
+              <label class="form-label" for="email">Email Address</label>
+              <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email address" required>
             </div>
-
-            <!-- Logo -->
-            <div class="mb-4">
-                <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}" style="height: 50px;">
+<div class="form-group">
+              <label class="form-label" for="phone">Mobile Phone Number</label>
+              <input type="tel" name="phone" class="form-control" id="phone" placeholder="Enter your phone number" required>
             </div>
+<div class="form-group">
+                <label class="form-label" for="country">Country</label>
+                <select name="country" class="form-select" id="country" required>
+                  <option value="" selected disabled>Select country</option>
+                  <option value="United States">United States</option>
+                  <option value="Canada">Canada</option>
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="Australia">Australia</option>
+                  <option value="Germany">Germany</option>
+                  <option value="France">France</option>
+                  <option value="India">India</option>
+                  <option value="Nigeria">Nigeria</option>
+                  <option value="South Africa">South Africa</option>
+                  <option value="Brazil">Brazil</option>
+                  <option value="Mexico">Mexico</option>
+                  <option value="Japan">Japan</option>
+                  <option value="China">China</option>
+                  <option value="Philippines">Philippines</option>
+                  <option value="Pakistan">Pakistan</option>
+                  <option value="Bangladesh">Bangladesh</option>
+                  <option value="Italy">Italy</option>
+                  <option value="Spain">Spain</option>
+                  <option value="Netherlands">Netherlands</option>
+                  <option value="Switzerland">Switzerland</option>
+                  <option value="United Arab Emirates">United Arab Emirates</option>
+                  <option value="Saudi Arabia">Saudi Arabia</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Malaysia">Malaysia</option>
+                  <option value="Indonesia">Indonesia</option>
+                  <option value="Kenya">Kenya</option>
+                  <option value="Ghana">Ghana</option>
+                  <option value="Egypt">Egypt</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-            <!-- Headline -->
-            <h1 class="h2 fw-bold text-white mb-3" style="line-height: 1.3;">
-                Start Your Investment<br>Journey Today
-            </h1>
-            <p style="color: rgba(255,255,255,0.75);" class="mb-4">
-                Join thousands of successful investors earning daily profits with {{ site_name }}.
+          <div class="step-content" data-step="2">
+            <h3 class="step-title">Account security</h3>
+            <div class="row">
+<div class="form-group">
+              <label class="form-label" for="username">Choose a Username</label>
+              <input type="text" name="username" class="form-control" id="username" placeholder="Enter username" required autocomplete="username" minlength="4">
+            </div>
+<div class="form-group">
+              <label class="form-label" for="password1">Create Password</label>
+              <div class="password-wrapper">
+                <input type="password" name="password1" class="form-control" id="password1" placeholder="Enter password" required minlength="8" autocomplete="new-password">
+                <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              <div class="password-strength">
+                <div class="password-strength-bar" id="passwordStrengthBar"></div>
+              </div>
+              <div class="invalid-feedback" id="passwordError"></div>
+            </div>
+<div class="form-group">
+              <label class="form-label" for="password2">Confirm Password</label>
+              <div class="password-wrapper">
+                <input type="password" name="password2" class="form-control" id="password2" placeholder="Confirm your password" required minlength="8" autocomplete="new-password">
+                <button type="button" class="password-toggle" onclick="togglePassword('confirm_password', this)">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback" id="confirmPasswordError"></div>
+            </div>
+            </div>
+          </div>
+
+          <div class="step-content" data-step="3">
+            <h3 class="step-title">Review &amp; submit</h3>
+            <p class="text-muted mb-4">
+              You can complete your identity verification from your dashboard after signing in.
             </p>
-
-            <!-- Benefits -->
-            <div class="benefits">
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="bi bi-check-lg"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1 text-white fw-semibold">Free to Join</h6>
-                        <small style="color: rgba(255,255,255,0.7);">No registration fees or hidden charges</small>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="bi bi-check-lg"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1 text-white fw-semibold">Multiple Investment Plans</h6>
-                        <small style="color: rgba(255,255,255,0.7);">Choose plans that suit your budget</small>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="bi bi-check-lg"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1 text-white fw-semibold">Instant Withdrawals</h6>
-                        <small style="color: rgba(255,255,255,0.7);">Fast and secure processing</small>
-                    </div>
-                </div>
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="bi bi-check-lg"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1 text-white fw-semibold">Referral Bonuses</h6>
-                        <small style="color: rgba(255,255,255,0.7);">Earn extra by inviting friends</small>
-                    </div>
-                </div>
+<div class="terms-box">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="termsAgree" name="terms" required>
+                <label class="form-check-label" for="termsAgree">
+                  I certify that all information provided is accurate. I agree to the
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a>,
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>, and
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#disclosureModal">Electronic Disclosure</a>.
+                </label>
+              </div>
             </div>
-
-            <!-- Testimonial -->
-            <div class="testimonial-card">
-                <p class="testimonial-text">
-                    "I've been investing with {{ site_name }} for 6 months now. The returns are consistent and the platform is very easy to use."
-                </p>
-                <div class="testimonial-author">
-                    <div class="testimonial-avatar">
-                        <i class="bi bi-person-fill text-white"></i>
-                    </div>
-                    <div>
-                        <div class="text-white fw-semibold">Sarah M.</div>
-                        <small style="color: rgba(255,255,255,0.7);">Verified Investor</small>
-                    </div>
-                </div>
+<div class="terms-box">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="esignAgree" name="esign" required>
+                <label class="form-check-label" for="esignAgree">
+                  I consent to receive communications electronically and understand that my electronic signature has the same legal effect as a handwritten signature.
+                </label>
+              </div>
             </div>
+          </div>
+
+<!-- Navigation Buttons -->
+          <div class="btn-row">
+            <button type="button" class="btn btn-back" id="btnBack" style="display: none;">
+              <i class="bi bi-arrow-left me-2"></i>Back
+            </button>
+            <button type="button" class="btn btn-next" id="btnNext">
+              Continue <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+          </div>
         </div>
+      </form>
+
+      <!-- Footer -->
+      <div class="register-footer">
+        Already have an account? <a href="{% url 'accounts:login' %}">Sign In</a>
+      </div>
+
+      <div class="copyright">
+        &copy; {% now "Y" %} {{ site_name }}. All rights reserved.
+      </div>
     </div>
 
-    <!-- Right Side - Form -->
-    <div class="col-lg-7 auth-form-side p-4 p-lg-5">
-        <div class="form-card">
-            <!-- Mobile Logo -->
-            <div class="text-center d-lg-none mb-4">
-                <a href="{% url 'accounts:login' %}">
-                    <img src="{% static 'images/logo-dark.png' %}" alt="Logo" style="height: 40px;">
-                </a>
-            </div>
-
-            <div class="glass-card">
-                <!-- Title -->
-                <h1 class="h3 mb-2 fw-bold">Create Your Account</h1>
-                <p class="text-secondary mb-4">
-                    Fill in your details to get started with investing.
-                </p>
-
-                <!-- Step Indicator -->
-                <div class="step-indicator">
-                    <div class="step active">
-                        <span class="step-circle">1</span>
-                        <span class="step-label">Personal Info</span>
-                    </div>
-                    <div class="step active">
-                        <span class="step-circle">2</span>
-                        <span class="step-label">Account</span>
-                    </div>
-                    <div class="step active">
-                        <span class="step-circle">3</span>
-                        <span class="step-label">Security</span>
-                    </div>
-                </div>
-
-                <!-- Form -->
-                <form method="POST" action="{% url 'accounts:register' %}">
-                    {% csrf_token %}
-
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
-                            {% endfor %}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endif %}
-
-                    <!-- Personal Info Section -->
-                    <div class="section-card">
-                        <div class="card-header">
-                            <h6 class="mb-0 fw-semibold"><i class="bi bi-person me-2" style="color: var(--tc-primary);"></i>Personal Information</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">First Name</label>
-                                    <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}"
-                                        class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
-                                        placeholder="John" required>
-                                    {% if form.first_name.errors %}
-                                        <div class="invalid-feedback">{% for error in form.first_name.errors %}{{ error }}{% endfor %}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">Last Name</label>
-                                    <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}"
-                                        class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
-                                        placeholder="Doe" required>
-                                    {% if form.last_name.errors %}
-                                        <div class="invalid-feedback">{% for error in form.last_name.errors %}{{ error }}{% endfor %}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label fw-medium">Phone Number <span class="text-muted fw-normal">(Optional)</span></label>
-                                    <input type="tel" name="phone" value="{{ form.phone.value|default:'' }}"
-                                        class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
-                                        placeholder="+1 234 567 8900">
-                                    {% if form.phone.errors %}
-                                        <div class="invalid-feedback">{% for error in form.phone.errors %}{{ error }}{% endfor %}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Account Section -->
-                    <div class="section-card">
-                        <div class="card-header">
-                            <h6 class="mb-0 fw-semibold"><i class="bi bi-at me-2" style="color: var(--tc-primary);"></i>Account Details</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">Username</label>
-                                    <input type="text" name="username" value="{{ form.username.value|default:'' }}"
-                                        class="form-control {% if form.username.errors %}is-invalid{% endif %}"
-                                        placeholder="johndoe" required>
-                                    {% if form.username.errors %}
-                                        <div class="invalid-feedback">{% for error in form.username.errors %}{{ error }}{% endfor %}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">Email Address</label>
-                                    <input type="email" name="email" value="{{ form.email.value|default:'' }}"
-                                        class="form-control {% if form.email.errors %}is-invalid{% endif %}"
-                                        placeholder="john@example.com" required>
-                                    {% if form.email.errors %}
-                                        <div class="invalid-feedback">{% for error in form.email.errors %}{{ error }}{% endfor %}</div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label fw-medium">Referral Code <span class="text-muted fw-normal">(Optional)</span></label>
-                                    <input type="text" name="referral_code_input" value="{{ form.referral_code_input.value|default:'' }}"
-                                        class="form-control {% if form.referral_code_input.errors %}is-invalid{% endif %}"
-                                        placeholder="Enter referral code if you have one">
-                                    {% if form.referral_code_input.errors %}
-                                        <div class="invalid-feedback">{% for error in form.referral_code_input.errors %}{{ error }}{% endfor %}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Security Section -->
-                    <div class="section-card">
-                        <div class="card-header">
-                            <h6 class="mb-0 fw-semibold"><i class="bi bi-shield-lock me-2" style="color: var(--tc-primary);"></i>Security</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">Password</label>
-                                    <div class="input-group">
-                                        <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
-                                            data-toggle-password-input placeholder="Create password" name="password1" id="password1" required>
-                                        <button type="button" class="input-group-text"
-                                            data-toggle-password></button>
-                                    </div>
-                                    <div class="password-strength">
-                                        <div class="password-strength-bar" id="strengthBar"></div>
-                                    </div>
-                                    {% if form.password1.errors %}
-                                        <div class="invalid-feedback d-block">{% for error in form.password1.errors %}{{ error }}{% endfor %}</div>
-                                    {% else %}
-                                        <small class="text-muted">Min. 8 characters</small>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium">Confirm Password</label>
-                                    <div class="input-group">
-                                        <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
-                                            data-toggle-password-input placeholder="Confirm password" name="password2" required>
-                                        <button type="button" class="input-group-text"
-                                            data-toggle-password></button>
-                                    </div>
-                                    {% if form.password2.errors %}
-                                        <div class="invalid-feedback d-block">{% for error in form.password2.errors %}{{ error }}{% endfor %}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Terms -->
-                    <div class="form-check mb-4">
-                        <input type="checkbox" class="form-check-input" name="terms" id="terms" required>
-                        <label class="form-check-label" for="terms">
-                            I agree to the <a href="#" class="text-primary fw-medium">Terms of Service</a> and <a href="#" class="text-primary fw-medium">Privacy Policy</a>
-                        </label>
-                    </div>
-
-                    <!-- Submit -->
-                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-4">
-                        <i class="bi bi-person-plus me-2"></i>Create Account
-                    </button>
-
-                    <div class="text-center">
-                        <span class="text-muted">Already have an account?</span>
-                        <a href="{% url 'accounts:login' %}" class="fw-semibold text-primary ms-1">Sign In</a>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <div class="back-to-home">
+      <a href="{{ frontend_url }}/">
+        <i class="bi bi-arrow-left-circle me-1"></i> Back to Home
+      </a>
     </div>
+  </div>
+</div>
+
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Agreement Overview</h6>
+        <p>This is a legal Agreement between you ("User") and {{ site_name }} ("Bank") governing your use of our online and mobile banking services (the "Service"). By registering for and using the Service, you agree to be bound by these Terms and Conditions.</p>
+
+        <h6>Acceptance of Terms</h6>
+        <p>By completing the registration process and using the Service, you confirm that you have read, understood, and agree to these Terms and Conditions. If you do not agree, please do not register for or use the Service. We may update these terms from time to time, and will notify you of any material changes via email or through the Service.</p>
+
+        <h6>Description of Service</h6>
+        <p>{{ site_name }} provides online and mobile banking services that allow you to view account balances, transfer funds, pay bills, manage your personal financial information, and access other banking features. The availability of specific features may vary based on your account type and location.</p>
+
+        <h6>User Information and Security</h6>
+        <p>To use the Service, you must provide accurate and complete personal information during registration. You are responsible for maintaining the confidentiality of your username, password, and PIN. You agree to notify {{ site_name }} immediately if you suspect any unauthorized access to your account. {{ site_name }} will never ask you to share your password via email, phone, or text message.</p>
+
+        <h6>Privacy and Data Protection</h6>
+        <p>{{ site_name }} is committed to protecting your personal information. We will not sell, exchange, or release your personal or account information to any third party without your express consent, except as required by law, court order, or government regulation. Please refer to our Privacy Policy for complete details on how we collect, use, and protect your information.</p>
+
+        <h6>User Responsibilities</h6>
+        <p>You agree to: (a) provide accurate and truthful information; (b) keep your contact information up to date; (c) protect your login credentials and not share them with anyone; (d) review your account statements regularly and report any discrepancies promptly; (e) use the Service only for lawful purposes; and (f) comply with all applicable laws and regulations.</p>
+
+        <h6>Limitation of Liability</h6>
+        <p>The Service is provided "as is" without warranties of any kind. {{ site_name }} shall not be liable for any indirect, incidental, or consequential damages arising from your use of the Service. This includes, but is not limited to, damages resulting from service interruptions, data loss, or unauthorized access to your account due to your failure to maintain security.</p>
+
+        <h6>Transaction Alerts</h6>
+        <p>By enrolling in our Service, you may receive transaction alerts and security notifications via email, SMS, or push notification. These alerts are provided for your convenience and security. Message and data rates may apply. You can manage your alert preferences through the Service settings.</p>
+
+        <h6>Governing Law</h6>
+        <p>This Agreement shall be governed by and construed in accordance with applicable federal and state laws. Any disputes arising from this Agreement shall be resolved through binding arbitration or in the appropriate courts of jurisdiction.</p>
+
+        <h6>Contact Us</h6>
+        <p>If you have questions about these Terms and Conditions, please contact our customer service team through the Service or visit any {{ site_name }} branch location.</p>
+      </div>
+      <div class="modal-footer">
+        <p class="copyright-text">&copy; {% now "Y" %} {{ site_name }}. All rights reserved.</p>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Our Commitment to Your Privacy</h6>
+        <p>{{ site_name }} values your trust and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, share, and safeguard your information when you use our banking services.</p>
+
+        <h6>Information We Collect</h6>
+        <p>We collect personal information necessary to provide you with banking services, including:</p>
+        <ul>
+          <li>Identity information (name, date of birth, Social Security number)</li>
+          <li>Contact information (address, email, phone number)</li>
+          <li>Financial information (income, employment, account balances)</li>
+          <li>Transaction history and payment information</li>
+          <li>Device and usage information when you use our online services</li>
+        </ul>
+
+        <h6>How We Use Your Information</h6>
+        <p>We use your personal information to:</p>
+        <ul>
+          <li>Process your transactions and manage your accounts</li>
+          <li>Verify your identity and prevent fraud</li>
+          <li>Comply with legal and regulatory requirements</li>
+          <li>Communicate with you about your accounts and services</li>
+          <li>Improve our products and customer experience</li>
+        </ul>
+
+        <h6>Information Sharing</h6>
+        <p>We do not sell your personal information. We may share your information only:</p>
+        <ul>
+          <li>With service providers who help us operate our business</li>
+          <li>To comply with legal obligations or court orders</li>
+          <li>To prevent fraud or protect our legal rights</li>
+          <li>With your consent for specific purposes</li>
+        </ul>
+
+        <h6>How We Protect Your Information</h6>
+        <p>{{ site_name }} employs industry-standard security measures to protect your personal information, including:</p>
+        <ul>
+          <li>Encryption of sensitive data in transit and at rest</li>
+          <li>Secure data centers with restricted access</li>
+          <li>Regular security audits and monitoring</li>
+          <li>Employee training on data protection practices</li>
+        </ul>
+
+        <h6>Your Rights and Choices</h6>
+        <p>You have the right to access, correct, or delete your personal information. You may also opt out of certain marketing communications. To exercise these rights, please contact our customer service team or visit your account settings.</p>
+
+        <h6>Updates to This Policy</h6>
+        <p>We may update this Privacy Policy periodically to reflect changes in our practices or legal requirements. We will notify you of any material changes through the Service or via email.</p>
+      </div>
+      <div class="modal-footer">
+        <p class="copyright-text">&copy; {% now "Y" %} {{ site_name }}. All rights reserved.</p>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Electronic Disclosure Modal -->
+<div class="modal fade" id="disclosureModal" tabindex="-1" aria-labelledby="disclosureModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="disclosureModalLabel">Electronic Disclosure</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Consent to Electronic Communications</h6>
+        <p>By agreeing to this Electronic Disclosure, you consent to receive all account-related communications, agreements, documents, notices, and disclosures ("Communications") from {{ site_name }} electronically rather than in paper form.</p>
+
+        <h6>Types of Electronic Communications</h6>
+        <p>This consent covers all Communications related to your accounts and services, including:</p>
+        <ul>
+          <li>Account opening documents and agreements</li>
+          <li>Monthly statements and transaction confirmations</li>
+          <li>Privacy policies and legal notices</li>
+          <li>Changes to terms, fees, or interest rates</li>
+          <li>Security alerts and fraud notifications</li>
+          <li>Tax documents (Forms 1099, etc.)</li>
+          <li>Promotional offers and service updates</li>
+        </ul>
+
+        <h6>System Requirements</h6>
+        <p>To access and retain electronic Communications, you need:</p>
+        <ul>
+          <li>A smartphone, tablet, or computer with internet access</li>
+          <li>A current web browser (Chrome, Safari, Firefox, or Edge)</li>
+          <li>A valid email address that you check regularly</li>
+          <li>Ability to download or print documents for your records</li>
+          <li>Sufficient storage space to save electronic documents</li>
+        </ul>
+
+        <h6>How Electronic Delivery Works</h6>
+        <p>When Communications are available, we will send you an email notification with instructions on how to access them through your {{ site_name }} Online Banking account. Some Communications may be sent directly to your email address.</p>
+
+        <h6>Keeping Your Information Current</h6>
+        <p>You are responsible for maintaining a valid email address and notifying us promptly of any changes. You can update your contact information anytime through Online Banking or by contacting customer service.</p>
+
+        <h6>Requesting Paper Copies</h6>
+        <p>You may request a paper copy of any electronic Communication by contacting us. A fee may apply for paper copies as outlined in our fee schedule. Requesting a paper copy will not withdraw your consent to electronic delivery.</p>
+
+        <h6>Withdrawing Your Consent</h6>
+        <p>You may withdraw your consent to electronic Communications at any time by contacting customer service. Please note that withdrawing consent may result in fees for paper delivery or, in some cases, account closure if electronic delivery is required for your account type.</p>
+
+        <h6>Legal Validity</h6>
+        <p>Your consent to electronic Communications is provided pursuant to the Electronic Signatures in Global and National Commerce Act (E-SIGN Act). Electronic Communications have the same legal effect as paper documents with handwritten signatures.</p>
+      </div>
+      <div class="modal-footer">
+        <p class="copyright-text">&copy; {% now "Y" %} {{ site_name }}. All rights reserved.</p>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-    // Password strength indicator with blue theme
-    document.getElementById('password1')?.addEventListener('input', function(e) {
-        const password = e.target.value;
-        const bar = document.getElementById('strengthBar');
-        let strength = 0;
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('registerForm');
+  const btnNext = document.getElementById('btnNext');
+  const btnBack = document.getElementById('btnBack');
+  const stepContents = document.querySelectorAll('.step-content');
+  const stepItems = document.querySelectorAll('.step-item');
+  const progressLine = document.getElementById('progressLine');
+  const totalSteps = 3;
 
-        if (password.length >= 8) strength += 25;
-        if (password.match(/[a-z]/)) strength += 25;
-        if (password.match(/[A-Z]/)) strength += 25;
-        if (password.match(/[0-9]/) || password.match(/[^a-zA-Z0-9]/)) strength += 25;
+  // LocalStorage keys
+  const STORAGE_KEY = 'stonebridge_registration_data';
+  const STEP_KEY = 'stonebridge_registration_step';
 
-        bar.style.width = strength + '%';
-        if (strength <= 25) {
-            bar.style.background = '#dc3545';
-        } else if (strength <= 50) {
-            bar.style.background = '#fd7e14';
-        } else if (strength <= 75) {
-            bar.style.background = '#0e2a4c';
-        } else {
-            bar.style.background = '#12325a';
+  // Fields to exclude from saving (sensitive data)
+  const excludeFields = ['password', 'confirm_password', 'security_answer'];
+
+  // Get CSRF token from cookie (Django sets this)
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
+      }
+    }
+    return cookieValue;
+  }
+
+  // Refresh CSRF token from cookie before form submission
+  function refreshCSRFToken() {
+    const csrfToken = getCookie('csrftoken');
+    if (csrfToken) {
+      const csrfInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
+      if (csrfInput) {
+        csrfInput.value = csrfToken;
+      }
+    }
+  }
+
+  // Load saved step or default to 1
+  let currentStep = parseInt(localStorage.getItem(STEP_KEY)) || 1;
+
+  // Save form data to localStorage
+  function saveFormData() {
+    const formData = {};
+    const inputs = form.querySelectorAll('input, select, textarea');
+
+    inputs.forEach(input => {
+      if (input.name && !excludeFields.includes(input.id) && input.type !== 'file' && input.type !== 'checkbox') {
+        formData[input.name] = input.value;
+      }
     });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    localStorage.setItem(STEP_KEY, currentStep.toString());
+  }
+
+  // Load form data from localStorage
+  function loadFormData() {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      try {
+        const formData = JSON.parse(savedData);
+
+        Object.keys(formData).forEach(name => {
+          const input = form.querySelector(`[name="${name}"]`);
+          if (input && formData[name]) {
+            input.value = formData[name];
+
+            // Trigger change event for select elements to update dependent fields
+            if (input.tagName === 'SELECT') {
+              input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          }
+        });
+      } catch (e) {
+        console.error('Error loading saved form data:', e);
+      }
+    }
+  }
+
+  // Clear saved form data (after successful submission)
+  function clearFormData() {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STEP_KEY);
+  }
+
+  // Update progress bar
+  function updateProgress() {
+    const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    progressLine.style.width = `calc(${progress}% - 0px)`;
+
+    stepItems.forEach((item, index) => {
+      const stepNum = index + 1;
+      item.classList.remove('active', 'completed');
+      if (stepNum === currentStep) {
+        item.classList.add('active');
+      } else if (stepNum < currentStep) {
+        item.classList.add('completed');
+      }
+    });
+  }
+
+  // Show step
+  function showStep(step) {
+    stepContents.forEach(content => {
+      content.classList.remove('active');
+      if (parseInt(content.dataset.step) === step) {
+        content.classList.add('active');
+      }
+    });
+
+    btnBack.style.display = step > 1 ? 'block' : 'none';
+
+    if (step === totalSteps) {
+      btnNext.innerHTML = '<i class="bi bi-check-lg me-2"></i>Submit Application';
+      updateReviewSection();
+    } else {
+      btnNext.innerHTML = 'Continue <i class="bi bi-arrow-right ms-2"></i>';
+    }
+
+    updateProgress();
+
+    // Save current step
+    localStorage.setItem(STEP_KEY, step.toString());
+  }
+
+  // Helper function to show inline error
+  function showFieldError(field, errorId, message) {
+    field.classList.add('is-invalid');
+    const errorEl = document.getElementById(errorId);
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+  }
+
+  // Helper function to clear inline error
+  function clearFieldError(field, errorId) {
+    field.classList.remove('is-invalid');
+    const errorEl = document.getElementById(errorId);
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.style.display = 'none';
+    }
+  }
+
+  // Validate current step
+  function validateStep(step) {
+    const currentContent = document.querySelector(`.step-content[data-step="${step}"]`);
+    const requiredFields = currentContent.querySelectorAll('[required]');
+    let isValid = true;
+
+    requiredFields.forEach(field => {
+      if (!field.value.trim()) {
+        field.classList.add('is-invalid');
+        isValid = false;
+      } else {
+        field.classList.remove('is-invalid');
+      }
+    });
+
+    // Step-specific validations
+    if (step === 5) {
+      const passwordField = document.getElementById('password');
+      const confirmPasswordField = document.getElementById('confirm_password');
+      const password = passwordField.value;
+      const confirmPassword = confirmPasswordField.value;
+
+      // Clear previous errors first
+      clearFieldError(passwordField, 'passwordError');
+      clearFieldError(confirmPasswordField, 'confirmPasswordError');
+
+      if (password.length < 8) {
+        showFieldError(passwordField, 'passwordError', 'Password must be at least 8 characters');
+        isValid = false;
+      }
+
+      if (password !== confirmPassword) {
+        showFieldError(confirmPasswordField, 'confirmPasswordError', 'Passwords do not match');
+        isValid = false;
+      }
+    }
+
+    return isValid;
+  }
+
+  // Update review section
+  function updateReviewSection() {
+    const firstname = document.getElementById('firstname').value;
+    const lastname = document.getElementById('lastname').value;
+    const middlename = document.getElementById('middlename').value;
+    const fullName = middlename ? `${firstname} ${middlename} ${lastname}` : `${firstname} ${lastname}`;
+
+    document.getElementById('reviewName').textContent = fullName;
+    document.getElementById('reviewDob').textContent = document.getElementById('dob').value;
+
+    // Mask the tax ID for privacy
+    const taxId = document.getElementById('tax_id').value;
+    const maskedId = taxId.length > 4 ? '***-' + taxId.slice(-4) : '****';
+    document.getElementById('reviewTaxId').textContent = maskedId;
+
+    document.getElementById('reviewEmail').textContent = document.getElementById('email').value;
+    document.getElementById('reviewPhone').textContent = document.getElementById('phone').value;
+
+    const city = document.getElementById('city').value;
+    const state = document.getElementById('state').value;
+    const country = document.getElementById('country').value;
+    document.getElementById('reviewAddress').textContent = `${city}, ${state}, ${country}`;
+
+    document.getElementById('reviewEmployment').textContent = document.getElementById('employment_status').value;
+    document.getElementById('reviewIncome').textContent = document.getElementById('annual_income').value;
+    document.getElementById('reviewUsername').textContent = document.getElementById('username').value;
+    document.getElementById('reviewIdType').textContent = document.getElementById('id_type').value;
+  }
+
+  // Next button click
+  btnNext.addEventListener('click', function() {
+    if (currentStep === totalSteps) {
+      // Submit form
+      if (validateStep(currentStep)) {
+        // Refresh CSRF token before submission (handles localStorage persistence)
+        refreshCSRFToken();
+        // Clear saved data on successful submission
+        clearFormData();
+        // Show loading
+        btnNext.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+        btnNext.disabled = true;
+        form.submit();
+      }
+    } else {
+      if (validateStep(currentStep)) {
+        currentStep++;
+        showStep(currentStep);
+        saveFormData();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  });
+
+  // Back button click
+  btnBack.addEventListener('click', function() {
+    if (currentStep > 1) {
+      currentStep--;
+      showStep(currentStep);
+      saveFormData();
+    }
+  });
+
+  // Auto-save form data on input change
+  form.addEventListener('input', function(e) {
+    // Debounce the save to avoid too many writes
+    clearTimeout(form.saveTimeout);
+    form.saveTimeout = setTimeout(saveFormData, 500);
+  });
+
+  form.addEventListener('change', function(e) {
+    saveFormData();
+  });
+
+  // Password toggle
+  window.togglePassword = function(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+  };
+
+  // Password strength indicator
+  document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const bar = document.getElementById('passwordStrengthBar');
+    let strength = 0;
+
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    bar.className = 'password-strength-bar';
+    if (strength <= 1) bar.classList.add('weak');
+    else if (strength <= 2) bar.classList.add('medium');
+    else bar.classList.add('strong');
+  });
+
+  // Date of Birth auto-formatting (MM/DD/YYYY)
+  document.getElementById('dob').addEventListener('input', function(e) {
+    let value = this.value.replace(/\D/g, ''); // Remove non-digits
+    let formatted = '';
+
+    if (value.length > 0) {
+      formatted = value.substring(0, 2);
+    }
+    if (value.length > 2) {
+      formatted += '/' + value.substring(2, 4);
+    }
+    if (value.length > 4) {
+      formatted += '/' + value.substring(4, 8);
+    }
+
+    this.value = formatted;
+  });
+
+  // Validate date format on blur
+  document.getElementById('dob').addEventListener('blur', function() {
+    const value = this.value;
+    const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/;
+
+    if (value && !regex.test(value)) {
+      this.classList.add('is-invalid');
+    } else {
+      this.classList.remove('is-invalid');
+    }
+  });
+
+  // Date auto-formatting function for reuse
+  function formatDateInput(input) {
+    let value = input.value.replace(/\D/g, '');
+    let formatted = '';
+
+    if (value.length > 0) {
+      formatted = value.substring(0, 2);
+    }
+    if (value.length > 2) {
+      formatted += '/' + value.substring(2, 4);
+    }
+    if (value.length > 4) {
+      formatted += '/' + value.substring(4, 8);
+    }
+
+    input.value = formatted;
+  }
+
+  // Date validation function for reuse
+  function validateDateFormat(input) {
+    const value = input.value;
+    const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/;
+
+    if (value && !regex.test(value)) {
+      input.classList.add('is-invalid');
+    } else {
+      input.classList.remove('is-invalid');
+    }
+  }
+
+  // ID Issue Date auto-formatting
+  document.getElementById('id_issue_date').addEventListener('input', function() {
+    formatDateInput(this);
+  });
+  document.getElementById('id_issue_date').addEventListener('blur', function() {
+    validateDateFormat(this);
+  });
+
+  // ID Expiry Date auto-formatting
+  document.getElementById('id_expiry_date').addEventListener('input', function() {
+    formatDateInput(this);
+  });
+  document.getElementById('id_expiry_date').addEventListener('blur', function() {
+    validateDateFormat(this);
+  });
+
+  // Country-based ID type suggestion
+  document.getElementById('country_of_citizenship').addEventListener('change', function() {
+    const country = this.value;
+    const idTypeSelect = document.getElementById('id_type_tax');
+    const taxIdLabel = document.getElementById('tax_id_label');
+
+    // Map countries to their common ID types
+    const countryIdMap = {
+      'United States': { type: 'SSN', label: 'Social Security Number (SSN)' },
+      'United Kingdom': { type: 'NIN', label: 'National Insurance Number (NIN)' },
+      'Canada': { type: 'SIN', label: 'Social Insurance Number (SIN)' },
+      'Australia': { type: 'TFN', label: 'Tax File Number (TFN)' },
+      'India': { type: 'PAN', label: 'Permanent Account Number (PAN)' },
+      'Brazil': { type: 'CPF', label: 'CPF Number' },
+      'Mexico': { type: 'CURP', label: 'CURP' },
+      'Nigeria': { type: 'NID', label: 'National ID Number (NIN)' },
+      'South Africa': { type: 'NID', label: 'National ID Number' },
+      'Germany': { type: 'NID', label: 'Tax ID (Steuer-ID)' },
+      'France': { type: 'NID', label: 'National ID Number (NIR)' },
+      'Philippines': { type: 'NID', label: 'PhilSys ID Number' },
+      'Pakistan': { type: 'NID', label: 'CNIC Number' },
+      'Bangladesh': { type: 'NID', label: 'NID Number' },
+      'Kenya': { type: 'NID', label: 'National ID Number' },
+      'Ghana': { type: 'NID', label: 'Ghana Card Number' },
+      'Egypt': { type: 'NID', label: 'National ID Number' },
+      'United Arab Emirates': { type: 'NID', label: 'Emirates ID' },
+      'Saudi Arabia': { type: 'NID', label: 'National ID (Iqama)' },
+      'Singapore': { type: 'NID', label: 'NRIC Number' },
+      'Malaysia': { type: 'NID', label: 'MyKad Number' },
+      'Indonesia': { type: 'NID', label: 'NIK (KTP Number)' },
+      'Japan': { type: 'NID', label: 'My Number' },
+      'China': { type: 'NID', label: 'Resident ID Number' },
+      'Italy': { type: 'NID', label: 'Codice Fiscale' },
+      'Spain': { type: 'NID', label: 'DNI/NIE Number' },
+      'Netherlands': { type: 'NID', label: 'BSN Number' },
+      'Switzerland': { type: 'NID', label: 'AHV Number' }
+    };
+
+    const idInfo = countryIdMap[country] || { type: 'NID', label: 'National ID Number' };
+
+    // Update the select dropdown
+    for (let option of idTypeSelect.options) {
+      if (option.value === idInfo.type) {
+        idTypeSelect.value = idInfo.type;
+        break;
+      }
+    }
+
+    // Update the label
+    taxIdLabel.textContent = idInfo.label;
+  });
+
+  // Update label when ID type is manually changed
+  document.getElementById('id_type_tax').addEventListener('change', function() {
+    const taxIdLabel = document.getElementById('tax_id_label');
+    const selectedOption = this.options[this.selectedIndex];
+    taxIdLabel.textContent = selectedOption.text;
+  });
+
+  // Phone formatting
+  document.getElementById('phone').addEventListener('input', function() {
+    let value = this.value.replace(/\D/g, '');
+    if (value.length > 3 && value.length <= 6) {
+      value = '(' + value.slice(0, 3) + ') ' + value.slice(3);
+    } else if (value.length > 6) {
+      value = '(' + value.slice(0, 3) + ') ' + value.slice(3, 6) + '-' + value.slice(6, 10);
+    }
+    this.value = value;
+  });
+
+  // File upload display
+  document.getElementById('id_document').addEventListener('change', function() {
+    const fileName = this.files[0]?.name;
+    const display = document.getElementById('uploadFileName');
+    if (fileName) {
+      display.querySelector('span').textContent = fileName;
+      display.style.display = 'block';
+    } else {
+      display.style.display = 'none';
+    }
+  });
+
+  // Employment status toggle
+  document.getElementById('employment_status').addEventListener('change', function() {
+    const employedFields = document.getElementById('employedFields');
+    const employerNameField = document.getElementById('employerNameField');
+    const employerPhoneField = document.getElementById('employerPhoneField');
+    const employerInput = document.getElementById('employer');
+    const isSelfEmployed = this.value === 'Self-Employed';
+    const showFields = ['Employed', 'Self-Employed'].includes(this.value);
+
+    employedFields.style.display = showFields ? 'block' : 'none';
+
+    // Hide employer name and phone for self-employed
+    if (isSelfEmployed) {
+      employerNameField.style.display = 'none';
+      employerPhoneField.style.display = 'none';
+      employerInput.removeAttribute('required');
+      employerInput.value = '';
+    } else {
+      employerNameField.style.display = 'block';
+      employerPhoneField.style.display = 'block';
+    }
+
+    // Toggle required attribute
+    const fields = employedFields.querySelectorAll('input, select');
+    fields.forEach(field => {
+      if (showFields && field.id !== 'employer_phone' && field.id !== 'employer') {
+        field.setAttribute('required', '');
+      } else if (showFields && field.id === 'employer' && !isSelfEmployed) {
+        field.setAttribute('required', '');
+      } else {
+        field.removeAttribute('required');
+      }
+    });
+  });
+
+  // Initialize - Load saved data first, then show the saved step
+  loadFormData();
+  showStep(currentStep);
+
+  // Trigger employment status change to show/hide fields correctly after loading
+  const employmentStatus = document.getElementById('employment_status');
+  if (employmentStatus.value) {
+    employmentStatus.dispatchEvent(new Event('change'));
+  }
+});
 </script>
-{% endblock %}
+
+<!-- Bootstrap JS -->
+<script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>

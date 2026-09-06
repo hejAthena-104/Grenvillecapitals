@@ -1,110 +1,717 @@
-{% extends 'base_auth.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Confirm your email | {{ site_name }}{% endblock %}
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirm your email | {{ site_name }}</title>
 
-{% block extra_head %}
-<style>
-    .otp-inputs { display:flex; gap:10px; justify-content:center; }
-    .otp-inputs input {
-        width:52px; height:62px; text-align:center;
-        font-size:26px; font-weight:700; color:#12325a;
-        border:1px solid #d7e0ec; border-radius:10px; background:#fff;
-        font-family:'SFMono-Regular',Consolas,Menlo,monospace;
+  <!-- Bootstrap CSS -->
+  <link href="{% static 'vendor/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}">
+
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/heromain.png" %}') center center no-repeat;
+    background-size: cover;
+    opacity: 0.1;
+    z-index: 1;
+  }
+
+  .login-container {
+    position: relative;
+    z-index: 2;
+    max-width: 480px;
+    width: 100%;
+  }
+
+  .login-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+    padding: 50px 45px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  .login-logo img {
+    max-width: 250px;
+    height: auto;
+    margin-bottom: 15px;
+  }
+
+  .login-logo .bank-name {
+    font-size: 1.35em;
+    font-weight: 600;
+    color: #12325a;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  .login-header h2 {
+    font-size: 2em;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 10px;
+  }
+
+  .login-header p {
+    color: #666;
+    font-size: 1em;
+  }
+
+  .form-floating {
+    margin-bottom: 22px;
+  }
+
+  .form-floating input {
+    border: 2px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 14px 18px;
+    height: 58px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-floating input:focus {
+    border-color: #12325a;
+    box-shadow: 0 0 0 4px rgba(18, 50, 90, 0.1);
+  }
+
+  .form-floating label {
+    padding: 18px;
+    color: #666;
+  }
+
+  .login-btn {
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 16px 28px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(18, 50, 90, 0.35);
+  }
+
+  .login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(18, 50, 90, 0.45);
+    background: linear-gradient(135deg, #1d4d85 0%, #1d4d85 100%);
+  }
+
+  .login-btn:active {
+    transform: translateY(-1px);
+  }
+
+  .form-check-input {
+    border: 2px solid #12325a;
+    width: 18px;
+    height: 18px;
+  }
+
+  .form-check-input:checked {
+    background-color: #12325a;
+    border-color: #12325a;
+  }
+
+  .form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(18, 50, 90, 0.2);
+    border-color: #12325a;
+  }
+
+  .form-check-label {
+    color: #555;
+    font-size: 0.95em;
+  }
+
+  .login-links {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #e5e5e5;
+    text-align: center;
+  }
+
+  .login-links a {
+    color: #12325a;
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: all 0.2s ease;
+    display: inline-block;
+    margin: 0 10px 10px;
+  }
+
+  .login-links a:hover {
+    color: #1d4d85;
+    text-decoration: underline;
+  }
+
+  .copyright {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    font-size: 0.8em;
+    color: #999;
+    text-align: center;
+  }
+
+  /* Alert Styling - Dashboard Style */
+  .alert-custom {
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 25px;
+    border: 0;
+    border-left: 4px solid;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    gap: 12px;
+    animation: slideDown 0.4s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-15px);
     }
-    .otp-inputs input:focus {
-        outline:none; border-color:#12325a; box-shadow:0 0 0 3px rgba(18,50,90,.12);
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
-    @media (max-width:420px){ .otp-inputs input{ width:42px; height:54px; font-size:21px; } }
+  }
+
+  .alert-error {
+    background-color: #f8d7da;
+    color: #842029;
+    border-left-color: #dc3545;
+  }
+
+  .alert-error i {
+    color: #dc3545;
+  }
+
+  .alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border-left-color: #198754;
+  }
+
+  .alert-success i {
+    color: #198754;
+  }
+
+  .alert-info {
+    background-color: #cff4fc;
+    color: #055160;
+    border-left-color: #0dcaf0;
+  }
+
+  .alert-info i {
+    color: #0dcaf0;
+  }
+
+  .alert-custom i {
+    font-size: 1.4em;
+    flex-shrink: 0;
+  }
+
+  .alert-custom span {
+    flex-grow: 1;
+    font-weight: 500;
+  }
+
+  .back-to-home {
+    text-align: center;
+    margin-top: 25px;
+  }
+
+  .back-to-home a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.95em;
+    opacity: 0.9;
+    transition: all 0.2s ease;
+  }
+
+  .back-to-home a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  /* =============================================
+     MOBILE APP-STYLE LOGIN (PWA / Mobile View)
+     ============================================= */
+  @media (max-width: 767px) {
+    .login-page {
+      padding: 0;
+      background: linear-gradient(180deg, #12325a 0%, #1d4d85 50%, #1d4d85 100%);
+      align-items: flex-start;
+    }
+
+    .login-page::before {
+      display: none;
+    }
+
+    .login-container {
+      max-width: 100%;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* App-style header area */
+    .mobile-app-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 80px 30px 25px;
+      text-align: center;
+    }
+
+    .mobile-app-header .mobile-header-logo {
+      width: 70px;
+      height: 70px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .mobile-app-header .mobile-header-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .mobile-app-header .app-bank-name {
+      color: #ffffff;
+      font-size: 1.4em;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .mobile-app-header .app-tagline {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.9em;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    /* Login card on mobile */
+    .login-card {
+      border-radius: 30px 30px 0 0;
+      padding: 35px 25px 40px;
+      box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.15);
+      flex: 1;
+      margin-top: auto;
+    }
+
+    .login-logo {
+      display: none; /* Hidden on mobile, using app header instead */
+    }
+
+    .login-header {
+      margin-bottom: 28px;
+    }
+
+    .login-header h2 {
+      font-size: 1.6em;
+      color: #333;
+    }
+
+    .login-header p {
+      font-size: 0.95em;
+      color: #777;
+    }
+
+    /* Input fields - more app-like */
+    .form-floating {
+      margin-bottom: 18px;
+    }
+
+    .form-floating input {
+      border: none;
+      background: #f5f7fa;
+      border-radius: 14px;
+      height: 56px;
+      font-size: 1rem;
+      padding-left: 50px;
+    }
+
+    .form-floating input:focus {
+      background: #f0f4f8;
+      box-shadow: 0 0 0 3px rgba(18, 50, 90, 0.15);
+    }
+
+    .form-floating label {
+      padding-left: 50px;
+      color: #888;
+      transition: all 0.2s ease;
+    }
+
+    /* Hide label when input has content or is focused (mobile) */
+    .form-floating input:focus ~ label,
+    .form-floating input:not(:placeholder-shown) ~ label {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+
+    /* Input icons - use input-group for proper spacing */
+    .input-icon-wrapper {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .input-icon-wrapper .input-group-text {
+      background: #f5f7fa;
+      border: none;
+      border-radius: 14px 0 0 14px;
+      padding: 0 15px;
+      color: #12325a;
+      font-size: 1.2em;
+    }
+
+    .input-icon-wrapper .form-control {
+      border: none;
+      background: #f5f7fa;
+      border-radius: 0 14px 14px 0;
+      height: 56px;
+      font-size: 1rem;
+      padding-left: 0;
+    }
+
+    .input-icon-wrapper .form-control:focus {
+      background: #f0f4f8;
+      box-shadow: none;
+    }
+
+    .input-icon-wrapper .input-group:focus-within {
+      box-shadow: 0 0 0 3px rgba(18, 50, 90, 0.15);
+      border-radius: 14px;
+    }
+
+    .input-icon-wrapper .input-group:focus-within .input-group-text {
+      background: #f0f4f8;
+    }
+
+    /* Hide the old positioned icon */
+    .input-icon-wrapper .input-icon {
+      display: none;
+    }
+
+    /* Remember me checkbox */
+    .form-check {
+      margin-bottom: 20px;
+    }
+
+    .form-check-label {
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    /* Login button - full width pill */
+    .login-btn {
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 1.05em;
+      box-shadow: 0 8px 25px rgba(18, 50, 90, 0.35);
+    }
+
+    .login-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Login links */
+    .login-links {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .login-links a {
+      display: block;
+      padding: 12px;
+      margin: 0 0 8px 0;
+      background: #f8f9fa;
+      border-radius: 12px;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    .login-links a i {
+      color: #12325a;
+      margin-right: 8px;
+    }
+
+    .login-links .link-separator {
+      display: none;
+    }
+
+    .copyright {
+      margin-top: 20px;
+      padding-top: 15px;
+      font-size: 0.75em;
+    }
+
+    /* Back to home - hidden on mobile by default */
+    .back-to-home {
+      display: none;
+    }
+
+    /* Alert styling for mobile */
+    .alert-custom {
+      border-radius: 12px;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-left-width: 0;
+      border: 1px solid;
+    }
+
+    .alert-error {
+      border-color: #f5c2c7;
+    }
+
+    .alert-success {
+      border-color: #badbcc;
+    }
+
+    .alert-info {
+      border-color: #b6effb;
+    }
+  }
+
+  /* Password Toggle Button - Desktop */
+  .password-toggle-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 5px;
+    color: #888;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s;
+  }
+
+  .password-toggle-btn:hover {
+    color: #12325a;
+  }
+
+  .password-toggle-btn i {
+    font-size: 1.1rem;
+  }
+
+  /* Password Toggle Button - Mobile */
+  .password-toggle-mobile {
+    background: #f5f7fa !important;
+    border: none !important;
+    border-radius: 0 14px 14px 0 !important;
+    color: #888 !important;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .password-toggle-mobile:hover {
+    color: #12325a !important;
+  }
+
+  /* Hide back-to-home when running as PWA (standalone mode) */
+  @media all and (display-mode: standalone) {
+    .back-to-home {
+      display: none !important;
+    }
+  }
+
+  /* iOS standalone mode */
+  .pwa-mode .back-to-home {
+    display: none !important;
+  }
+
+  /* Desktop view - show back to home */
+  @media (min-width: 768px) {
+    .mobile-app-header {
+      display: none;
+    }
+
+    .back-to-home {
+      display: block;
+    }
+
+    /* Desktop: hide input icons, keep normal styling */
+    .input-icon-wrapper .input-icon {
+      display: none;
+    }
+
+    .input-icon-wrapper {
+      margin-bottom: 22px;
+    }
+
+    .input-icon-wrapper .form-floating {
+      margin-bottom: 0;
+    }
+  }
+
+  .otp-inputs { display:flex; gap:10px; justify-content:center; margin:6px 0 22px; }
+  .otp-inputs input {
+    width:52px; height:62px; text-align:center; font-size:26px; font-weight:700;
+    color:#12325a; border:1px solid #d7e0ec; border-radius:10px; background:#fff;
+    font-family:'SFMono-Regular',Consolas,Menlo,monospace;
+  }
+  .otp-inputs input:focus { outline:none; border-color:#12325a; box-shadow:0 0 0 3px rgba(18,50,90,.12); }
+  @media (max-width:420px){ .otp-inputs { gap:7px; } .otp-inputs input{ width:44px; height:54px; font-size:21px; } }
 </style>
-{% endblock %}
 
-{% block content %}
-<div class="row align-items-center justify-content-center vh-100 py-5">
-    <div class="col-11 col-sm-8 col-md-6 col-lg-5 col-xl-4 col-xxl-3 py-6 shadow-sm">
-
-        <div class="text-center mb-5">
-            <a href="{% url 'accounts:login' %}">
-                <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}" class="w-50">
-            </a>
-        </div>
-
-        <div class="text-center mb-4">
-            <div class="rounded-circle d-inline-flex align-items-center justify-content-center"
-                 style="width:92px; height:92px; background:rgba(18,50,90,.08);">
-                <i class="bi bi-shield-lock" style="font-size:2.6rem; color:#12325a;"></i>
-            </div>
-        </div>
-
-        <h1 class="mb-2 text-center">Confirm your email</h1>
-        <p class="text-secondary text-center mb-4">
-            We sent a 6-digit code to<br><strong>{{ email }}</strong>
-        </p>
-
-        <form method="POST" novalidate id="otpForm">
-            {% csrf_token %}
-            <input type="hidden" name="code" id="codeField">
-
-            <div class="otp-inputs mb-4">
-                {% for i in "123456" %}
-                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
-                           class="otp-digit" autocomplete="{% if forloop.first %}one-time-code{% else %}off{% endif %}"
-                           aria-label="Digit {{ forloop.counter }}"{% if forloop.first %} autofocus{% endif %}>
-                {% endfor %}
-            </div>
-
-            <div class="d-grid mb-3">
-                <button type="submit" class="btn btn-lg btn-primary">Verify and continue</button>
-            </div>
-        </form>
-
-        <p class="text-center text-secondary mb-1">
-            Didn't get it? Check your spam folder, or
-            <a href="{% url 'accounts:resend_verification' %}">send a new code</a>.
-        </p>
-        <p class="text-center text-secondary small mb-0">
-            The code expires 10 minutes after it is sent.
-        </p>
-
-        <hr class="my-4">
-        <p class="text-center mb-0">
-            <a href="{% url 'accounts:login' %}" class="text-secondary">Back to sign in</a>
-        </p>
+<div class="login-page">
+  <div class="login-container">
+    <!-- Mobile App Header (visible only on mobile) -->
+    <div class="mobile-app-header">
+      <div class="mobile-header-logo">
+        <img src="{% static 'images/pwa/icon-192x192.png' %}" alt="{{ site_name }}">
+      </div>
+      <div class="app-bank-name">{{ site_name }}</div>
+      <div class="app-tagline">Secure Online Banking</div>
     </div>
-</div>
-{% endblock %}
 
-{% block extra_js %}
+    <div class="login-card">
+      <!-- Desktop Logo (hidden on mobile) -->
+      <div class="login-logo">
+        <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}">
+      </div>
+
+      <div class="login-header">
+        <h2>Confirm your email</h2>
+        <p>We sent a 6-digit code to <strong>{{ email }}</strong></p>
+      </div>
+
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST" id="otpForm">
+        {% csrf_token %}
+        <input type="hidden" name="code" id="codeField">
+
+        <div class="otp-inputs">
+          {% for i in "123456" %}
+            <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+                   class="otp-digit" aria-label="Digit {{ forloop.counter }}"
+                   autocomplete="{% if forloop.first %}one-time-code{% else %}off{% endif %}"
+                   {% if forloop.first %}autofocus{% endif %}>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn login-btn w-100" id="loginBtn">
+          <span class="btn-text">
+            <i class="bi bi-shield-check me-2"></i>
+            Verify and continue
+          </span>
+        </button>
+      </form>
+
+      <div class="login-links">
+        <a href="{% url 'accounts:resend_verification' %}"><i class="bi bi-arrow-repeat me-1"></i> Send a new code</a>
+        <span class="link-separator d-none d-md-inline">|</span>
+        <a href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right me-1"></i> Back to sign in</a>
+      </div>
+
+      <p class="text-center text-muted small mb-0" style="margin-top:14px;">
+        The code expires 10 minutes after it is sent. Check your spam folder if it hasn't arrived.
+      </p>
+
+      <div class="copyright">
+        &copy; {% now "Y" %} {{ site_name }}. All rights reserved.
+      </div>
+    </div>
+
+    <div class="back-to-home">
+      <a href="{{ frontend_url }}/">
+        <i class="bi bi-arrow-left-circle me-1"></i> Back to Home
+      </a>
+    </div>
+  </div>
+</div>
+
 <script>
 (function () {
-    var digits = Array.prototype.slice.call(document.querySelectorAll('.otp-digit'));
-    var field  = document.getElementById('codeField');
-    var form   = document.getElementById('otpForm');
-
-    function collect() { return digits.map(function (d) { return d.value; }).join(''); }
-
-    digits.forEach(function (input, i) {
-        input.addEventListener('input', function () {
-            this.value = this.value.replace(/\D/g, '').slice(0, 1);
-            if (this.value && i < digits.length - 1) { digits[i + 1].focus(); }
-            if (collect().length === digits.length) { field.value = collect(); }
-        });
-        input.addEventListener('keydown', function (e) {
-            if (e.key === 'Backspace' && !this.value && i > 0) { digits[i - 1].focus(); }
-            if (e.key === 'ArrowLeft'  && i > 0) { digits[i - 1].focus(); }
-            if (e.key === 'ArrowRight' && i < digits.length - 1) { digits[i + 1].focus(); }
-        });
-        input.addEventListener('paste', function (e) {
-            var text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
-            if (!text) { return; }
-            e.preventDefault();
-            digits.forEach(function (d, k) { d.value = text[k] || ''; });
-            field.value = collect();
-            digits[Math.min(text.length, digits.length) - 1].focus();
-        });
+  var digits = Array.prototype.slice.call(document.querySelectorAll('.otp-digit'));
+  var field  = document.getElementById('codeField');
+  var form   = document.getElementById('otpForm');
+  function collect() { return digits.map(function (d) { return d.value; }).join(''); }
+  digits.forEach(function (input, i) {
+    input.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 1);
+      if (this.value && i < digits.length - 1) { digits[i + 1].focus(); }
+      field.value = collect();
     });
-
-    form.addEventListener('submit', function () { field.value = collect(); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && !this.value && i > 0) { digits[i - 1].focus(); }
+      if (e.key === 'ArrowLeft'  && i > 0) { digits[i - 1].focus(); }
+      if (e.key === 'ArrowRight' && i < digits.length - 1) { digits[i + 1].focus(); }
+    });
+    input.addEventListener('paste', function (e) {
+      var text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+      if (!text) { return; }
+      e.preventDefault();
+      digits.forEach(function (d, k) { d.value = text[k] || ''; });
+      field.value = collect();
+      digits[Math.min(text.length, digits.length) - 1].focus();
+    });
+  });
+  form.addEventListener('submit', function () { field.value = collect(); });
 })();
 </script>
-{% endblock %}
+</body>
+
+</html>

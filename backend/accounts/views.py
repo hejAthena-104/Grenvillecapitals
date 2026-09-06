@@ -94,6 +94,12 @@ def register_view(request):
             # Create user
             user = form.save()
 
+            # The scraped form also collects country; keep it if supplied.
+            country = (request.POST.get('country') or '').strip()
+            if country:
+                user.country = country
+                user.save(update_fields=['country'])
+
             # Issue a six-digit code and email it
             otp = EmailOTP.issue(user, purpose='signup')
             email_sent = EmailService.send_otp_email(user, otp.code, 'signup')

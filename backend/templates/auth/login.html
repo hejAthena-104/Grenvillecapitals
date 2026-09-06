@@ -1,371 +1,800 @@
-{% extends 'base_auth.html' %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Sign In | {{ site_name }}{% endblock %}
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in | {{ site_name }}</title>
 
-{% block extra_head %}
-<style>
-    :root {
-        --tc-primary: #12325a;
-        --tc-primary-dark: #0e2a4c;
-        --tc-primary-darker: #0a2038;
+  <!-- Bootstrap CSS -->
+  <link href="{% static 'vendor/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}">
+
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('{% static "images/heromain.png" %}') center center no-repeat;
+    background-size: cover;
+    opacity: 0.1;
+    z-index: 1;
+  }
+
+  .login-container {
+    position: relative;
+    z-index: 2;
+    max-width: 480px;
+    width: 100%;
+  }
+
+  .login-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+    padding: 50px 45px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  .login-logo img {
+    max-width: 250px;
+    height: auto;
+    margin-bottom: 15px;
+  }
+
+  .login-logo .bank-name {
+    font-size: 1.35em;
+    font-weight: 600;
+    color: #12325a;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 35px;
+  }
+
+  .login-header h2 {
+    font-size: 2em;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 10px;
+  }
+
+  .login-header p {
+    color: #666;
+    font-size: 1em;
+  }
+
+  .form-floating {
+    margin-bottom: 22px;
+  }
+
+  .form-floating input {
+    border: 2px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 14px 18px;
+    height: 58px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-floating input:focus {
+    border-color: #12325a;
+    box-shadow: 0 0 0 4px rgba(18, 50, 90, 0.1);
+  }
+
+  .form-floating label {
+    padding: 18px;
+    color: #666;
+  }
+
+  .login-btn {
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 16px 28px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(18, 50, 90, 0.35);
+  }
+
+  .login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(18, 50, 90, 0.45);
+    background: linear-gradient(135deg, #1d4d85 0%, #1d4d85 100%);
+  }
+
+  .login-btn:active {
+    transform: translateY(-1px);
+  }
+
+  .form-check-input {
+    border: 2px solid #12325a;
+    width: 18px;
+    height: 18px;
+  }
+
+  .form-check-input:checked {
+    background-color: #12325a;
+    border-color: #12325a;
+  }
+
+  .form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(18, 50, 90, 0.2);
+    border-color: #12325a;
+  }
+
+  .form-check-label {
+    color: #555;
+    font-size: 0.95em;
+  }
+
+  .login-links {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #e5e5e5;
+    text-align: center;
+  }
+
+  .login-links a {
+    color: #12325a;
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: all 0.2s ease;
+    display: inline-block;
+    margin: 0 10px 10px;
+  }
+
+  .login-links a:hover {
+    color: #1d4d85;
+    text-decoration: underline;
+  }
+
+  .copyright {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    font-size: 0.8em;
+    color: #999;
+    text-align: center;
+  }
+
+  /* Alert Styling - Dashboard Style */
+  .alert-custom {
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 25px;
+    border: 0;
+    border-left: 4px solid;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    gap: 12px;
+    animation: slideDown 0.4s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-15px);
     }
-    .auth-wrapper {
-        min-height: 100vh;
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
-    .auth-brand-side {
-        background: linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-primary-dark) 50%, var(--tc-primary-darker) 100%);
-        position: relative;
-        overflow: hidden;
+  }
+
+  .alert-error {
+    background-color: #f8d7da;
+    color: #842029;
+    border-left-color: #dc3545;
+  }
+
+  .alert-error i {
+    color: #dc3545;
+  }
+
+  .alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border-left-color: #198754;
+  }
+
+  .alert-success i {
+    color: #198754;
+  }
+
+  .alert-info {
+    background-color: #cff4fc;
+    color: #055160;
+    border-left-color: #0dcaf0;
+  }
+
+  .alert-info i {
+    color: #0dcaf0;
+  }
+
+  .alert-custom i {
+    font-size: 1.4em;
+    flex-shrink: 0;
+  }
+
+  .alert-custom span {
+    flex-grow: 1;
+    font-weight: 500;
+  }
+
+  .back-to-home {
+    text-align: center;
+    margin-top: 25px;
+  }
+
+  .back-to-home a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.95em;
+    opacity: 0.9;
+    transition: all 0.2s ease;
+  }
+
+  .back-to-home a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  /* =============================================
+     MOBILE APP-STYLE LOGIN (PWA / Mobile View)
+     ============================================= */
+  @media (max-width: 767px) {
+    .login-page {
+      padding: 0;
+      background: linear-gradient(180deg, #12325a 0%, #1d4d85 50%, #1d4d85 100%);
+      align-items: flex-start;
     }
-    .auth-brand-side::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.1) 0%, transparent 40%);
-        animation: shimmer 20s ease-in-out infinite;
+
+    .login-page::before {
+      display: none;
     }
-    .auth-brand-side::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
-        pointer-events: none;
+
+    .login-container {
+      max-width: 100%;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    @keyframes shimmer {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        25% { transform: translate(5%, 5%) rotate(1deg); }
-        50% { transform: translate(0, 10%) rotate(0deg); }
-        75% { transform: translate(-5%, 5%) rotate(-1deg); }
+
+    /* App-style header area */
+    .mobile-app-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 80px 30px 25px;
+      text-align: center;
     }
-    .feature-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        color: rgba(255,255,255,0.95);
+
+    .mobile-app-header .mobile-header-logo {
+      width: 70px;
+      height: 70px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
-    .feature-icon {
-        width: 52px;
-        height: 52px;
-        background: rgba(255,255,255,0.15);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 1rem;
-        flex-shrink: 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+    .mobile-app-header .mobile-header-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
-    .feature-icon i {
-        font-size: 1.5rem;
-        color: #fff;
+
+    .mobile-app-header .app-bank-name {
+      color: #ffffff;
+      font-size: 1.4em;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        margin-top: 2.5rem;
+
+    .mobile-app-header .app-tagline {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.9em;
+      font-weight: 500;
+      letter-spacing: 0.5px;
     }
-    .stat-card {
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 16px;
-        padding: 1.25rem;
-        text-align: center;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    /* Login card on mobile */
+    .login-card {
+      border-radius: 30px 30px 0 0;
+      padding: 35px 25px 40px;
+      box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.15);
+      flex: 1;
+      margin-top: auto;
     }
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+
+    .login-logo {
+      display: none; /* Hidden on mobile, using app header instead */
     }
-    .stat-value {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: #fff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+    .login-header {
+      margin-bottom: 28px;
     }
-    .stat-label {
-        font-size: 0.75rem;
-        color: rgba(255,255,255,0.8);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-top: 0.25rem;
+
+    .login-header h2 {
+      font-size: 1.6em;
+      color: #333;
     }
-    .auth-form-side {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        background: var(--bs-body-bg);
+
+    .login-header p {
+      font-size: 0.95em;
+      color: #777;
     }
-    .form-card {
-        max-width: 440px;
-        margin: 0 auto;
-        width: 100%;
+
+    /* Input fields - more app-like */
+    .form-floating {
+      margin-bottom: 18px;
     }
-    .glass-card {
-        background: rgba(255,255,255,0.7);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 20px;
-        padding: 2.5rem;
-        box-shadow: 0 8px 32px rgba(18, 50, 90, 0.08);
+
+    .form-floating input {
+      border: none;
+      background: #f5f7fa;
+      border-radius: 14px;
+      height: 56px;
+      font-size: 1rem;
+      padding-left: 50px;
     }
-    [data-theme="dark"] .glass-card {
-        background: rgba(30,30,40,0.7);
-        border: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+
+    .form-floating input:focus {
+      background: #f0f4f8;
+      box-shadow: 0 0 0 3px rgba(18, 50, 90, 0.15);
     }
-    .form-control {
-        border-radius: 12px;
-        padding: 0.875rem 1rem;
-        border: 1px solid rgba(18, 50, 90, 0.15);
-        transition: all 0.3s ease;
+
+    .form-floating label {
+      padding-left: 50px;
+      color: #888;
+      transition: all 0.2s ease;
     }
-    .form-control:focus {
-        border-color: var(--tc-primary);
-        box-shadow: 0 0 0 4px rgba(18, 50, 90, 0.1);
+
+    /* Hide label when input has content or is focused (mobile) */
+    .form-floating input:focus ~ label,
+    .form-floating input:not(:placeholder-shown) ~ label {
+      opacity: 0;
+      transform: translateY(-100%);
     }
-    .input-group-text {
-        border-radius: 12px;
-        background: rgba(18, 50, 90, 0.05);
-        border: 1px solid rgba(18, 50, 90, 0.15);
-        color: var(--tc-primary);
+
+    /* Input icons - use input-group for proper spacing */
+    .input-icon-wrapper {
+      position: relative;
+      margin-bottom: 18px;
     }
-    .input-group .form-control {
-        border-left: none;
+
+    .input-icon-wrapper .input-group-text {
+      background: #f5f7fa;
+      border: none;
+      border-radius: 14px 0 0 14px;
+      padding: 0 15px;
+      color: #12325a;
+      font-size: 1.2em;
     }
-    .input-group-text:first-child {
-        border-right: none;
+
+    .input-icon-wrapper .form-control {
+      border: none;
+      background: #f5f7fa;
+      border-radius: 0 14px 14px 0;
+      height: 56px;
+      font-size: 1rem;
+      padding-left: 0;
     }
-    .btn-primary {
-        background: linear-gradient(135deg, #12325a 0%, #0e2a4c 100%);
-        border: none;
-        border-radius: 12px;
-        padding: 1rem;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        box-shadow: 0 4px 15px rgba(18, 50, 90, 0.3);
-        transition: all 0.3s ease;
+
+    .input-icon-wrapper .form-control:focus {
+      background: #f0f4f8;
+      box-shadow: none;
     }
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #0e2a4c 0%, #0a2038 100%);
-        box-shadow: 0 6px 20px rgba(18, 50, 90, 0.4);
-        transform: translateY(-1px);
+
+    .input-icon-wrapper .input-group:focus-within {
+      box-shadow: 0 0 0 3px rgba(18, 50, 90, 0.15);
+      border-radius: 14px;
     }
-    .text-primary {
-        color: var(--tc-primary) !important;
+
+    .input-icon-wrapper .input-group:focus-within .input-group-text {
+      background: #f0f4f8;
     }
-    a.text-primary:hover {
-        color: var(--tc-primary-dark) !important;
+
+    /* Hide the old positioned icon */
+    .input-icon-wrapper .input-icon {
+      display: none;
     }
-    .form-check-input:checked {
-        background-color: var(--tc-primary);
-        border-color: var(--tc-primary);
+
+    /* Remember me checkbox */
+    .form-check {
+      margin-bottom: 20px;
     }
-    .trust-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 50px;
-        font-size: 0.8rem;
-        color: rgba(255,255,255,0.9);
-        margin-bottom: 1.5rem;
+
+    .form-check-label {
+      font-size: 0.9em;
+      color: #666;
     }
-    .trust-badge i {
-        color: #10b981;
+
+    /* Login button - full width pill */
+    .login-btn {
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 1.05em;
+      box-shadow: 0 8px 25px rgba(18, 50, 90, 0.35);
     }
+
+    .login-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Login links */
+    .login-links {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .login-links a {
+      display: block;
+      padding: 12px;
+      margin: 0 0 8px 0;
+      background: #f8f9fa;
+      border-radius: 12px;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    .login-links a i {
+      color: #12325a;
+      margin-right: 8px;
+    }
+
+    .login-links .link-separator {
+      display: none;
+    }
+
+    .copyright {
+      margin-top: 20px;
+      padding-top: 15px;
+      font-size: 0.75em;
+    }
+
+    /* Back to home - hidden on mobile by default */
+    .back-to-home {
+      display: none;
+    }
+
+    /* Alert styling for mobile */
+    .alert-custom {
+      border-radius: 12px;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      border-left-width: 0;
+      border: 1px solid;
+    }
+
+    .alert-error {
+      border-color: #f5c2c7;
+    }
+
+    .alert-success {
+      border-color: #badbcc;
+    }
+
+    .alert-info {
+      border-color: #b6effb;
+    }
+  }
+
+  /* Password Toggle Button - Desktop */
+  .password-toggle-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 5px;
+    color: #888;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s;
+  }
+
+  .password-toggle-btn:hover {
+    color: #12325a;
+  }
+
+  .password-toggle-btn i {
+    font-size: 1.1rem;
+  }
+
+  /* Password Toggle Button - Mobile */
+  .password-toggle-mobile {
+    background: #f5f7fa !important;
+    border: none !important;
+    border-radius: 0 14px 14px 0 !important;
+    color: #888 !important;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .password-toggle-mobile:hover {
+    color: #12325a !important;
+  }
+
+  /* Hide back-to-home when running as PWA (standalone mode) */
+  @media all and (display-mode: standalone) {
+    .back-to-home {
+      display: none !important;
+    }
+  }
+
+  /* iOS standalone mode */
+  .pwa-mode .back-to-home {
+    display: none !important;
+  }
+
+  /* Desktop view - show back to home */
+  @media (min-width: 768px) {
+    .mobile-app-header {
+      display: none;
+    }
+
+    .back-to-home {
+      display: block;
+    }
+
+    /* Desktop: hide input icons, keep normal styling */
+    .input-icon-wrapper .input-icon {
+      display: none;
+    }
+
+    .input-icon-wrapper {
+      margin-bottom: 22px;
+    }
+
+    .input-icon-wrapper .form-floating {
+      margin-bottom: 0;
+    }
+  }
 </style>
-{% endblock %}
 
-{% block content %}
-<div class="row g-0 auth-wrapper">
-    <!-- Left Side - Branding -->
-    <div class="col-lg-6 d-none d-lg-flex auth-brand-side flex-column justify-content-center p-5">
-        <div class="position-relative z-1 px-4">
-            <!-- Trust Badge -->
-            <div class="trust-badge">
-                <i class="bi bi-shield-check"></i>
-                <span>Secure & Trusted Platform</span>
-            </div>
-
-            <!-- Logo -->
-            <div class="mb-5">
-                <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}" style="height: 55px;">
-            </div>
-
-            <!-- Headline -->
-            <h1 class="display-5 fw-bold text-white mb-3" style="line-height: 1.2;">
-                Welcome Back to<br>{{ site_name }}
-            </h1>
-            <p class="lead mb-5" style="color: rgba(255,255,255,0.75);">
-                Secure, reliable investment platform trusted by thousands of investors worldwide.
-            </p>
-
-            <!-- Features -->
-            <div class="features">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1 text-white fw-semibold">Secure Platform</h6>
-                        <small style="color: rgba(255,255,255,0.7);">Bank-grade security & encryption</small>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="bi bi-graph-up-arrow"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1 text-white fw-semibold">Daily Profits</h6>
-                        <small style="color: rgba(255,255,255,0.7);">Earn consistent daily returns</small>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="bi bi-headset"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-1 text-white fw-semibold">24/7 Support</h6>
-                        <small style="color: rgba(255,255,255,0.7);">Always here to help you</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">$50M+</div>
-                    <div class="stat-label">Total Invested</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">15K+</div>
-                    <div class="stat-label">Active Users</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">98%</div>
-                    <div class="stat-label">Satisfaction</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">24/7</div>
-                    <div class="stat-label">Support</div>
-                </div>
-            </div>
-        </div>
+<div class="login-page">
+  <div class="login-container">
+    <!-- Mobile App Header (visible only on mobile) -->
+    <div class="mobile-app-header">
+      <div class="mobile-header-logo">
+        <img src="{% static 'images/pwa/icon-192x192.png' %}" alt="{{ site_name }}">
+      </div>
+      <div class="app-bank-name">{{ site_name }}</div>
+      <div class="app-tagline">Secure Online Banking</div>
     </div>
 
-    <!-- Right Side - Form -->
-    <div class="col-lg-6 auth-form-side p-4 p-lg-5">
-        <div class="form-card">
-            <!-- Mobile Logo -->
-            <div class="text-center d-lg-none mb-4">
-                <a href="{% url 'accounts:login' %}">
-                    <img src="{% static 'images/logo-dark.png' %}" alt="Logo" style="height: 45px;">
-                </a>
-            </div>
+    <div class="login-card">
+      <!-- Desktop Logo (hidden on mobile) -->
+      <div class="login-logo">
+        <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}">
+      </div>
 
-            <div class="glass-card">
-                <!-- Title -->
-                <h1 class="h2 mb-2 fw-bold">
-                    Sign In
-                </h1>
-                <p class="text-secondary mb-4">
-                    Enter your credentials to access your account.
-                </p>
+      <div class="login-header">
+        <h2>Welcome Back</h2>
+        <p>Sign in to access your account</p>
+      </div>
 
-                <!-- Form -->
-                <form method="POST" action="{% url 'accounts:login' %}">
-                    {% csrf_token %}
 
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
-                            {% endfor %}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endif %}
-
-                    <div class="mb-4">
-                        <label class="form-label fw-medium">Username or Email</label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text"><i class="bi bi-person"></i></span>
-                            <input type="text" name="username" value="{{ form.username.value|default:'' }}"
-                                class="form-control {% if form.username.errors %}is-invalid{% endif %}"
-                                placeholder="Enter your username or email" required>
-                        </div>
-                        {% if form.username.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.username.errors %}{{ error }}{% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label class="form-label fw-medium mb-0">Password</label>
-                            <a href="{% url 'accounts:forgot_password' %}" class="small text-primary fw-medium">Forgot password?</a>
-                        </div>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                            <input type="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}"
-                                autocomplete="off" data-toggle-password-input
-                                placeholder="Enter your password" name="password" required>
-                            <button type="button" class="input-group-text px-3"
-                                data-toggle-password></button>
-                        </div>
-                        {% if form.password.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.password.errors %}{{ error }}{% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-check mb-4">
-                        <input type="checkbox" class="form-check-input" name="remember" id="remember">
-                        <label class="form-check-label" for="remember">
-                            Keep me signed in
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-4">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
-                    </button>
-
-                    <div class="text-center">
-                        <span class="text-muted">Don't have an account?</span>
-                        <a href="{% url 'accounts:register' %}" class="fw-semibold text-primary ms-1">Create Account</a>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Footer Links -->
-            <div class="mt-4 text-center">
-                <small class="text-muted">
-                    <a href="#" class="text-muted me-3">Privacy Policy</a>
-                    <a href="#" class="text-muted me-3">Terms of Service</a>
-                    <a href="#" class="text-muted">Support</a>
-                </small>
-            </div>
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST" id="loginForm">
+        {% csrf_token %}
+
+        <!-- Desktop: floating labels, Mobile: input-group with icons -->
+        <div class="input-icon-wrapper">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+            <input type="text" name="username" class="form-control" id="username"
+                   placeholder="Username or email" required autocomplete="username"
+                   value="{{ request.POST.username|default:'' }}">
+          </div>
+        </div>
+
+        <div class="input-icon-wrapper">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+            <input type="password" name="password" class="form-control" id="password"
+                   placeholder="Password" required autocomplete="current-password">
+            <button type="button" class="input-group-text password-toggle-mobile"
+                    onclick="togglePasswordVisibility('password', this)">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-check mb-4">
+          <input type="checkbox" name="remember_me" class="form-check-input" id="rememberUser">
+          <label class="form-check-label" for="rememberUser">
+            Keep me signed in
+          </label>
+        </div>
+
+        <button type="submit" class="btn login-btn w-100" id="loginBtn">
+          <span class="btn-text">
+            <i class="bi bi-shield-lock-fill me-2"></i>
+            Secure Sign In
+          </span>
+          <span class="btn-loading d-none">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Signing in...
+          </span>
+        </button>
+      </form>
+
+      <div class="login-links">
+        <a href="{% url 'accounts:forgot_password' %}"><i class="bi bi-key-fill me-1"></i> Forgot Password?</a>
+        <span class="link-separator d-none d-md-inline">|</span>
+        <a href="{% url 'accounts:register' %}"><i class="bi bi-person-plus-fill me-1"></i> Open an Account</a>
+      </div>
+
+      <div class="copyright">
+        &copy; {% now "Y" %} {{ site_name }}. All rights reserved.
+      </div>
     </div>
+
+    <div class="back-to-home">
+      <a href="{{ frontend_url }}/">
+        <i class="bi bi-arrow-left-circle me-1"></i> Back to Home
+      </a>
+    </div>
+  </div>
 </div>
-{% endblock %}
+
+<script>
+  // Password visibility toggle function
+  function togglePasswordVisibility(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.remove('bi-eye');
+      icon.classList.add('bi-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.remove('bi-eye-slash');
+      icon.classList.add('bi-eye');
+    }
+  }
+
+  // Detect PWA/Standalone mode and apply class
+  (function() {
+    // Check if running as PWA (standalone mode)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                         window.navigator.standalone ||
+                         document.referrer.includes('android-app_/index.html');
+
+    if (isStandalone) {
+      document.documentElement.classList.add('pwa-mode');
+    }
+  })();
+
+  // Remember username functionality and loading indicator
+  document.addEventListener('DOMContentLoaded', function() {
+    const rememberCheckbox = document.getElementById('rememberUser');
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const btnText = loginBtn.querySelector('.btn-text');
+    const btnLoading = loginBtn.querySelector('.btn-loading');
+
+    // Get both mobile and desktop inputs
+    const mobileUsername = document.getElementById('username');
+    const mobilePassword = document.getElementById('password');
+    const desktopUsername = document.getElementById('usernameDesktop');
+    const desktopPassword = document.getElementById('passwordDesktop');
+
+    // Function to check if mobile view is active
+    function isMobileView() {
+      return window.innerWidth < 768;
+    }
+
+    // Function to disable hidden inputs (prevents required validation on hidden fields)
+    function updateInputStates() {
+      const mobile = isMobileView();
+      // Disable the hidden set of inputs so they don't block form submission
+      if (mobileUsername) mobileUsername.disabled = !mobile;
+      if (mobilePassword) mobilePassword.disabled = !mobile;
+      if (desktopUsername) desktopUsername.disabled = mobile;
+      if (desktopPassword) desktopPassword.disabled = mobile;
+    }
+
+    // Run on page load and window resize
+    updateInputStates();
+    window.addEventListener('resize', updateInputStates);
+
+    // Load saved username on page load
+    const savedUsername = localStorage.getItem('rememberedUsername');
+    if (savedUsername) {
+      // Set on both mobile and desktop inputs
+      if (mobileUsername) mobileUsername.value = savedUsername;
+      if (desktopUsername) desktopUsername.value = savedUsername;
+      rememberCheckbox.checked = true;
+    }
+
+    // Save username and show loading when form is submitted
+    loginForm.addEventListener('submit', function() {
+      // Get the visible username input value
+      const currentUsername = isMobileView()
+        ? (mobileUsername ? mobileUsername.value : '')
+        : (desktopUsername ? desktopUsername.value : '');
+
+      if (rememberCheckbox.checked) {
+        localStorage.setItem('rememberedUsername', currentUsername);
+      } else {
+        localStorage.removeItem('rememberedUsername');
+      }
+
+      // Show loading indicator
+      btnText.classList.add('d-none');
+      btnLoading.classList.remove('d-none');
+      loginBtn.disabled = true;
+    });
+
+    // Clear saved username when unchecked
+    rememberCheckbox.addEventListener('change', function() {
+      if (!this.checked) {
+        localStorage.removeItem('rememberedUsername');
+      }
+    });
+  });
+</script>
+
+<!-- Bootstrap JS -->
+<script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>
