@@ -1,1 +1,105 @@
-{"name": "StoneBridge Capitals", "short_name": "StoneBridge Capitals", "description": "Secure online banking with StoneBridge Capitals. Manage your accounts, transfer funds, pay bills, and more.", "start_url": "/login/", "scope": "/", "display": "standalone", "background_color": "#ffffff", "theme_color": "#1a3c34", "orientation": "portrait-primary", "icons": [{"src": "/static/images/pwa/icon-72x72.png", "sizes": "72x72", "type": "image/png", "purpose": "any maskable"}, {"src": "/static/images/pwa/icon-96x96.png", "sizes": "96x96", "type": "image/png", "purpose": "any maskable"}, {"src": "/static/images/pwa/icon-128x128.png", "sizes": "128x128", "type": "image/png", "purpose": "any maskable"}, {"src": "/static/images/pwa/icon-144x144.png", "sizes": "144x144", "type": "image/png", "purpose": "any maskable"}, {"src": "/static/images/pwa/icon-152x152.png", "sizes": "152x152", "type": "image/png", "purpose": "any maskable"}, {"src": "/static/images/pwa/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"}, {"src": "/static/images/pwa/icon-384x384.png", "sizes": "384x384", "type": "image/png", "purpose": "any maskable"}, {"src": "/static/images/pwa/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}], "categories": ["finance", "business"], "shortcuts": [{"name": "Dashboard", "short_name": "Dashboard", "description": "Go to your account dashboard", "url": "/users/dashboard/", "icons": [{"src": "/static/images/pwa/icon-96x96.png", "sizes": "96x96"}]}, {"name": "Transfer Funds", "short_name": "Transfer", "description": "Transfer money between accounts", "url": "/users/transfer/", "icons": [{"src": "/static/images/pwa/icon-96x96.png", "sizes": "96x96"}]}, {"name": "Pay Bills", "short_name": "Bill Pay", "description": "Pay your bills online", "url": "/users/bill-pay/", "icons": [{"src": "/static/images/pwa/icon-96x96.png", "sizes": "96x96"}]}], "related_applications": [], "prefer_related_applications": false}
+{
+  "name": "Grenville Capitals",
+  "short_name": "Grenville Capitals",
+  "description": "Grenville Capitals online banking — view balances, move money, pay bills and manage cards from one secure account.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#12325a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/static/images/pwa/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/pwa/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/pwa/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/pwa/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/pwa/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/pwa/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/pwa/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/pwa/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "finance",
+    "business"
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Go to your account dashboard",
+      "url": "/users/dashboard/",
+      "icons": [
+        {
+          "src": "/static/images/pwa/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Transfer Funds",
+      "short_name": "Transfer",
+      "description": "Transfer money between accounts",
+      "url": "/users/transfer/",
+      "icons": [
+        {
+          "src": "/static/images/pwa/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Pay Bills",
+      "short_name": "Bill Pay",
+      "description": "Pay your bills online",
+      "url": "/users/bill-pay/",
+      "icons": [
+        {
+          "src": "/static/images/pwa/icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

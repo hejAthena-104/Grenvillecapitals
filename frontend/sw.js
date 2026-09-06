@@ -1,22 +1,19 @@
 
-// Service Worker for StoneBridge Capitals PWA
-const CACHE_NAME = 'banking-pwa-v1';
+// Service Worker for Grenville Capitals PWA
+const CACHE_NAME = 'grenville-pwa-v1';
 const OFFLINE_URL = '/offline/';
 
 // Assets to cache on install
 const ASSETS_TO_CACHE = [
     '/',
-    '/login/',
     '/offline/',
     '/static/css/style.css',
-    '/static/css/bootstrap.css',
     '/static/js/bootstrap.bundle.min.js',
     '/static/images/logo.png',
     '/static/images/pwa/icon-192x192.png',
     '/static/images/pwa/icon-512x512.png',
     '/static/fonts/icomoon/style.css',
-    'https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=swap',
-    'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css'
+    '/static/vendor/bootstrap-icons/bootstrap-icons.css'
 ];
 
 // Install event - cache essential assets
@@ -136,7 +133,7 @@ self.addEventListener('push', (event) => {
     console.log('[ServiceWorker] Push received');
 
     let data = {};
-    let title = 'StoneBridge Capitals';
+    let title = 'Grenville Capitals';
     let options = {
         body: 'You have a new notification',
         icon: '/static/images/pwa/icon-192x192.png',
@@ -153,7 +150,7 @@ self.addEventListener('push', (event) => {
         try {
             // Try to parse as JSON
             data = event.data.json();
-            title = data.title || 'StoneBridge Capitals';
+            title = data.title || 'Grenville Capitals';
             options.body = data.body || options.body;
             options.icon = data.icon || options.icon;
             options.badge = data.badge || options.badge;
