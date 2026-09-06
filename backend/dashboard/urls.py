@@ -49,6 +49,7 @@ urlpatterns = [
     path('set-pin/', views.set_transaction_pin, name='set_transaction_pin'),
 
     # Support
+    path('kyc/', views.kyc, name='kyc'),
     path('support/', views.support, name='support'),
 
     # Internal transfer (user-to-user) kept for compatibility

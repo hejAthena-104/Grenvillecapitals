@@ -1,7 +1,8 @@
+from django.utils.html import format_html
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
-from .models import EmailOTP, User, LoginHistory, Notification
+from .models import EmailOTP, KYCProfile, User, LoginHistory, Notification
 
 # Remove the default Django "Groups" model from the admin — this platform does not
 # use group-based permissions, so it is just clutter.
@@ -160,3 +161,33 @@ class EmailOTPAdmin(admin.ModelAdmin):
     list_filter = ('purpose', 'is_used', 'created_at')
     search_fields = ('user__username', 'user__email')
     readonly_fields = ('code', 'created_at', 'expires_at', 'attempts')
+
+
+@admin.register(KYCProfile)
+class KYCProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'status', 'id_type', 'submitted_at', 'updated_at')
+    list_filter = ('status', 'id_type', 'employment_status')
+    search_fields = ('user__username', 'user__email', 'id_number', 'tax_id')
+    readonly_fields = ('created_at', 'updated_at', 'submitted_at', 'id_document_preview')
+    fieldsets = (
+        ('Account', {'fields': ('user', 'status', 'admin_note')}),
+        ('Personal', {'fields': ('middle_name', 'date_of_birth', 'gender',
+                                 'country_of_citizenship', 'citizenship_status')}),
+        ('Tax', {'fields': ('tax_id_type', 'tax_id')}),
+        ('Address', {'fields': ('address', 'city', 'state', 'zipcode', 'country')}),
+        ('Employment', {'fields': ('employment_status', 'employer', 'job_title',
+                                   'years_employed', 'employer_phone', 'annual_income',
+                                   'source_of_income')}),
+        ('Identity document', {'fields': ('id_type', 'id_number', 'id_state',
+                                          'id_issue_date', 'id_expiry_date',
+                                          'id_document', 'id_document_preview')}),
+        ('Security question', {'fields': ('security_question', 'security_answer')}),
+        ('Timestamps', {'fields': ('submitted_at', 'processed_at', 'created_at', 'updated_at')}),
+    )
+
+    @admin.display(description='Uploaded document')
+    def id_document_preview(self, obj):
+        if not obj.id_document:
+            return 'No document uploaded'
+        return format_html('<a href="{}" target="_blank" rel="noopener">Open document</a>',
+                           obj.id_document.url)

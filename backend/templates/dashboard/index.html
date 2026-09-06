@@ -261,6 +261,23 @@
             </div>
         </header>
 
+        {% if not user.kyc or user.kyc.status == 'incomplete' or user.kyc.status == 'rejected' %}
+        <div class="container-fluid">
+            <div class="alert d-flex align-items-center justify-content-between flex-wrap gap-2"
+                 style="background:#eef3f9; border:1px solid #d7e0ec; color:#0a1526;">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-person-vcard me-2" style="font-size:1.3rem; color:#12325a;"></i>
+                    <div>
+                        <strong>Finish setting up your account.</strong>
+                        We still need a few details to verify your identity.
+                    </div>
+                </div>
+                <a href="{% url 'dashboard:kyc' %}" class="btn btn-sm btn-primary">Complete your profile</a>
+            </div>
+        </div>
+        {% endif %}
+
+
         <div class="container-fluid mb-5">
             <!-- Welcome Banner -->
             <div class="welcome-banner mb-4">

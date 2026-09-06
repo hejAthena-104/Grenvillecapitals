@@ -108,6 +108,16 @@
                     <hr>
                 </li>
                 <li class="nav-item">
+                    <a href="{% url 'dashboard:kyc' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'kyc' %}active{% endif %}">
+                        <i class="bi bi-person-vcard nav-link-icon fs-3"></i>
+                        <span>Verify Identity</span>
+                        {% if user.kyc.status != 'approved' %}
+                        <span class="badge bg-warning text-dark ms-auto">!</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{% url 'dashboard:support' %}"
                        class="nav-link {% if request.resolver_match.url_name == 'support' %}active{% endif %}">
                         <i class="bi bi-info-circle-fill nav-link-icon fs-3"></i>

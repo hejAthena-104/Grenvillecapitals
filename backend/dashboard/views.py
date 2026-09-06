@@ -3,14 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models import Sum, Q, Count
-from django.db import transaction
+from django.db import transaction, transaction as db_transaction
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 from decimal import Decimal, InvalidOperation
+import logging
 import random
 import string
 
-from accounts.models import User, Notification, EmailOTP
+from accounts.models import User, Notification, EmailOTP, KYCProfile
 from transactions.models import (
     Transaction, Deposit, Withdrawal, Transfer, PaymentMethod,
     SwapRate, Swap, Beneficiary, ExternalTransfer,
@@ -18,6 +19,8 @@ from transactions.models import (
 from services.models import LoanApplication, GrantApplication, CardApplication, Card
 from support.models import SupportTicket, EmailLog
 from accounts.email_utils import EmailService
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -991,3 +994,103 @@ def set_transaction_pin(request):
             request.user.save()
             messages.success(request, 'Transaction PIN saved.')
     return redirect('dashboard:account_settings')
+
+
+# --- KYC (stage two of registration) ---------------------------------------
+
+KYC_TEXT_FIELDS = (
+    'middlename:middle_name', 'gender:gender',
+    'country_of_citizenship:country_of_citizenship', 'citizenship:citizenship_status',
+    'id_type_tax:tax_id_type', 'tax_id:tax_id',
+    'address:address', 'city:city', 'state:state', 'zipcode:zipcode', 'country:country',
+    'employment_status:employment_status', 'employer:employer', 'job_title:job_title',
+    'years_employed:years_employed', 'employer_phone:employer_phone',
+    'annual_income:annual_income', 'source_of_income:source_of_income',
+    'id_type:id_type', 'id_number:id_number', 'id_state:id_state',
+    'security_question:security_question', 'security_answer:security_answer',
+)
+KYC_DATE_FIELDS = ('dob:date_of_birth', 'id_issue_date:id_issue_date',
+                   'id_expiry_date:id_expiry_date')
+MAX_ID_UPLOAD = 5 * 1024 * 1024
+
+
+def _parse_date(raw):
+    """The scraped inputs use MM/DD/YYYY; browsers may send ISO."""
+    raw = (raw or '').strip()
+    for fmt in ('%m/%d/%Y', '%Y-%m-%d', '%d/%m/%Y'):
+        try:
+            return datetime.strptime(raw, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+@login_required
+def kyc(request):
+    profile, _ = KYCProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        if profile.status == 'approved':
+            messages.info(request, 'Your identity is already verified.')
+            return redirect('dashboard:kyc')
+
+        for pair in KYC_TEXT_FIELDS:
+            post_name, attr = pair.split(':')
+            value = (request.POST.get(post_name) or '').strip()
+            if value:
+                setattr(profile, attr, value)
+
+        for pair in KYC_DATE_FIELDS:
+            post_name, attr = pair.split(':')
+            parsed = _parse_date(request.POST.get(post_name))
+            if parsed:
+                setattr(profile, attr, parsed)
+
+        upload = request.FILES.get('id_document')
+        if upload:
+            if upload.size > MAX_ID_UPLOAD:
+                messages.error(request, 'That file is larger than 5 MB. Please upload a smaller one.')
+                return redirect('dashboard:kyc')
+            try:
+                with db_transaction.atomic():
+                    profile.id_document = upload
+                    profile.save()
+            except OSError:
+                # Media volume unwritable: fail loudly rather than half-saving.
+                logger.exception('KYC upload failed for user %s', request.user.pk)
+                messages.error(
+                    request,
+                    'We could not store your document just now. Please try again shortly.'
+                )
+                return redirect('dashboard:kyc')
+
+        action = request.POST.get('action', 'save')
+        if action == 'submit':
+            missing = profile.missing_fields
+            if missing or not profile.id_document:
+                if not profile.id_document:
+                    missing = list(missing) + ['id_document']
+                pretty = ', '.join(m.replace('_', ' ') for m in missing)
+                messages.error(request, f'Please complete these before submitting: {pretty}.')
+                profile.save()
+                return redirect('dashboard:kyc')
+            profile.status = 'pending'
+            profile.submitted_at = timezone.now()
+            profile.save()
+            Notification.objects.create(
+                user=request.user,
+                title='Identity verification submitted',
+                message='Your details are with our team for review.',
+                type='info',
+            )
+            messages.success(request, 'Thanks — your details are with our team for review.')
+        else:
+            profile.save()
+            messages.success(request, 'Saved. You can finish this any time.')
+
+        return redirect('dashboard:kyc')
+
+    return render(request, 'dashboard/kyc.html', {
+        'user': request.user,
+        'kyc': profile,
+    })

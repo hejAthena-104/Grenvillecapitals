@@ -142,7 +142,7 @@
     </script>
 
     <!-- Page Title -->
-    <title>Account Transactions History | {{ site_name }}</title>
+    <title>Complete your profile | {{ site_name }}</title>
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
     <!-- Livewire Styles -->
 <style >
@@ -320,7 +320,7 @@
                     <div>
     </div>
 
-<!-- Livewire Component wire-end:y6nvMr3KgSD8dK1f3ujz -->                </a>
+<!-- Livewire Component wire-end:Z9Ir4uPXS0jx85STEPs2 -->                </a>
 
                 <!-- Notifications offcanvas -->
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotifications"
@@ -342,7 +342,7 @@
             <p class="text-secondary">There are no new notifications</p>
         </div>
     </div>
-<!-- Livewire Component wire-end:5aLRdk6cbj8cCNpTEyfW -->                        </div>
+<!-- Livewire Component wire-end:Vki7xZf1FtI4h1OqmQVU -->                        </div>
                     </div>
                 </div>
                 <!-- Separator -->
@@ -401,138 +401,305 @@
         </header>
 
         <div class="container-fluid mb-5">
-                <div>
-    <div>
-        <div>
-    <!-- Title -->
-    <h1 class="h2 m-0">
-        Account transactions history
-    </h1>
-    <p class="m-0">All your transaction history in one place.</p>
-</div>
+            <h1 class="h2 mb-1">Complete your profile</h1>
+            <p class="text-muted mb-4">
+                We need a few more details to verify your identity before your account is
+                fully enabled. Your information is encrypted and only used for verification.
+            </p>
 
-<div class="row mt-5">
-    <div class="col-6 col-lg-3">
-        <!-- Card -->
-        <a href="{% url 'dashboard:accounthistory' %}">
-            <div class="card border-0 bg-primary text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex flex-column">
-                            <h3 class="card-title h4 mb-0">Deposits</h3>
-                                                            <span class="fs-6 text-dark">0 records</span>
-                                                    </div>
-
-                        <div class="avatar avatar-circle avatar-xs me-2">
-                            <i class="bi bi-wallet-fill fs-3"></i>
-                        </div>
-                    </div>
-                </div>
+            {% if kyc.status == 'pending' %}
+            <div class="alert alert-info d-flex align-items-center">
+                <i class="bi bi-hourglass-split me-2"></i>
+                <div>Your details are with our team for review. We'll email you when it's done.</div>
             </div>
-        </a>
-    </div>
-    <div class="col-6 col-lg-3">
-        <!-- Card -->
-        <a href="{% url 'dashboard:withdrawal_history' %}">
-            <div class="card border-0">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex flex-column">
-                            <h3 class="card-title h4 mb-0">Withdrawals</h3>
-                                                    </div>
-
-                        <div class="avatar avatar-circle avatar-xs me-2">
-                            <i class="bi bi-graph-down fs-3"></i>
-                        </div>
-                    </div>
-                </div>
+            {% elif kyc.status == 'approved' %}
+            <div class="alert alert-success d-flex align-items-center">
+                <i class="bi bi-patch-check-fill me-2"></i>
+                <div>Your identity is verified. Nothing further is needed.</div>
             </div>
-        </a>
-    </div>
-            
-        <div class="col-6 col-lg-3">
-        <!-- Card -->
-        <a href="{% url 'dashboard:other_history' %}">
-            <div class="card border-0">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex flex-column">
-                            <h3 class="card-title h4 mb-0">Others</h3>
-                                                    </div>
-
-                        <div class="avatar avatar-circle avatar-xs me-2">
-                            <i class="bi bi-hourglass fs-3"></i>
-                        </div>
-                    </div>
-                </div>
+            {% elif kyc.status == 'rejected' %}
+            <div class="alert alert-danger">
+                <strong>We couldn't verify these details.</strong>
+                {% if kyc.admin_note %}<div class="mt-1">{{ kyc.admin_note }}</div>{% endif %}
+                <div class="mt-1">Please correct them below and resubmit.</div>
             </div>
-        </a>
-    </div>
+            {% endif %}
 
-</div>
-    </div>
-    <div>
-    </div>
-    <div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Deposit history</h5>
-                    <div class="table-responsive">
-                        <table class="table text-center">
-                            <thead>
-                                <tr>
-                                    <th>Amount</th>
-                                    <th>Payment mode</th>
-                                    <th>Status</th>
-                                    <th>Date created</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for txn in transactions %}
-                                    {% if txn.type == 'deposit' %}
-                                    <tr>
-                                        <td>${{ txn.amount }}</td>
-                                        <td>{{ txn.payment_method|default:"N/A" }}</td>
-                                        <td>
-                                            <span class="badge
-                                                {% if txn.status == 'approved' %}bg-success
-                                                {% elif txn.status == 'pending' %}bg-warning
-                                                {% elif txn.status == 'rejected' %}bg-danger
-                                                {% else %}bg-secondary{% endif %}">
-                                                {{ txn.status|title }}
-                                            </span>
-                                        </td>
-                                        <td>{{ txn.created_at|date:"M d, Y H:i" }}</td>
-                                    </tr>
-                                    {% endif %}
-                                {% empty %}
-                                    <tr>
-                                        <td class="py-5" colspan="4">
-                                            <i class="bi bi-database-fill-exclamation" style="font-size: 50px"></i>
-                                            <h5>No deposit history</h5>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        <div>
-                            <div>
-    </div>
+            <form method="POST" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
 
-                        </div>
-                    </div>
+        <div class="card mb-4">
+            <div class="card-header bg-transparent d-flex align-items-center">
+                <i class="bi bi-person-vcard me-2" style="color:#12325a; font-size:1.15rem;"></i>
+                <h5 class="mb-0">Personal details</h5>
+            </div>
+            <div class="card-body">
+                
+                <div class="row">
+<div class="form-group">
+              <label class="form-label" for="middlename">Middle Name (Optional)</label>
+              <input type="text" name="middlename" class="form-control" id="middlename" placeholder="Enter middle name">
+            </div>
+<div class="form-group">
+                <label class="form-label" for="dob">Date of Birth</label>
+                <input type="text" name="dob" class="form-control" id="dob" placeholder="MM/DD/YYYY" maxlength="10" required>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="gender">Gender</label>
+                <select name="gender" class="form-select" id="gender" required>
+                  <option value="" selected disabled>Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Prefer not to say</option>
+                </select>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="country_of_citizenship">Country of Citizenship</label>
+                <select name="country_of_citizenship" class="form-select" id="country_of_citizenship" required>
+                  <option value="" selected disabled>Select country</option>
+                  <option value="United States">United States</option>
+                  <option value="Canada">Canada</option>
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="Australia">Australia</option>
+                  <option value="Germany">Germany</option>
+                  <option value="France">France</option>
+                  <option value="India">India</option>
+                  <option value="Nigeria">Nigeria</option>
+                  <option value="South Africa">South Africa</option>
+                  <option value="Brazil">Brazil</option>
+                  <option value="Mexico">Mexico</option>
+                  <option value="Japan">Japan</option>
+                  <option value="China">China</option>
+                  <option value="Philippines">Philippines</option>
+                  <option value="Pakistan">Pakistan</option>
+                  <option value="Bangladesh">Bangladesh</option>
+                  <option value="Italy">Italy</option>
+                  <option value="Spain">Spain</option>
+                  <option value="Netherlands">Netherlands</option>
+                  <option value="Switzerland">Switzerland</option>
+                  <option value="United Arab Emirates">United Arab Emirates</option>
+                  <option value="Saudi Arabia">Saudi Arabia</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Malaysia">Malaysia</option>
+                  <option value="Indonesia">Indonesia</option>
+                  <option value="Kenya">Kenya</option>
+                  <option value="Ghana">Ghana</option>
+                  <option value="Egypt">Egypt</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="citizenship">Residency Status</label>
+                <select name="citizenship" class="form-select" id="citizenship" required>
+                  <option value="" selected disabled>Select status</option>
+                  <option value="Citizen">Citizen</option>
+                  <option value="Permanent Resident">Permanent Resident</option>
+                  <option value="Non-Resident">Non-Resident</option>
+                </select>
+              </div>
+<div class="form-group">
+              <label class="form-label" for="id_type_tax">National ID Type</label>
+              <select name="id_type_tax" class="form-select" id="id_type_tax" required>
+                <option value="" selected disabled>Select ID type</option>
+                <option value="SSN">Social Security Number (SSN)</option>
+                <option value="NIN">National Insurance Number (NIN)</option>
+                <option value="SIN">Social Insurance Number (SIN)</option>
+                <option value="TFN">Tax File Number (TFN)</option>
+                <option value="NID">National ID Number (NID)</option>
+                <option value="PAN">Permanent Account Number (PAN)</option>
+                <option value="CPF">CPF Number</option>
+                <option value="CURP">CURP</option>
+                <option value="Other">Other National ID</option>
+              </select>
+            </div>
+<div class="form-group">
+              <label class="form-label" for="tax_id" id="tax_id_label">National ID Number</label>
+              <input type="text" name="tax_id" class="form-control" id="tax_id" placeholder="Enter your national ID number" maxlength="20" required>
+            </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Livewire Component wire-end:Gi3Ovf8aLkB8wpVp2ODL -->        </div>
+        <div class="card mb-4">
+            <div class="card-header bg-transparent d-flex align-items-center">
+                <i class="bi bi-geo-alt me-2" style="color:#12325a; font-size:1.15rem;"></i>
+                <h5 class="mb-0">Residential address</h5>
+            </div>
+            <div class="card-body">
+                
+                <div class="row">
+<div class="form-group">
+              <label class="form-label" for="address">Street Address</label>
+              <input type="text" name="address" class="form-control" id="address" placeholder="Enter street address" required>
+            </div>
+<div class="form-group">
+                <label class="form-label" for="city">City</label>
+                <input type="text" name="city" class="form-control" id="city" placeholder="Enter city" required>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="state">State/Province</label>
+                <input type="text" name="state" class="form-control" id="state" placeholder="Enter state" required>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="zipcode">ZIP/Postal Code</label>
+                <input type="text" name="zipcode" class="form-control" id="zipcode" placeholder="Enter ZIP code" required>
+              </div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Footer -->
+        <div class="card mb-4">
+            <div class="card-header bg-transparent d-flex align-items-center">
+                <i class="bi bi-briefcase me-2" style="color:#12325a; font-size:1.15rem;"></i>
+                <h5 class="mb-0">Employment</h5>
+            </div>
+            <div class="card-body">
+                
+                <div class="row">
+<div class="form-group">
+              <label class="form-label" for="employment_status">Employment Status</label>
+              <select name="employment_status" class="form-select" id="employment_status" required>
+                <option value="" selected disabled>Select status</option>
+                <option value="Employed">Employed</option>
+                <option value="Self-Employed">Self-Employed</option>
+                <option value="Unemployed">Unemployed</option>
+                <option value="Retired">Retired</option>
+                <option value="Student">Student</option>
+                <option value="Homemaker">Homemaker</option>
+              </select>
+            </div>
+<div class="form-group" id="employerNameField">
+                <label class="form-label" for="employer">Employer Name</label>
+                <input type="text" name="employer" class="form-control" id="employer" placeholder="Enter employer name">
+              </div>
+<div class="form-group">
+                <label class="form-label" for="job_title">Job Title/Occupation</label>
+                <input type="text" name="job_title" class="form-control" id="job_title" placeholder="Enter job title">
+              </div>
+<div class="form-group">
+                  <label class="form-label" for="years_employed">Years at Current Job</label>
+                  <select name="years_employed" class="form-select" id="years_employed">
+                    <option value="" selected disabled>Select years</option>
+                    <option value="Less than 1 year">Less than 1 year</option>
+                    <option value="1-2 years">1-2 years</option>
+                    <option value="3-5 years">3-5 years</option>
+                    <option value="5-10 years">5-10 years</option>
+                    <option value="10+ years">10+ years</option>
+                  </select>
+                </div>
+<div class="form-group" id="employerPhoneField">
+                  <label class="form-label" for="employer_phone">Employer Phone (Optional)</label>
+                  <input type="text" name="employer_phone" class="form-control" id="employer_phone" placeholder="Enter phone number">
+                </div>
+<div class="form-group">
+                <label class="form-label" for="annual_income">Annual Income</label>
+                <select name="annual_income" class="form-select" id="annual_income" required>
+                  <option value="" selected disabled>Select income range</option>
+                  <option value="Under $25,000">Under $25,000</option>
+                  <option value="$25,000 - $49,999">$25,000 - $49,999</option>
+                  <option value="$50,000 - $74,999">$50,000 - $74,999</option>
+                  <option value="$75,000 - $99,999">$75,000 - $99,999</option>
+                  <option value="$100,000 - $149,999">$100,000 - $149,999</option>
+                  <option value="$150,000 - $249,999">$150,000 - $249,999</option>
+                  <option value="$250,000+">$250,000+</option>
+                </select>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="source_of_income">Primary Source of Income</label>
+                <select name="source_of_income" class="form-select" id="source_of_income" required>
+                  <option value="" selected disabled>Select source</option>
+                  <option value="Employment">Employment</option>
+                  <option value="Self-Employment">Self-Employment</option>
+                  <option value="Investments">Investments</option>
+                  <option value="Crypto Trading">Crypto Trading</option>
+                  <option value="Retirement">Retirement/Pension</option>
+                  <option value="Social Security">Social Security</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-transparent d-flex align-items-center">
+                <i class="bi bi-card-image me-2" style="color:#12325a; font-size:1.15rem;"></i>
+                <h5 class="mb-0">Identity document</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">Upload a clear photo or scan. PNG, JPG or PDF, up to 5&nbsp;MB.</p>
+                <div class="row">
+<div class="form-group">
+              <label class="form-label" for="id_type">ID Document Type</label>
+              <select name="id_type" class="form-select" id="id_type" required>
+                <option value="" selected disabled>Select ID type</option>
+                <option value="Drivers License">Driver's License</option>
+                <option value="State ID">State ID Card</option>
+                <option value="Passport">Passport</option>
+                <option value="Military ID">Military ID</option>
+              </select>
+            </div>
+<div class="form-group">
+                <label class="form-label" for="id_number">ID Number</label>
+                <input type="text" name="id_number" class="form-control" id="id_number" placeholder="Enter ID number" required>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="id_state">Issuing State/Country</label>
+                <input type="text" name="id_state" class="form-control" id="id_state" placeholder="Enter state or country">
+              </div>
+<div class="form-group">
+                <label class="form-label" for="id_issue_date">Issue Date</label>
+                <input type="text" name="id_issue_date" class="form-control" id="id_issue_date" placeholder="MM/DD/YYYY" maxlength="10">
+              </div>
+<div class="form-group">
+                <label class="form-label" for="id_expiry_date">Expiration Date</label>
+                <input type="text" name="id_expiry_date" class="form-control" id="id_expiry_date" placeholder="MM/DD/YYYY" maxlength="10" required>
+              </div>
+<div class="form-group">
+                <label class="form-label" for="id_expiry_date">Expiration Date</label>
+                <input type="text" name="id_expiry_date" class="form-control" id="id_expiry_date" placeholder="MM/DD/YYYY" maxlength="10" required>
+              </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-transparent d-flex align-items-center">
+                <i class="bi bi-shield-lock me-2" style="color:#12325a; font-size:1.15rem;"></i>
+                <h5 class="mb-0">Security question</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">Used if you ever need to recover access to your account.</p>
+                <div class="row">
+<div class="form-group">
+              <label class="form-label" for="security_question">Security Question</label>
+              <select name="security_question" class="form-select" id="security_question" required>
+                <option value="" selected disabled>Select a question</option>
+                <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+                <option value="What city were you born in?">What city were you born in?</option>
+                <option value="What is your favorite movie?">What is your favorite movie?</option>
+                <option value="What was your childhood nickname?">What was your childhood nickname?</option>
+                <option value="What is the name of your favorite teacher?">What is the name of your favorite teacher?</option>
+              </select>
+            </div>
+<div class="form-group">
+              <label class="form-label" for="security_answer">Your Answer</label>
+              <input type="text" name="security_answer" class="form-control" id="security_answer" placeholder="Enter your answer" required>
+            </div>
+                </div>
+            </div>
+        </div>
+
+                <div class="d-flex gap-2 mb-5">
+                    <button type="submit" name="action" value="save"
+                            class="btn btn-outline-secondary">Save and finish later</button>
+                    <button type="submit" name="action" value="submit"
+                            class="btn btn-primary">Submit for review</button>
+                </div>
+            </form>
+        </div>
+
         <footer class="mt-auto">
             <div class="container-fluid mt-4 mb-6 text-muted">
                 <div class="row justify-content-between">
@@ -614,6 +781,28 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script>
+        // Payment method selection
+        function selectPaymentMethod(method) {
+            // Update hidden input
+            document.getElementById('paymethod').value = method;
+
+            // Update display text
+            document.getElementById('selectedMethodDisplay').textContent = method;
+
+            // Remove border from all cards
+            document.querySelectorAll('.payment-method-card').forEach(function(card) {
+                card.classList.remove('border', 'border-3', 'border-primary');
+            });
+
+            // Add border to selected card
+            var selectedCard = document.querySelector('.payment-method-card[data-method="' + method + '"]');
+            if (selectedCard) {
+                selectedCard.classList.add('border', 'border-3', 'border-primary');
+            }
+        }
+    </script>
     </body>
 
 </html>
