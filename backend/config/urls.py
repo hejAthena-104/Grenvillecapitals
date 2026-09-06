@@ -20,12 +20,28 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+def _admin_path():
+    """Resolve the admin mount point.
+
+    decouple returns '' for a var that is set but empty, so a bare `ADMIN_URL=`
+    in an env file would otherwise mount the whole admin at the site root — far
+    worse than the /admin/ this is meant to avoid. Empty, '/' and whitespace all
+    fall back to the local default, and the value is normalised to `something/`.
+    """
+    raw = (config('ADMIN_URL', default='') or '').strip().strip('/')
+    if not raw:
+        raw = 'admin-local-only'
+    return raw + '/'
+
+
+ADMIN_PATH = _admin_path()
+
 urlpatterns = [
     # The admin holds every customer's KYC documents and balances, and this host
     # is public, so it is not served at /admin/. The real path comes from
     # ADMIN_URL in .env.prod and is deliberately NOT in this repo — the default
     # below is only for local development.
-    path(config('ADMIN_URL', default='admin-local-only/'), admin.site.urls),
+    path(ADMIN_PATH, admin.site.urls),
 
     # Authentication URLs
     path('auth/', include('accounts.urls')),
