@@ -1,0 +1,110 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}Confirm your email | {{ site_name }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .otp-inputs { display:flex; gap:10px; justify-content:center; }
+    .otp-inputs input {
+        width:52px; height:62px; text-align:center;
+        font-size:26px; font-weight:700; color:#12325a;
+        border:1px solid #d7e0ec; border-radius:10px; background:#fff;
+        font-family:'SFMono-Regular',Consolas,Menlo,monospace;
+    }
+    .otp-inputs input:focus {
+        outline:none; border-color:#12325a; box-shadow:0 0 0 3px rgba(18,50,90,.12);
+    }
+    @media (max-width:420px){ .otp-inputs input{ width:42px; height:54px; font-size:21px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row align-items-center justify-content-center vh-100 py-5">
+    <div class="col-11 col-sm-8 col-md-6 col-lg-5 col-xl-4 col-xxl-3 py-6 shadow-sm">
+
+        <div class="text-center mb-5">
+            <a href="{% url 'accounts:login' %}">
+                <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}" class="w-50">
+            </a>
+        </div>
+
+        <div class="text-center mb-4">
+            <div class="rounded-circle d-inline-flex align-items-center justify-content-center"
+                 style="width:92px; height:92px; background:rgba(18,50,90,.08);">
+                <i class="bi bi-shield-lock" style="font-size:2.6rem; color:#12325a;"></i>
+            </div>
+        </div>
+
+        <h1 class="mb-2 text-center">Confirm your email</h1>
+        <p class="text-secondary text-center mb-4">
+            We sent a 6-digit code to<br><strong>{{ email }}</strong>
+        </p>
+
+        <form method="POST" novalidate id="otpForm">
+            {% csrf_token %}
+            <input type="hidden" name="code" id="codeField">
+
+            <div class="otp-inputs mb-4">
+                {% for i in "123456" %}
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+                           class="otp-digit" autocomplete="{% if forloop.first %}one-time-code{% else %}off{% endif %}"
+                           aria-label="Digit {{ forloop.counter }}"{% if forloop.first %} autofocus{% endif %}>
+                {% endfor %}
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-lg btn-primary">Verify and continue</button>
+            </div>
+        </form>
+
+        <p class="text-center text-secondary mb-1">
+            Didn't get it? Check your spam folder, or
+            <a href="{% url 'accounts:resend_verification' %}">send a new code</a>.
+        </p>
+        <p class="text-center text-secondary small mb-0">
+            The code expires 10 minutes after it is sent.
+        </p>
+
+        <hr class="my-4">
+        <p class="text-center mb-0">
+            <a href="{% url 'accounts:login' %}" class="text-secondary">Back to sign in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var digits = Array.prototype.slice.call(document.querySelectorAll('.otp-digit'));
+    var field  = document.getElementById('codeField');
+    var form   = document.getElementById('otpForm');
+
+    function collect() { return digits.map(function (d) { return d.value; }).join(''); }
+
+    digits.forEach(function (input, i) {
+        input.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 1);
+            if (this.value && i < digits.length - 1) { digits[i + 1].focus(); }
+            if (collect().length === digits.length) { field.value = collect(); }
+        });
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' && !this.value && i > 0) { digits[i - 1].focus(); }
+            if (e.key === 'ArrowLeft'  && i > 0) { digits[i - 1].focus(); }
+            if (e.key === 'ArrowRight' && i < digits.length - 1) { digits[i + 1].focus(); }
+        });
+        input.addEventListener('paste', function (e) {
+            var text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+            if (!text) { return; }
+            e.preventDefault();
+            digits.forEach(function (d, k) { d.value = text[k] || ''; });
+            field.value = collect();
+            digits[Math.min(text.length, digits.length) - 1].focus();
+        });
+    });
+
+    form.addEventListener('submit', function () { field.value = collect(); });
+})();
+</script>
+{% endblock %}

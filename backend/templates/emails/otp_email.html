@@ -1,0 +1,32 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>{{ headline }}</h2>
+
+<p>Hi {{ first_name }},</p>
+
+<p>{{ intro }}</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td align="center" style="padding:8px 0 4px;">
+            <div style="display:inline-block; background-color:#f4f7fb; border:1px solid #d7e0ec; border-radius:10px; padding:20px 34px;">
+                <span style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace; font-size:38px; font-weight:700; letter-spacing:11px; color:#12325a;">{{ code }}</span>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div class="info-box">
+    <p><strong>This code expires in {{ expires_minutes }} minutes.</strong></p>
+    <p style="margin-top:10px;">Never share it with anyone. {{ site_name }} will never ask you for this code by phone, text or email.</p>
+</div>
+
+<p>If you didn't request this, you can safely ignore this message &mdash; nothing has changed on your account.</p>
+
+<div class="divider"></div>
+
+<p style="font-size:14px; color:#718096;">
+    Need help? Contact us at <a href="mailto:{{ support_email }}" style="color:#12325a;">{{ support_email }}</a>.
+</p>
+{% endblock %}

@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-sidebar-behaviour="fixed" data-navigation-color="inverted" data-is-fluid="true">
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+    {% load static %}
+
+    <meta charset="utf-8">
+    <meta name="csrf-token" content="TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="Webinning" name="author">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.bundle.css' %}" id="stylesheetLTR">
+    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.rtl.bundle.css' %}" id="stylesheetRTL">
+    <link rel="stylesheet" href="{% static 'css/grenville-theme.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- no-JS fallback -->
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    </noscript>
+
+    <script>
+        // Add your client ID and secret
+        var PAYPAL_CLIENT = 'iidjdjdj';
+        var PAYPAL_SECRET = 'jijdjkdkdk';
+        // Point your server to the PayPal API
+        var PAYPAL_ORDER_API = 'https://api.paypal.com/v2/checkout/orders/';
+    </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=iidjdjdj"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script>
+        // Theme switcher
+        let themeSwitcher = document.getElementById('themeSwitcher');
+
+        const getPreferredTheme = () => {
+            if (localStorage.getItem('theme') != null) {
+                return localStorage.getItem('theme');
+            }
+
+            return document.documentElement.dataset.theme;
+        };
+
+        const setTheme = function(theme) {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                    'dark' : 'light';
+            } else {
+                document.documentElement.dataset.theme = theme;
+            }
+
+            localStorage.setItem('theme', theme);
+        };
+
+        const showActiveTheme = theme => {
+            const activeBtn = document.querySelector(`[data-theme-value="${theme}"]`);
+
+            document.querySelectorAll('[data-theme-value]').forEach(element => {
+                element.classList.remove('active');
+            });
+
+            activeBtn && activeBtn.classList.add('active');
+
+            // Set button if demo mode is enabled
+            document.querySelectorAll('[data-theme-control="theme"]').forEach(element => {
+                if (element.value == theme) {
+                    element.checked = true;
+                }
+            });
+        };
+
+        function reloadPage() {
+            window.location = window.location.pathname;
+        }
+
+
+        setTheme(getPreferredTheme());
+
+        if (typeof themeSwitcher != 'undefined') {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (localStorage.getItem('theme') != null) {
+                    if (localStorage.getItem('theme') == 'auto') {
+                        reloadPage();
+                    }
+                }
+            });
+
+            window.addEventListener('load', () => {
+                showActiveTheme(getPreferredTheme());
+
+                document.querySelectorAll('[data-theme-value]').forEach(element => {
+                    element.addEventListener('click', () => {
+                        const theme = element.getAttribute('data-theme-value');
+
+                        localStorage.setItem('theme', theme);
+                        reloadPage();
+                    })
+                })
+            });
+        }
+    </script>
+    <!-- Favicon -->
+        <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
+
+    <!-- Demo script -->
+    <script>
+        var themeConfig = {
+            theme: JSON.parse('"light"'),
+            isRTL: JSON.parse('false'),
+            isFluid: JSON.parse('true'),
+            sidebarBehaviour: JSON.parse('"fixed"'),
+            navigationColor: JSON.parse('"inverted"')
+        };
+
+        var isRTL = localStorage.getItem('isRTL') === 'true',
+            isFluid = localStorage.getItem('isFluid') === 'true',
+            theme = localStorage.getItem('theme'),
+            sidebarSizing = localStorage.getItem('sidebarSizing'),
+            linkLTR = document.getElementById('stylesheetLTR'),
+            linkRTL = document.getElementById('stylesheetRTL'),
+            html = document.documentElement;
+
+        if (isRTL) {
+            linkLTR.setAttribute('disabled', '');
+            linkRTL.removeAttribute('disabled');
+            html.setAttribute('dir', 'rtl');
+        } else {
+            linkRTL.setAttribute('disabled', '');
+            linkLTR.removeAttribute('disabled');
+            html.removeAttribute('dir');
+        }
+    </script>
+
+    <!-- Page Title -->
+    <title>Transfers | {{ site_name }}</title>
+        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
+    <!-- Livewire Styles -->
+<style >
+    [wire\:loading], [wire\:loading\.delay], [wire\:loading\.inline-block], [wire\:loading\.inline], [wire\:loading\.block], [wire\:loading\.flex], [wire\:loading\.table], [wire\:loading\.grid], [wire\:loading\.inline-flex] {
+        display: none;
+    }
+
+    [wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short], [wire\:loading\.delay\.long], [wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest] {
+        display:none;
+    }
+
+    [wire\:offline] {
+        display: none;
+    }
+
+    [wire\:dirty]:not(textarea):not(input):not(select) {
+        display: none;
+    }
+
+    input:-webkit-autofill, select:-webkit-autofill, textarea:-webkit-autofill {
+        animation-duration: 50000s;
+        animation-name: livewireautofill;
+    }
+
+    @keyframes livewireautofill { from {} }
+</style>
+    <style>
+        .transfer-tabs .nav-link.active {
+            color: #12325a;
+            border-color: #12325a #12325a #fff;
+            font-weight: 600;
+        }
+        .transfer-tabs .nav-link {
+            color: #6c757d;
+        }
+        .beneficiary-chip {
+            cursor: pointer;
+            border: 1px solid #e7eaf3;
+            border-radius: 999px;
+            padding: 0.4rem 0.9rem;
+            transition: all .15s ease-in-out;
+            white-space: nowrap;
+        }
+        .beneficiary-chip:hover, .beneficiary-chip.active {
+            border-color: #12325a;
+            background-color: rgba(18, 50, 90, 0.06);
+            color: #12325a;
+        }
+        .quick-amount-btn {
+            border: 1px solid #e7eaf3;
+        }
+        .method-card {
+            cursor: pointer;
+            border: 2px solid #e7eaf3;
+            transition: all .15s ease-in-out;
+            height: 100%;
+        }
+        .method-card:hover, .method-card.active {
+            border-color: #12325a;
+            box-shadow: 0 0.25rem 0.75rem rgba(18, 50, 90, 0.12);
+        }
+        .method-card .method-icon {
+            color: #12325a;
+        }
+        .balance-pill {
+            background: linear-gradient(135deg, #12325a 0%, #0e2a4c 100%);
+            color: #fff;
+            border-radius: 0.75rem;
+        }
+        .btn-primary {
+            background-color: #12325a;
+            border-color: #12325a;
+        }
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: #0e2a4c;
+            border-color: #0e2a4c;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Django Messages -->
+    {% include 'includes/messages.html' %}
+
+
+
+    <script>
+
+    </script>
+    <!-- THEME CONFIGURATION -->
+    <script>
+        let themeAttrs = document.documentElement.dataset;
+
+        for (let attr in themeAttrs) {
+            if (localStorage.getItem(attr) != null) {
+                document.documentElement.dataset[attr] = localStorage.getItem(attr);
+
+                if (theme === 'auto') {
+                    document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                        'dark' : 'light';
+
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        e.matches ? document.documentElement.dataset.theme = 'dark' : document.documentElement
+                            .dataset.theme = 'light';
+                    });
+                }
+            }
+        }
+    </script>
+    <!-- NAVIGATION -->
+    {% include "includes/sidebar.html" %}
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HEADER -->
+        <header class="container-fluid d-flex py-6 mb-4">
+            <!-- Top buttons -->
+            <div class="d-flex align-items-center ms-auto me-n1 me-lg-n2">
+
+                <!-- Dropdown -->
+                <div class="dropdown" id="themeSwitcher">
+                    <a href="javascript: void(0);"
+                        class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
+                        role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        data-bs-offset="0,0">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="18" width="18">
+                            <g>
+                                <path
+                                    d="M12,4.64A7.36,7.36,0,1,0,19.36,12,7.37,7.37,0,0,0,12,4.64Zm0,12.72A5.36,5.36,0,1,1,17.36,12,5.37,5.37,0,0,1,12,17.36Z"
+                                    style="fill: currentColor" />
+                                <path d="M12,3.47a1,1,0,0,0,1-1V1a1,1,0,0,0-2,0V2.47A1,1,0,0,0,12,3.47Z"
+                                    style="fill: currentColor" />
+                                <path
+                                    d="M4.55,6a1,1,0,0,0,.71.29A1,1,0,0,0,6,6,1,1,0,0,0,6,4.55l-1-1A1,1,0,0,0,3.51,4.93Z"
+                                    style="fill: currentColor" />
+                                <path d="M2.47,11H1a1,1,0,0,0,0,2H2.47a1,1,0,1,0,0-2Z" style="fill: currentColor" />
+                                <path
+                                    d="M4.55,18l-1,1a1,1,0,0,0,0,1.42,1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29l1-1A1,1,0,0,0,4.55,18Z"
+                                    style="fill: currentColor" />
+                                <path d="M12,20.53a1,1,0,0,0-1,1V23a1,1,0,0,0,2,0V21.53A1,1,0,0,0,12,20.53Z"
+                                    style="fill: currentColor" />
+                                <path
+                                    d="M19.45,18A1,1,0,0,0,18,19.45l1,1a1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z"
+                                    style="fill: currentColor" />
+                                <path d="M23,11H21.53a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z" style="fill: currentColor" />
+                                <path
+                                    d="M18.74,6.26A1,1,0,0,0,19.45,6l1-1a1,1,0,1,0-1.42-1.42l-1,1A1,1,0,0,0,18,6,1,1,0,0,0,18.74,6.26Z"
+                                    style="fill: currentColor" />
+                            </g>
+                        </svg>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button type="button" class="dropdown-item active" data-theme-value="light">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <g>
+                                        <path
+                                            d="M12,4.64A7.36,7.36,0,1,0,19.36,12,7.37,7.37,0,0,0,12,4.64Zm0,12.72A5.36,5.36,0,1,1,17.36,12,5.37,5.37,0,0,1,12,17.36Z"
+                                            style="fill: currentColor" />
+                                        <path d="M12,3.47a1,1,0,0,0,1-1V1a1,1,0,0,0-2,0V2.47A1,1,0,0,0,12,3.47Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M4.55,6a1,1,0,0,0,.71.29A1,1,0,0,0,6,6,1,1,0,0,0,6,4.55l-1-1A1,1,0,0,0,3.51,4.93Z"
+                                            style="fill: currentColor" />
+                                        <path d="M2.47,11H1a1,1,0,0,0,0,2H2.47a1,1,0,1,0,0-2Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M4.55,18l-1,1a1,1,0,0,0,0,1.42,1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29l1-1A1,1,0,0,0,4.55,18Z"
+                                            style="fill: currentColor" />
+                                        <path d="M12,20.53a1,1,0,0,0-1,1V23a1,1,0,0,0,2,0V21.53A1,1,0,0,0,12,20.53Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M19.45,18A1,1,0,0,0,18,19.45l1,1a1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z"
+                                            style="fill: currentColor" />
+                                        <path d="M23,11H21.53a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M18.74,6.26A1,1,0,0,0,19.45,6l1-1a1,1,0,1,0-1.42-1.42l-1,1A1,1,0,0,0,18,6,1,1,0,0,0,18.74,6.26Z"
+                                            style="fill: currentColor" />
+                                    </g>
+                                </svg>
+                                Light mode
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-theme-value="dark">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <path
+                                        d="M19.57,23.34a1,1,0,0,0,0-1.9,9.94,9.94,0,0,1,0-18.88,1,1,0,0,0,.68-.94,1,1,0,0,0-.68-.95A11.58,11.58,0,0,0,8.88,2.18,12.33,12.33,0,0,0,3.75,12a12.31,12.31,0,0,0,5.11,9.79A11.49,11.49,0,0,0,15.61,24,12.55,12.55,0,0,0,19.57,23.34ZM10,20.17A10.29,10.29,0,0,1,5.75,12a10.32,10.32,0,0,1,4.3-8.19A9.34,9.34,0,0,1,15.59,2a.17.17,0,0,1,.17.13.18.18,0,0,1-.07.2,11.94,11.94,0,0,0-.18,19.21.25.25,0,0,1-.16.45A9.5,9.5,0,0,1,10,20.17Z"
+                                        style="fill: currentColor" />
+                                </svg>
+                                Dark mode
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-theme-value="auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <path
+                                        d="M24,12a1,1,0,0,0-1-1H19.09a.51.51,0,0,1-.49-.4,6.83,6.83,0,0,0-.94-2.28.5.5,0,0,1,.06-.63l2.77-2.76a1,1,0,1,0-1.42-1.42L16.31,6.28a.5.5,0,0,1-.63.06A6.83,6.83,0,0,0,13.4,5.4a.5.5,0,0,1-.4-.49V1a1,1,0,0,0-2,0V4.91a.51.51,0,0,1-.4.49,6.83,6.83,0,0,0-2.28.94.5.5,0,0,1-.63-.06L4.93,3.51A1,1,0,0,0,3.51,4.93L6.28,7.69a.5.5,0,0,1,.06.63A6.83,6.83,0,0,0,5.4,10.6a.5.5,0,0,1-.49.4H1a1,1,0,0,0,0,2H4.91a.51.51,0,0,1,.49.4,6.83,6.83,0,0,0,.94,2.28.5.5,0,0,1-.06.63L3.51,19.07a1,1,0,1,0,1.42,1.42l2.76-2.77a.5.5,0,0,1,.63-.06,6.83,6.83,0,0,0,2.28.94.5.5,0,0,1,.4.49V23a1,1,0,0,0,2,0V19.09a.51.51,0,0,1,.4-.49,6.83,6.83,0,0,0,2.28-.94.5.5,0,0,1,.63.06l2.76,2.77a1,1,0,1,0,1.42-1.42l-2.77-2.76a.5.5,0,0,1-.06-.63,6.83,6.83,0,0,0,.94-2.28.5.5,0,0,1,.49-.4H23A1,1,0,0,0,24,12Zm-8.74,2.5A5.76,5.76,0,0,1,9.5,8.74a5.66,5.66,0,0,1,.16-1.31A.49.49,0,0,1,10,7.07a5.36,5.36,0,0,1,1.8-.31,5.47,5.47,0,0,1,5.46,5.46,5.36,5.36,0,0,1-.31,1.8.49.49,0,0,1-.35.32A5.53,5.53,0,0,1,15.26,14.5Z"
+                                        style="fill: currentColor" />
+                                </svg>
+                                Auto
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Separator -->
+                <div class="vr bg-gray-700 mx-2 mx-lg-3"></div>
+                <!-- Button -->
+                <a class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px position-relative link-secondary"
+                    data-bs-toggle="offcanvas" href="#offcanvasNotifications" role="button"
+                    aria-controls="offcanvasNotifications">
+                    <svg viewBox="0 0 24 24" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10,21.75a2.087,2.087,0,0,0,4.005,0" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                        <path d="M12 3L12 0.75" fill="none" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="1.5" />
+                        <path
+                            d="M12,3a7.5,7.5,0,0,1,7.5,7.5c0,7.046,1.5,8.25,1.5,8.25H3s1.5-1.916,1.5-8.25A7.5,7.5,0,0,1,12,3Z"
+                            fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5" />
+                    </svg>
+                    <div>
+    </div>
+
+<!-- Livewire Component wire-end:Z9Ir4uPXS0jx85STEPs2 -->                </a>
+
+                <!-- Notifications offcanvas -->
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotifications"
+                    aria-labelledby="offcanvasNotificationsLabel">
+                    <div class="offcanvas-header px-5">
+                        <h3 class="offcanvas-title" id="offcanvasNotificationsLabel">Notifications</h3>
+                        <div class="d-flex align-items-start">
+                            <!-- Button -->
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                    <div class="offcanvas-body p-0">
+                        <div class="list-group list-group-flush">
+                            <div>
+            <div class="text-center py-5 mt-5">
+            <i class="bi bi-bell-slash fs-1 text-secondary"></i>
+            <p class="text-secondary">There are no new notifications</p>
+        </div>
+    </div>
+<!-- Livewire Component wire-end:Vki7xZf1FtI4h1OqmQVU -->                        </div>
+                    </div>
+                </div>
+                <!-- Separator -->
+                <div class="vr bg-gray-700 mx-2 mx-lg-3"></div>
+
+                <!-- Dropdown -->
+                <div class="dropdown">
+                    <a href="javascript: void(0);" class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
+                        role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="Account">
+                        <i class="bi bi-person-fill" style="font-size: 20px;"></i>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <div class="dropdown-item-text">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h4 class="mb-0">{{ user.get_full_name }}</h4>
+                                    <p class="card-text">{{ user.email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <!-- Dropdown -->
+                        <div class="dropdown dropend">
+                            <a class="dropdown-item dropdown-toggle" href="javascript: void(0);" id="statusDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="-16,10">
+                                Quick links
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end navbar-dropdown-menu navbar-dropdown-menu-borderless navbar-dropdown-sub-menu"
+                                aria-labelledby="statusDropdown">
+                                <a class="dropdown-item" href="{% url 'dashboard:deposits' %}">
+                                    Deposit
+                                </a>
+                                <a class="dropdown-item" href="{% url 'dashboard:withdrawals' %}">
+                                    Withdrawal request
+                                </a>
+                            </div>
+                        </div>
+                        <!-- End Dropdown -->
+
+                        <a class="dropdown-item" href="{% url 'dashboard:account_settings' %}">Profile & account</a>
+                                                    <a class="dropdown-item" href="{% url 'dashboard:transfer_funds' %}">Transfer</a>
+                                                <hr class="dropdown-divider">
+
+                        <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}"
+                            onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">Sign
+                            out</a>
+                        <form id="logout-form" action="{% url 'accounts:logout' %}" method="POST"
+                            style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid mb-5">
+            <!-- Title -->
+            <h1 class="h2 mb-1">Transfers</h1>
+            <p class="text-muted mb-4">Send funds locally or internationally from your account.</p>
+
+            {% if not has_pin %}
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <i class="bi bi-shield-exclamation fs-4 me-3"></i>
+                <div>
+                    You haven't set a Transaction PIN yet. You'll need one to authorise transfers.
+                    <a href="{% url 'dashboard:account_settings' %}" class="alert-link">Set your Transaction PIN</a> first.
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Main transfer card -->
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs transfer-tabs" id="transferTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="local-tab" data-bs-toggle="tab"
+                                data-bs-target="#localTab" type="button" role="tab" aria-controls="localTab"
+                                aria-selected="true">
+                                <i class="bi bi-bank me-1"></i> Local Transfer
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="international-tab" data-bs-toggle="tab"
+                                data-bs-target="#internationalTab" type="button" role="tab"
+                                aria-controls="internationalTab" aria-selected="false">
+                                <i class="bi bi-globe2 me-1"></i> International Transfer
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="transferTabsContent">
+
+                        <!-- ============================================================= -->
+                        <!-- TAB 1: LOCAL TRANSFER                                          -->
+                        <!-- ============================================================= -->
+                        <div class="tab-pane fade show active" id="localTab" role="tabpanel"
+                            aria-labelledby="local-tab">
+                            <form method="post" action="{% url 'dashboard:local_transfer' %}" id="localTransferForm">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <!-- Left column -->
+                                    <div class="col-lg-7">
+
+                                        <!-- Available Balance -->
+                                        <div class="balance-pill p-4 mb-4">
+                                            <p class="mb-1 text-white-50 small text-uppercase">Available Balance</p>
+                                            <h2 class="text-white mb-0 fw-bold">${{ usd_balance }}</h2>
+                                        </div>
+
+                                        <!-- Quick Transfer -->
+                                        <div class="mb-4">
+                                            <label class="form-label fw-semibold">Quick Transfer</label>
+                                            <div class="d-flex flex-wrap gap-2 align-items-center">
+                                                {% for beneficiary in beneficiaries %}
+                                                    {% if beneficiary.type == 'bank' %}
+                                                    <span class="beneficiary-chip d-inline-flex align-items-center"
+                                                        data-account-holder-name="{{ beneficiary.account_holder_name }}"
+                                                        data-account-number="{{ beneficiary.account_number }}"
+                                                        data-bank-name="{{ beneficiary.bank_name }}"
+                                                        onclick="fillBeneficiary(this)">
+                                                        <i class="bi bi-person-circle me-2"></i>
+                                                        {{ beneficiary.nickname|default:beneficiary.account_holder_name }}
+                                                    </span>
+                                                    {% endif %}
+                                                {% empty %}
+                                                    <span class="text-muted">No saved beneficiaries yet</span>
+                                                {% endfor %}
+                                                <span class="beneficiary-chip d-inline-flex align-items-center text-primary"
+                                                    onclick="document.getElementById('account_holder_name').focus();">
+                                                    <i class="bi bi-plus-circle me-2"></i> Add New
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Transfer Amount -->
+                                        <div class="mb-4">
+                                            <label for="local_amount" class="form-label fw-semibold">Transfer Amount</label>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" step="any" min="1" max="500000"
+                                                    class="form-control form-control-lg" id="local_amount"
+                                                    name="amount" placeholder="0.00" required>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <button type="button" class="btn btn-sm quick-amount-btn"
+                                                    onclick="document.getElementById('local_amount').value = 100;">$100</button>
+                                                <button type="button" class="btn btn-sm quick-amount-btn"
+                                                    onclick="document.getElementById('local_amount').value = 500;">$500</button>
+                                                <button type="button" class="btn btn-sm quick-amount-btn"
+                                                    onclick="document.getElementById('local_amount').value = 1000;">$1000</button>
+                                                <button type="button" class="btn btn-sm quick-amount-btn"
+                                                    onclick="document.getElementById('local_amount').value = '{{ usd_balance }}';">All</button>
+                                            </div>
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle me-1"></i>
+                                                Transfer Limits: Minimum $1.00 &mdash; Maximum $500,000.00
+                                            </small>
+                                        </div>
+
+                                        <!-- Beneficiary Details -->
+                                        <h5 class="fw-semibold mb-3">Beneficiary Details</h5>
+                                        <div class="row g-3 mb-4">
+                                            <div class="col-md-6">
+                                                <label for="account_holder_name" class="form-label">Account Holder Name</label>
+                                                <input type="text" class="form-control" id="account_holder_name"
+                                                    name="account_holder_name" placeholder="John Doe" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="account_number" class="form-label">Account Number</label>
+                                                <input type="text" class="form-control" id="account_number"
+                                                    name="account_number" placeholder="0123456789" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="bank_name" class="form-label">Bank Name</label>
+                                                <input type="text" class="form-control" id="bank_name"
+                                                    name="bank_name" placeholder="Bank of America" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="account_type" class="form-label">Account Type</label>
+                                                <select class="form-select" id="account_type" name="account_type">
+                                                    <option value="online_banking">Online Banking</option>
+                                                    <option value="checking">Checking</option>
+                                                    <option value="savings">Savings</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="routing_number" class="form-label">Routing Number</label>
+                                                <input type="text" class="form-control" id="routing_number"
+                                                    name="routing_number" placeholder="9-digit routing number"
+                                                    pattern="\d{9}" maxlength="9" inputmode="numeric">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="swift_code" class="form-label">SWIFT Code</label>
+                                                <input type="text" class="form-control" id="swift_code"
+                                                    name="swift_code" placeholder="ABCDUS33">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right column -->
+                                    <div class="col-lg-5">
+                                        <h5 class="fw-semibold mb-3">Additional Information</h5>
+                                        <div class="mb-3">
+                                            <label for="local_description" class="form-label">Description / Note</label>
+                                            <textarea class="form-control" id="local_description" name="description"
+                                                rows="3" placeholder="What is this transfer for?"></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="local_transaction_pin" class="form-label">Transaction PIN</label>
+                                            <input type="password" class="form-control" id="local_transaction_pin"
+                                                name="transaction_pin" minlength="4" maxlength="6"
+                                                pattern="\d{4,6}" inputmode="numeric" placeholder="••••" required>
+                                            <small class="text-muted">This is your transaction PIN, not your login password.</small>
+                                        </div>
+                                        <div class="form-check mb-4">
+                                            <input class="form-check-input" type="checkbox" value="1"
+                                                id="local_save_beneficiary" name="save_beneficiary">
+                                            <label class="form-check-label" for="local_save_beneficiary">
+                                                Save this beneficiary for future transfers
+                                            </label>
+                                        </div>
+
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-primary btn-lg">
+                                                <i class="bi bi-send me-1"></i> Send Transfer
+                                            </button>
+                                            <a href="{% url 'dashboard:index' %}" class="btn btn-outline-secondary">
+                                                Back to Dashboard
+                                            </a>
+                                        </div>
+
+                                        <div class="text-center mt-4 text-muted small">
+                                            <i class="bi bi-shield-lock me-1"></i> Bank-Level Security
+                                            <div class="mt-1">SSL Encrypted &middot; 24/7 Monitoring</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- ============================================================= -->
+                        <!-- TAB 2: INTERNATIONAL TRANSFER                                  -->
+                        <!-- ============================================================= -->
+                        <div class="tab-pane fade" id="internationalTab" role="tabpanel"
+                            aria-labelledby="international-tab">
+
+                            <div class="balance-pill p-4 mb-4">
+                                <p class="mb-1 text-white-50 small text-uppercase">Available Balance</p>
+                                <h2 class="text-white mb-0 fw-bold">${{ usd_balance }}</h2>
+                            </div>
+
+                            <h5 class="fw-semibold mb-3">Select Transfer Method</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <div class="card method-card" onclick="showMethod('wire', this)">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-bank2 fs-2 method-icon"></i>
+                                            <h6 class="mt-2 mb-1">Wire Transfer</h6>
+                                            <small class="text-muted">Bank-to-bank wire</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <div class="card method-card" onclick="showMethod('crypto', this)">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-currency-bitcoin fs-2 method-icon"></i>
+                                            <h6 class="mt-2 mb-1">Cryptocurrency</h6>
+                                            <small class="text-muted">BTC, ETH, USDT</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <div class="card method-card" onclick="showMethod('paypal', this)">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-paypal fs-2 method-icon"></i>
+                                            <h6 class="mt-2 mb-1">PayPal</h6>
+                                            <small class="text-muted">Send to email</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <div class="card method-card" onclick="showMethod('wise', this)">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-globe fs-2 method-icon"></i>
+                                            <h6 class="mt-2 mb-1">Wise Transfer</h6>
+                                            <small class="text-muted">Multi-currency</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <div class="card method-card" onclick="showMethod('cashapp', this)">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-cash-stack fs-2 method-icon"></i>
+                                            <h6 class="mt-2 mb-1">Cash App</h6>
+                                            <small class="text-muted">Send to $cashtag</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <div class="card method-card" onclick="showMethod('other', this)">
+                                        <div class="card-body text-center">
+                                            <i class="bi bi-three-dots fs-2 method-icon"></i>
+                                            <h6 class="mt-2 mb-1">More Options</h6>
+                                            <small class="text-muted">Other methods</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Method forms -->
+                            <!-- Wire Transfer -->
+                            <div class="intl-method-form d-none" id="form-wire">
+                                <div class="card border">
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold mb-3"><i class="bi bi-bank2 me-2 method-icon"></i>Wire Transfer</h5>
+                                        <form method="post" action="{% url 'dashboard:international_transfer' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="method" value="wire">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Account Holder Name</label>
+                                                    <input type="text" class="form-control" name="account_holder_name" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Account Number</label>
+                                                    <input type="text" class="form-control" name="account_number" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Bank Name</label>
+                                                    <input type="text" class="form-control" name="bank_name" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">SWIFT Code</label>
+                                                    <input type="text" class="form-control" name="swift_code" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Country</label>
+                                                    <input type="text" class="form-control" name="country" placeholder="Country" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Amount</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" step="any" min="1" class="form-control" name="amount" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label">Description / Note</label>
+                                                    <textarea class="form-control" name="description" rows="2"></textarea>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Transaction PIN</label>
+                                                    <input type="password" class="form-control" name="transaction_pin"
+                                                        minlength="4" maxlength="6" pattern="\d{4,6}" inputmode="numeric" required>
+                                                    <small class="text-muted">Your transaction PIN, not your login password.</small>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-send me-1"></i> Send Transfer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cryptocurrency -->
+                            <div class="intl-method-form d-none" id="form-crypto">
+                                <div class="card border">
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold mb-3"><i class="bi bi-currency-bitcoin me-2 method-icon"></i>Cryptocurrency</h5>
+                                        <form method="post" action="{% url 'dashboard:international_transfer' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="method" value="crypto">
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <label class="form-label">Wallet Address</label>
+                                                    <input type="text" class="form-control" name="wallet_address" placeholder="Recipient wallet address" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Coin</label>
+                                                    <select class="form-select" name="coin">
+                                                        <option value="BTC">Bitcoin (BTC)</option>
+                                                        <option value="ETH">Ethereum (ETH)</option>
+                                                        <option value="USDT">Tether (USDT)</option>
+                                                        <option value="LTC">Litecoin (LTC)</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Amount</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" step="any" min="1" class="form-control" name="amount" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Transaction PIN</label>
+                                                    <input type="password" class="form-control" name="transaction_pin"
+                                                        minlength="4" maxlength="6" pattern="\d{4,6}" inputmode="numeric" required>
+                                                    <small class="text-muted">Your transaction PIN, not your login password.</small>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-send me-1"></i> Send Transfer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PayPal -->
+                            <div class="intl-method-form d-none" id="form-paypal">
+                                <div class="card border">
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold mb-3"><i class="bi bi-paypal me-2 method-icon"></i>PayPal</h5>
+                                        <form method="post" action="{% url 'dashboard:international_transfer' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="method" value="paypal">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">PayPal Email</label>
+                                                    <input type="email" class="form-control" name="email" placeholder="recipient@email.com" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Amount</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" step="any" min="1" class="form-control" name="amount" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Transaction PIN</label>
+                                                    <input type="password" class="form-control" name="transaction_pin"
+                                                        minlength="4" maxlength="6" pattern="\d{4,6}" inputmode="numeric" required>
+                                                    <small class="text-muted">Your transaction PIN, not your login password.</small>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-send me-1"></i> Send Transfer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Wise -->
+                            <div class="intl-method-form d-none" id="form-wise">
+                                <div class="card border">
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold mb-3"><i class="bi bi-globe me-2 method-icon"></i>Wise Transfer</h5>
+                                        <form method="post" action="{% url 'dashboard:international_transfer' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="method" value="wise">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Wise Email</label>
+                                                    <input type="email" class="form-control" name="email" placeholder="recipient@email.com" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Amount</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" step="any" min="1" class="form-control" name="amount" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Transaction PIN</label>
+                                                    <input type="password" class="form-control" name="transaction_pin"
+                                                        minlength="4" maxlength="6" pattern="\d{4,6}" inputmode="numeric" required>
+                                                    <small class="text-muted">Your transaction PIN, not your login password.</small>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-send me-1"></i> Send Transfer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cash App -->
+                            <div class="intl-method-form d-none" id="form-cashapp">
+                                <div class="card border">
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold mb-3"><i class="bi bi-cash-stack me-2 method-icon"></i>Cash App</h5>
+                                        <form method="post" action="{% url 'dashboard:international_transfer' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="method" value="cashapp">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Cashtag</label>
+                                                    <input type="text" class="form-control" name="tag" placeholder="$cashtag" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Amount</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" step="any" min="1" class="form-control" name="amount" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Transaction PIN</label>
+                                                    <input type="password" class="form-control" name="transaction_pin"
+                                                        minlength="4" maxlength="6" pattern="\d{4,6}" inputmode="numeric" required>
+                                                    <small class="text-muted">Your transaction PIN, not your login password.</small>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-send me-1"></i> Send Transfer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- More Options -->
+                            <div class="intl-method-form d-none" id="form-other">
+                                <div class="card border">
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold mb-3"><i class="bi bi-three-dots me-2 method-icon"></i>More Options</h5>
+                                        <p class="text-muted small">Provide a contact for the recipient and our team will reach out to complete this transfer.</p>
+                                        <form method="post" action="{% url 'dashboard:international_transfer' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="method" value="other">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Recipient Email</label>
+                                                    <input type="email" class="form-control" name="email" placeholder="recipient@email.com">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Recipient Phone</label>
+                                                    <input type="text" class="form-control" name="phone" placeholder="+1 555 000 0000">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Amount</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" step="any" min="1" class="form-control" name="amount" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Transaction PIN</label>
+                                                    <input type="password" class="form-control" name="transaction_pin"
+                                                        minlength="4" maxlength="6" pattern="\d{4,6}" inputmode="numeric" required>
+                                                    <small class="text-muted">Your transaction PIN, not your login password.</small>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-send me-1"></i> Send Transfer
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4 text-muted small">
+                                <i class="bi bi-shield-lock me-1"></i> Bank-Level Security
+                                <span class="ms-2">SSL Encrypted &middot; 24/7 Monitoring</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent transfers -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4 class="card-header-title">Recent transfers</h4>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-nowrap card-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transfer in recent_transfers %}
+                            <tr>
+                                <td>{{ transfer.created_at|date:"M d, Y" }}</td>
+                                <td>{{ transfer.description|default:"Transfer" }}</td>
+                                <td>${{ transfer.amount }}</td>
+                                <td>
+                                    {% if transfer.status == 'approved' or transfer.status == 'completed' %}
+                                        <span class="badge bg-success-subtle text-success">{{ transfer.get_status_display }}</span>
+                                    {% elif transfer.status == 'pending' or transfer.status == 'processing' %}
+                                        <span class="badge bg-warning-subtle text-warning">{{ transfer.get_status_display }}</span>
+                                    {% elif transfer.status == 'rejected' or transfer.status == 'failed' or transfer.status == 'cancelled' %}
+                                        <span class="badge bg-danger-subtle text-danger">{{ transfer.get_status_display }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary-subtle text-secondary">{{ transfer.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                    No transfers yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-auto">
+            <div class="container-fluid mt-4 mb-6 text-muted">
+                <div class="row justify-content-between">
+                    <div class="col">
+                        All Rights Reserved &copy; {{ site_name }} {% now "Y" %}
+                    </div>
+
+                    <div class="col-auto">
+                                                    <div id="google_translate_element"></div>
+                                            </div>
+                </div> <!-- / .row -->
+            </div>
+        </footer>
+    </main> <!-- / main -->
+
+    <!-- JAVASCRIPT-->
+    <!-- Theme JS -->
+
+    <script src="{% static 'themes/dashly/assets/js/theme.bundle.js' %}"></script>
+            <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+        </script>
+
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en'
+                }, 'google_translate_element');
+            }
+        </script>
+        <!-- Livewire Scripts -->
+
+<script src="/secure/livewire/livewire.js?id=fe747446aa84856d8b66" data-turbo-eval="false" data-turbolinks-eval="false" ></script>
+<script data-turbo-eval="false" data-turbolinks-eval="false" >
+    if (window.livewire) {
+	    console.warn('Livewire: It looks like Livewire\'s @livewireScripts JavaScript assets have already been loaded. Make sure you aren\'t loading them twice.')
+	}
+
+    window.livewire = new Livewire();
+    window.livewire.devTools(true);
+    window.Livewire = window.livewire;
+    window.livewire_app_url = '/secure';
+    window.livewire_token = 'TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW';
+
+	/* Make sure Livewire loads first. */
+	if (window.Alpine) {
+	    /* Defer showing the warning so it doesn't get buried under downstream errors. */
+	    document.addEventListener("DOMContentLoaded", function () {
+	        setTimeout(function() {
+	            console.warn("Livewire: It looks like AlpineJS has already been loaded. Make sure Livewire\'s scripts are loaded before Alpine.\\n\\n Reference docs for more info: http://laravel-livewire.com/docs/alpine-js")
+	        })
+	    });
+	}
+
+	/* Make Alpine wait until Livewire is finished rendering to do its thing. */
+    window.deferLoadingAlpine = function (callback) {
+        window.addEventListener('livewire:load', function () {
+            callback();
+        });
+    };
+
+    let started = false;
+
+    window.addEventListener('alpine:initializing', function () {
+        if (! started) {
+            window.livewire.start();
+
+            started = true;
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (! started) {
+            window.livewire.start();
+
+            started = true;
+        }
+    });
+</script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script>
+        // Fill the local transfer beneficiary fields from a saved beneficiary chip
+        function fillBeneficiary(chip) {
+            document.querySelectorAll('.beneficiary-chip').forEach(function (c) {
+                c.classList.remove('active');
+            });
+            chip.classList.add('active');
+
+            var holder = document.getElementById('account_holder_name');
+            var number = document.getElementById('account_number');
+            var bank = document.getElementById('bank_name');
+            if (holder) holder.value = chip.dataset.accountHolderName || '';
+            if (number) number.value = chip.dataset.accountNumber || '';
+            if (bank) bank.value = chip.dataset.bankName || '';
+        }
+
+        // Show the selected international transfer method form
+        function showMethod(method, card) {
+            document.querySelectorAll('.method-card').forEach(function (c) {
+                c.classList.remove('active');
+            });
+            card.classList.add('active');
+
+            document.querySelectorAll('.intl-method-form').forEach(function (f) {
+                f.classList.add('d-none');
+            });
+            var target = document.getElementById('form-' + method);
+            if (target) {
+                target.classList.remove('d-none');
+                target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+    </script>
+    </body>
+
+</html>

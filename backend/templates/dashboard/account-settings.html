@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-sidebar-behaviour="fixed" data-navigation-color="inverted" data-is-fluid="true">
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+    {% load static %}
+    
+    <meta charset="utf-8">
+    <meta name="csrf-token" content="TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="Webinning" name="author">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.bundle.css' %}" id="stylesheetLTR">
+    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.rtl.bundle.css' %}" id="stylesheetRTL">
+    <link rel="stylesheet" href="{% static 'css/grenville-theme.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- no-JS fallback -->
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    </noscript>
+
+    <script>
+        // Add your client ID and secret
+        var PAYPAL_CLIENT = 'iidjdjdj';
+        var PAYPAL_SECRET = 'jijdjkdkdk';
+        // Point your server to the PayPal API
+        var PAYPAL_ORDER_API = 'https://api.paypal.com/v2/checkout/orders/';
+    </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=iidjdjdj"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script>
+        // Theme switcher
+        let themeSwitcher = document.getElementById('themeSwitcher');
+
+        const getPreferredTheme = () => {
+            if (localStorage.getItem('theme') != null) {
+                return localStorage.getItem('theme');
+            }
+
+            return document.documentElement.dataset.theme;
+        };
+
+        const setTheme = function(theme) {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                    'dark' : 'light';
+            } else {
+                document.documentElement.dataset.theme = theme;
+            }
+
+            localStorage.setItem('theme', theme);
+        };
+
+        const showActiveTheme = theme => {
+            const activeBtn = document.querySelector(`[data-theme-value="${theme}"]`);
+
+            document.querySelectorAll('[data-theme-value]').forEach(element => {
+                element.classList.remove('active');
+            });
+
+            activeBtn && activeBtn.classList.add('active');
+
+            // Set button if demo mode is enabled
+            document.querySelectorAll('[data-theme-control="theme"]').forEach(element => {
+                if (element.value == theme) {
+                    element.checked = true;
+                }
+            });
+        };
+
+        function reloadPage() {
+            window.location = window.location.pathname;
+        }
+
+
+        setTheme(getPreferredTheme());
+
+        if (typeof themeSwitcher != 'undefined') {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (localStorage.getItem('theme') != null) {
+                    if (localStorage.getItem('theme') == 'auto') {
+                        reloadPage();
+                    }
+                }
+            });
+
+            window.addEventListener('load', () => {
+                showActiveTheme(getPreferredTheme());
+
+                document.querySelectorAll('[data-theme-value]').forEach(element => {
+                    element.addEventListener('click', () => {
+                        const theme = element.getAttribute('data-theme-value');
+
+                        localStorage.setItem('theme', theme);
+                        reloadPage();
+                    })
+                })
+            });
+        }
+    </script>
+    <!-- Favicon -->
+        <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
+
+    <!-- Demo script -->
+    <script>
+        var themeConfig = {
+            theme: JSON.parse('"light"'),
+            isRTL: JSON.parse('false'),
+            isFluid: JSON.parse('true'),
+            sidebarBehaviour: JSON.parse('"fixed"'),
+            navigationColor: JSON.parse('"inverted"')
+        };
+
+        var isRTL = localStorage.getItem('isRTL') === 'true',
+            isFluid = localStorage.getItem('isFluid') === 'true',
+            theme = localStorage.getItem('theme'),
+            sidebarSizing = localStorage.getItem('sidebarSizing'),
+            linkLTR = document.getElementById('stylesheetLTR'),
+            linkRTL = document.getElementById('stylesheetRTL'),
+            html = document.documentElement;
+
+        if (isRTL) {
+            linkLTR.setAttribute('disabled', '');
+            linkRTL.removeAttribute('disabled');
+            html.setAttribute('dir', 'rtl');
+        } else {
+            linkRTL.setAttribute('disabled', '');
+            linkLTR.removeAttribute('disabled');
+            html.removeAttribute('dir');
+        }
+    </script>
+
+    <!-- Page Title -->
+    <title>Profile | {{ site_name }}</title>
+        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
+    <!-- Livewire Styles -->
+<style >
+    [wire\:loading], [wire\:loading\.delay], [wire\:loading\.inline-block], [wire\:loading\.inline], [wire\:loading\.block], [wire\:loading\.flex], [wire\:loading\.table], [wire\:loading\.grid], [wire\:loading\.inline-flex] {
+        display: none;
+    }
+
+    [wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short], [wire\:loading\.delay\.long], [wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest] {
+        display:none;
+    }
+
+    [wire\:offline] {
+        display: none;
+    }
+
+    [wire\:dirty]:not(textarea):not(input):not(select) {
+        display: none;
+    }
+
+    input:-webkit-autofill, select:-webkit-autofill, textarea:-webkit-autofill {
+        animation-duration: 50000s;
+        animation-name: livewireautofill;
+    }
+
+    @keyframes livewireautofill { from {} }
+</style>
+</head>
+
+<body>
+    <!-- Django Messages -->
+    {% include 'includes/messages.html' %}
+
+
+    
+    <script>
+        
+    </script>
+    <!-- THEME CONFIGURATION -->
+    <script>
+        let themeAttrs = document.documentElement.dataset;
+
+        for (let attr in themeAttrs) {
+            if (localStorage.getItem(attr) != null) {
+                document.documentElement.dataset[attr] = localStorage.getItem(attr);
+
+                if (theme === 'auto') {
+                    document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                        'dark' : 'light';
+
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        e.matches ? document.documentElement.dataset.theme = 'dark' : document.documentElement
+                            .dataset.theme = 'light';
+                    });
+                }
+            }
+        }
+    </script>
+    <!-- NAVIGATION -->
+    {% include "includes/sidebar.html" %}
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HEADER -->
+        <header class="container-fluid d-flex py-6 mb-4">
+            <!-- Top buttons -->
+            <div class="d-flex align-items-center ms-auto me-n1 me-lg-n2">
+
+                <!-- Dropdown -->
+                <div class="dropdown" id="themeSwitcher">
+                    <a href="javascript: void(0);"
+                        class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
+                        role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        data-bs-offset="0,0">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="18" width="18">
+                            <g>
+                                <path
+                                    d="M12,4.64A7.36,7.36,0,1,0,19.36,12,7.37,7.37,0,0,0,12,4.64Zm0,12.72A5.36,5.36,0,1,1,17.36,12,5.37,5.37,0,0,1,12,17.36Z"
+                                    style="fill: currentColor" />
+                                <path d="M12,3.47a1,1,0,0,0,1-1V1a1,1,0,0,0-2,0V2.47A1,1,0,0,0,12,3.47Z"
+                                    style="fill: currentColor" />
+                                <path
+                                    d="M4.55,6a1,1,0,0,0,.71.29A1,1,0,0,0,6,6,1,1,0,0,0,6,4.55l-1-1A1,1,0,0,0,3.51,4.93Z"
+                                    style="fill: currentColor" />
+                                <path d="M2.47,11H1a1,1,0,0,0,0,2H2.47a1,1,0,1,0,0-2Z" style="fill: currentColor" />
+                                <path
+                                    d="M4.55,18l-1,1a1,1,0,0,0,0,1.42,1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29l1-1A1,1,0,0,0,4.55,18Z"
+                                    style="fill: currentColor" />
+                                <path d="M12,20.53a1,1,0,0,0-1,1V23a1,1,0,0,0,2,0V21.53A1,1,0,0,0,12,20.53Z"
+                                    style="fill: currentColor" />
+                                <path
+                                    d="M19.45,18A1,1,0,0,0,18,19.45l1,1a1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z"
+                                    style="fill: currentColor" />
+                                <path d="M23,11H21.53a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z" style="fill: currentColor" />
+                                <path
+                                    d="M18.74,6.26A1,1,0,0,0,19.45,6l1-1a1,1,0,1,0-1.42-1.42l-1,1A1,1,0,0,0,18,6,1,1,0,0,0,18.74,6.26Z"
+                                    style="fill: currentColor" />
+                            </g>
+                        </svg>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button type="button" class="dropdown-item active" data-theme-value="light">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <g>
+                                        <path
+                                            d="M12,4.64A7.36,7.36,0,1,0,19.36,12,7.37,7.37,0,0,0,12,4.64Zm0,12.72A5.36,5.36,0,1,1,17.36,12,5.37,5.37,0,0,1,12,17.36Z"
+                                            style="fill: currentColor" />
+                                        <path d="M12,3.47a1,1,0,0,0,1-1V1a1,1,0,0,0-2,0V2.47A1,1,0,0,0,12,3.47Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M4.55,6a1,1,0,0,0,.71.29A1,1,0,0,0,6,6,1,1,0,0,0,6,4.55l-1-1A1,1,0,0,0,3.51,4.93Z"
+                                            style="fill: currentColor" />
+                                        <path d="M2.47,11H1a1,1,0,0,0,0,2H2.47a1,1,0,1,0,0-2Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M4.55,18l-1,1a1,1,0,0,0,0,1.42,1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29l1-1A1,1,0,0,0,4.55,18Z"
+                                            style="fill: currentColor" />
+                                        <path d="M12,20.53a1,1,0,0,0-1,1V23a1,1,0,0,0,2,0V21.53A1,1,0,0,0,12,20.53Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M19.45,18A1,1,0,0,0,18,19.45l1,1a1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z"
+                                            style="fill: currentColor" />
+                                        <path d="M23,11H21.53a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M18.74,6.26A1,1,0,0,0,19.45,6l1-1a1,1,0,1,0-1.42-1.42l-1,1A1,1,0,0,0,18,6,1,1,0,0,0,18.74,6.26Z"
+                                            style="fill: currentColor" />
+                                    </g>
+                                </svg>
+                                Light mode
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-theme-value="dark">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <path
+                                        d="M19.57,23.34a1,1,0,0,0,0-1.9,9.94,9.94,0,0,1,0-18.88,1,1,0,0,0,.68-.94,1,1,0,0,0-.68-.95A11.58,11.58,0,0,0,8.88,2.18,12.33,12.33,0,0,0,3.75,12a12.31,12.31,0,0,0,5.11,9.79A11.49,11.49,0,0,0,15.61,24,12.55,12.55,0,0,0,19.57,23.34ZM10,20.17A10.29,10.29,0,0,1,5.75,12a10.32,10.32,0,0,1,4.3-8.19A9.34,9.34,0,0,1,15.59,2a.17.17,0,0,1,.17.13.18.18,0,0,1-.07.2,11.94,11.94,0,0,0-.18,19.21.25.25,0,0,1-.16.45A9.5,9.5,0,0,1,10,20.17Z"
+                                        style="fill: currentColor" />
+                                </svg>
+                                Dark mode
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-theme-value="auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <path
+                                        d="M24,12a1,1,0,0,0-1-1H19.09a.51.51,0,0,1-.49-.4,6.83,6.83,0,0,0-.94-2.28.5.5,0,0,1,.06-.63l2.77-2.76a1,1,0,1,0-1.42-1.42L16.31,6.28a.5.5,0,0,1-.63.06A6.83,6.83,0,0,0,13.4,5.4a.5.5,0,0,1-.4-.49V1a1,1,0,0,0-2,0V4.91a.51.51,0,0,1-.4.49,6.83,6.83,0,0,0-2.28.94.5.5,0,0,1-.63-.06L4.93,3.51A1,1,0,0,0,3.51,4.93L6.28,7.69a.5.5,0,0,1,.06.63A6.83,6.83,0,0,0,5.4,10.6a.5.5,0,0,1-.49.4H1a1,1,0,0,0,0,2H4.91a.51.51,0,0,1,.49.4,6.83,6.83,0,0,0,.94,2.28.5.5,0,0,1-.06.63L3.51,19.07a1,1,0,1,0,1.42,1.42l2.76-2.77a.5.5,0,0,1,.63-.06,6.83,6.83,0,0,0,2.28.94.5.5,0,0,1,.4.49V23a1,1,0,0,0,2,0V19.09a.51.51,0,0,1,.4-.49,6.83,6.83,0,0,0,2.28-.94.5.5,0,0,1,.63.06l2.76,2.77a1,1,0,1,0,1.42-1.42l-2.77-2.76a.5.5,0,0,1-.06-.63,6.83,6.83,0,0,0,.94-2.28.5.5,0,0,1,.49-.4H23A1,1,0,0,0,24,12Zm-8.74,2.5A5.76,5.76,0,0,1,9.5,8.74a5.66,5.66,0,0,1,.16-1.31A.49.49,0,0,1,10,7.07a5.36,5.36,0,0,1,1.8-.31,5.47,5.47,0,0,1,5.46,5.46,5.36,5.36,0,0,1-.31,1.8.49.49,0,0,1-.35.32A5.53,5.53,0,0,1,15.26,14.5Z"
+                                        style="fill: currentColor" />
+                                </svg>
+                                Auto
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Separator -->
+                <div class="vr bg-gray-700 mx-2 mx-lg-3"></div>
+                <!-- Button -->
+                <a class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px position-relative link-secondary"
+                    data-bs-toggle="offcanvas" href="#offcanvasNotifications" role="button"
+                    aria-controls="offcanvasNotifications">
+                    <svg viewBox="0 0 24 24" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10,21.75a2.087,2.087,0,0,0,4.005,0" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                        <path d="M12 3L12 0.75" fill="none" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="1.5" />
+                        <path
+                            d="M12,3a7.5,7.5,0,0,1,7.5,7.5c0,7.046,1.5,8.25,1.5,8.25H3s1.5-1.916,1.5-8.25A7.5,7.5,0,0,1,12,3Z"
+                            fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5" />
+                    </svg>
+                    <div>
+    </div>
+
+<!-- Livewire Component wire-end:PTQ81iODJv0VI0K5YplI -->                </a>
+
+                <!-- Notifications offcanvas -->
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotifications"
+                    aria-labelledby="offcanvasNotificationsLabel">
+                    <div class="offcanvas-header px-5">
+                        <h3 class="offcanvas-title" id="offcanvasNotificationsLabel">Notifications</h3>
+                        <div class="d-flex align-items-start">
+                            <!-- Button -->
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                    <div class="offcanvas-body p-0">
+                        <div class="list-group list-group-flush">
+                            <div>
+            <div class="text-center py-5 mt-5">
+            <i class="bi bi-bell-slash fs-1 text-secondary"></i>
+            <p class="text-secondary">There are no new notifications</p>
+        </div>
+    </div>
+<!-- Livewire Component wire-end:pjqxw0qpFBBzBEMyxJ2E -->                        </div>
+                    </div>
+                </div>
+                <!-- Separator -->
+                <div class="vr bg-gray-700 mx-2 mx-lg-3"></div>
+
+                <!-- Dropdown -->
+                <div class="dropdown">
+                    <a href="javascript: void(0);" class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
+                        role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="Account">
+                        <i class="bi bi-person-fill" style="font-size: 20px;"></i>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <div class="dropdown-item-text">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h4 class="mb-0">{{ user.get_full_name }}</h4>
+                                    <p class="card-text">{{ user.email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <!-- Dropdown -->
+                        <div class="dropdown dropend">
+                            <a class="dropdown-item dropdown-toggle" href="javascript: void(0);" id="statusDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="-16,10">
+                                Quick links
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end navbar-dropdown-menu navbar-dropdown-menu-borderless navbar-dropdown-sub-menu"
+                                aria-labelledby="statusDropdown">
+                                <a class="dropdown-item" href="{% url 'dashboard:deposits' %}">
+                                    Deposit
+                                </a>
+                                <a class="dropdown-item" href="{% url 'dashboard:withdrawals' %}">
+                                    Withdrawal request
+                                </a>
+                            </div>
+                        </div>
+                        <!-- End Dropdown -->
+
+                        <a class="dropdown-item" href="{% url 'dashboard:account_settings' %}">Profile & account</a>
+                                                    <a class="dropdown-item" href="{% url 'dashboard:transfer_funds' %}">Transfer</a>
+                                                <hr class="dropdown-divider">
+
+                        <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}"
+                            onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">Sign
+                            out</a>
+                        <form id="logout-form" action="{% url 'accounts:logout' %}" method="POST"
+                            style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid mb-5">
+                <!-- Title -->
+    <h1 class="h2">
+        Account Settings
+    </h1>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-xxl-3">
+            <!-- Card -->
+            <div class="card border-0 sticky-md-top top-10px">
+                <div class="card-body">
+                    <div class="text-center mb-5">
+                        <div class="avatar avatar-xxl avatar-circle mb-5">
+                            <div>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_avatar">
+        <label class="d-block cursor-pointer">
+            <span
+                class="position-absolute bottom-0 end-0 m-0 text-bg-primary w-30px h-30px rounded-circle d-flex align-items-center justify-content-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="14" width="14">
+                    <g>
+                        <path
+                            d="M2.65,16.4a.5.5,0,0,0-.49-.13.52.52,0,0,0-.35.38L.39,23a.51.51,0,0,0,.6.6l6.36-1.42a.52.52,0,0,0,.38-.35.5.5,0,0,0-.13-.49Z"
+                            style="fill: currentColor" />
+                        <path
+                            d="M17.85,7.21l-11,11a.24.24,0,0,0,0,.35l1.77,1.77a.5.5,0,0,0,.71,0L20,9.68A.48.48,0,0,0,20,9L18.21,7.21A.25.25,0,0,0,17.85,7.21Z"
+                            style="fill: currentColor" />
+                        <path
+                            d="M16.79,5.79,15,4a.48.48,0,0,0-.7,0L3.71,14.63a.51.51,0,0,0,0,.71l1.77,1.77a.24.24,0,0,0,.35,0l11-11A.25.25,0,0,0,16.79,5.79Z"
+                            style="fill: currentColor" />
+                        <path
+                            d="M22.45,1.55a4,4,0,0,0-5.66,0l-.71.71a.51.51,0,0,0,0,.71l5,4.95a.52.52,0,0,0,.71,0l.71-.71A4,4,0,0,0,22.45,1.55Z"
+                            style="fill: currentColor" />
+                    </g>
+                </svg>
+            </span>
+            <input type="file" name="photo" accept="image/*" onchange="this.form.submit()" style="display: none;">
+        </label>
+        {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="Profile picture" class="avatar-img" width="112" height="112">
+        {% else %}
+            <div class="d-flex align-items-center justify-content-center bg-secondary bg-opacity-25 rounded-circle" style="width: 112px; height: 112px;">
+                <i class="bi bi-person-fill text-secondary" style="font-size: 56px;"></i>
+            </div>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Livewire Component wire-end:HvqptDTgM5qAXWLEjlLx -->                        </div>
+                        <h3 class="mb-0">{{ user.get_full_name }}</h3>
+                        <span class="small text-secondary fw-semibold">{{ user.email }}</span>
+                    </div>
+                    <!-- Divider -->
+                    <hr class="mb-0">
+                </div>
+
+                <ul class="scrollspy mb-5" id="account" data-scrollspy='{"offset": "30"}'>
+                    <li class="active">
+                        <a href="#basicInformationSection" class="d-flex align-items-center py-3">
+                            <svg viewBox="0 0 24 24" height="14" width="14" class="me-3"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6.750 6.000 A5.250 5.250 0 1 0 17.250 6.000 A5.250 5.250 0 1 0 6.750 6.000 Z"
+                                    fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" />
+                                <path d="M2.25,23.25a9.75,9.75,0,0,1,19.5,0" fill="none" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                            </svg>
+                            Basic information
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#passwordSection" class="d-flex align-items-center py-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="14"
+                                width="14" class="me-3">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M18.75 9.75H5.25C4.42157 9.75 3.75 10.4216 3.75 11.25V21.75C3.75 22.5784 4.42157 23.25 5.25 23.25H18.75C19.5784 23.25 20.25 22.5784 20.25 21.75V11.25C20.25 10.4216 19.5784 9.75 18.75 9.75Z" />
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5"
+                                    d="M6.75 9.75V6C6.75 4.60761 7.30312 3.27226 8.28769 2.28769C9.27226 1.30312 10.6076 0.75 12 0.75C13.3924 0.75 14.7277 1.30312 15.7123 2.28769C16.6969 3.27226 17.25 4.60761 17.25 6V9.75" />
+                                <path stroke="currentColor" stroke-width="1.5"
+                                    d="M8.625 15C8.41789 15 8.25 14.8321 8.25 14.625C8.25 14.4179 8.41789 14.25 8.625 14.25" />
+                                <path stroke="currentColor" stroke-width="1.5"
+                                    d="M8.625 15C8.83211 15 9 14.8321 9 14.625C9 14.4179 8.83211 14.25 8.625 14.25" />
+                                <path stroke="currentColor" stroke-width="1.5"
+                                    d="M8.625 18.75C8.41789 18.75 8.25 18.5821 8.25 18.375C8.25 18.1679 8.41789 18 8.625 18" />
+                                <path stroke="currentColor" stroke-width="1.5"
+                                    d="M8.625 18.75C8.83211 18.75 9 18.5821 9 18.375C9 18.1679 8.83211 18 8.625 18" />
+                                <path stroke="currentColor" stroke-width="1.5"
+                                    d="M12 15C11.7929 15 11.625 14.8321 11.625 14.625C11.625 14.4179 11.7929 14.25 12 14.25" />
+                                <path stroke="currentColor" stroke-width="1.5"
+                                    d="M12 15C12.2071 15 12.375 14.8321 12.375 14.625C12.375 14.4179 12.2071 14.25 12 14.25" />
+                                <g>
+                                    <path stroke="currentColor" stroke-width="1.5"
+                                        d="M12 18.75C11.7929 18.75 11.625 18.5821 11.625 18.375C11.625 18.1679 11.7929 18 12 18" />
+                                    <path stroke="currentColor" stroke-width="1.5"
+                                        d="M12 18.75C12.2071 18.75 12.375 18.5821 12.375 18.375C12.375 18.1679 12.2071 18 12 18" />
+                                </g>
+                                <g>
+                                    <path stroke="currentColor" stroke-width="1.5"
+                                        d="M15.375 15C15.1679 15 15 14.8321 15 14.625C15 14.4179 15.1679 14.25 15.375 14.25" />
+                                    <path stroke="currentColor" stroke-width="1.5"
+                                        d="M15.375 15C15.5821 15 15.75 14.8321 15.75 14.625C15.75 14.4179 15.5821 14.25 15.375 14.25" />
+                                </g>
+                                <g>
+                                    <path stroke="currentColor" stroke-width="1.5"
+                                        d="M15.375 18.75C15.1679 18.75 15 18.5821 15 18.375C15 18.1679 15.1679 18 15.375 18" />
+                                    <path stroke="currentColor" stroke-width="1.5"
+                                        d="M15.375 18.75C15.5821 18.75 15.75 18.5821 15.75 18.375C15.75 18.1679 15.5821 18 15.375 18" />
+                                </g>
+                            </svg>
+                            Password
+                        </a>
+                    </li>
+
+
+
+                    <li>
+                        <a href="#paymentMethodsSection" class="d-flex align-items-center py-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="14" width="14"
+                                class="me-3">
+                                <defs>
+                                    <style>
+                                        .a {
+                                            fill: none;
+                                            stroke: currentColor;
+                                            stroke-linecap: round;
+                                            stroke-linejoin: round;
+                                            stroke-width: 1.5px;
+                                        }
+                                    </style>
+                                </defs>
+                                <title>credit-card-1</title>
+                                <rect class="a" x="0.75" y="3.75" width="22.5" height="16.5"
+                                    rx="1.5" ry="1.5" />
+                                <line class="a" x1="0.75" y1="8.25" x2="23.25" y2="8.25" />
+                                <line class="a" x1="5.25" y1="12.75" x2="13.5" y2="12.75" />
+                                <line class="a" x1="5.25" y1="15.75" x2="10.5" y2="15.75" />
+                            </svg>
+                            Payment methods
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#notificationsSection" class="d-flex align-items-center py-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="14" width="14"
+                                class="me-3">
+                                <defs>
+                                    <style>
+                                        .a {
+                                            fill: none;
+                                            stroke: currentColor;
+                                            stroke-linecap: round;
+                                            stroke-linejoin: round;
+                                            stroke-width: 1.5px;
+                                        }
+                                    </style>
+                                </defs>
+                                <title>alert-bell-notification-2</title>
+                                <circle class="a" cx="18.875" cy="5.827" r="3" />
+                                <path class="a" d="M9.125,21.75a2.087,2.087,0,0,0,4.005,0" />
+                                <line class="a" x1="11.125" y1="3" x2="11.125" y2="0.75" />
+                                <path class="a"
+                                    d="M18.648,11.961c.189,5.756,1.477,6.789,1.477,6.789h-18s1.5-1.916,1.5-8.25a7.507,7.507,0,0,1,9.724-7.165" />
+                            </svg>
+                            Notifications
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#privacyAndSafetySection" class="d-flex align-items-center py-3">
+                            <svg viewBox="0 0 24 24" height="14" width="14" class="me-3"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.749,9a8.25,8.25,0,0,1,13.5-6.364" fill="none" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                <path
+                                    d="M19.687,6a8.23,8.23,0,0,1,.562,3v6A8.25,8.25,0,0,1,12,23.25a8.336,8.336,0,0,1-1.5-.136"
+                                    fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" />
+                                <path d="M6.751,21.365a8.234,8.234,0,0,1-3-6.365V12.75" fill="none"
+                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="1.5" />
+                                <path d="M15.749,15V9a3.75,3.75,0,0,0-6-3" fill="none" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                <path d="M8.249,9v6A3.753,3.753,0,0,0,13.5,18.438" fill="none" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                                <path d="M11.999 9.75L11.999 14.25" fill="none" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                            </svg>
+                            Privacy and Safety
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col">
+            <!-- Card -->
+            <div class="card border-0 scroll-mt-3" id="basicInformationSection">
+                <div class="card-header">
+                    <h2 class="h3 mb-0">Basic information</h2>
+                </div>
+
+                <div>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_profile">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-lg-3">
+                    <label for="fullName" class="col-form-label">Full Name</label>
+                </div>
+
+                <div class="col-lg">
+                    <input type="text" class="form-control" id="fullName" name="name" value="{{ user.get_full_name }}">
+                    <div class="invalid-feedback">Please add your full name</div>
+                </div>
+            </div> <!-- / .row -->
+
+            <div class="row mb-4">
+                <div class="col-lg-3">
+                    <label for="phone" class="col-form-label">Phone</label>
+                </div>
+
+                <div class="col-lg">
+                    <input type="text" class="form-control" id="phone" name="phone" value="{{ user.phone|default:'' }}">
+                                    </div>
+            </div> <!-- / .row -->
+
+            <div class="row mb-4">
+                <div class="col-lg-3">
+                    <label for="emailAddress" class="col-form-label">Email address</label>
+                </div>
+
+                <div class="col-lg">
+                    <input type="email" class="form-control" id="emailAddress" value="{{ user.email }}" disabled>
+                    <small class="text-muted">Email cannot be changed. Contact support if needed.</small>
+                </div>
+            </div> <!-- / .row -->
+
+            <div class="row mb-4">
+                <div class="col-lg-3">
+                    <label for="country" class="col-form-label">Country</label>
+                </div>
+
+                <div class="col-lg">
+                    <div class="mb-4">
+                        <select class="form-select" name="country" required>
+                            <option value="Afganistan">Afghanistan</option>
+<option value="Albania">Albania</option>
+<option value="Algeria">Algeria</option>
+<option value="American Samoa">American Samoa</option>
+<option value="Andorra">Andorra</option>
+<option value="Angola">Angola</option>
+<option value="Anguilla">Anguilla</option>
+<option value="Antigua &amp; Barbuda">Antigua &amp; Barbuda</option>
+<option value="Argentina">Argentina</option>
+<option value="Armenia">Armenia</option>
+<option value="Aruba">Aruba</option>
+<option value="Australia">Australia</option>
+<option value="Austria">Austria</option>
+<option value="Azerbaijan">Azerbaijan</option>
+<option value="Bahamas">Bahamas</option>
+<option value="Bahrain">Bahrain</option>
+<option value="Bangladesh">Bangladesh</option>
+<option value="Barbados">Barbados</option>
+<option value="Belarus">Belarus</option>
+<option value="Belgium">Belgium</option>
+<option value="Belize">Belize</option>
+<option value="Benin">Benin</option>
+<option value="Bermuda">Bermuda</option>
+<option value="Bhutan">Bhutan</option>
+<option value="Bolivia">Bolivia</option>
+<option value="Bonaire">Bonaire</option>
+<option value="Bosnia &amp; Herzegovina">Bosnia &amp; Herzegovina</option>
+<option value="Botswana">Botswana</option>
+<option value="Brazil">Brazil</option>
+<option value="British Indian Ocean Ter">British Indian Ocean Ter</option>
+<option value="Brunei">Brunei</option>
+<option value="Bulgaria">Bulgaria</option>
+<option value="Burkina Faso">Burkina Faso</option>
+<option value="Burundi">Burundi</option>
+<option value="Cambodia">Cambodia</option>
+<option value="Cameroon">Cameroon</option>
+<option value="Canada">Canada</option>
+<option value="Canary Islands">Canary Islands</option>
+<option value="Cape Verde">Cape Verde</option>
+<option value="Cayman Islands">Cayman Islands</option>
+<option value="Central African Republic">Central African Republic</option>
+<option value="Chad">Chad</option>
+<option value="Channel Islands">Channel Islands</option>
+<option value="Chile">Chile</option>
+<option value="China">China</option>
+<option value="Christmas Island">Christmas Island</option>
+<option value="Cocos Island">Cocos Island</option>
+<option value="Colombia">Colombia</option>
+<option value="Comoros">Comoros</option>
+<option value="Congo">Congo</option>
+<option value="Cook Islands">Cook Islands</option>
+<option value="Costa Rica">Costa Rica</option>
+<option value="Cote DIvoire">Cote D'Ivoire</option>
+<option value="Croatia">Croatia</option>
+<option value="Cuba">Cuba</option>
+<option value="Curaco">Curacao</option>
+<option value="Cyprus">Cyprus</option>
+<option value="Czech Republic">Czech Republic</option>
+<option value="Denmark">Denmark</option>
+<option value="Djibouti">Djibouti</option>
+<option value="Dominica">Dominica</option>
+<option value="Dominican Republic">Dominican Republic</option>
+<option value="East Timor">East Timor</option>
+<option value="Ecuador">Ecuador</option>
+<option value="Egypt">Egypt</option>
+<option value="El Salvador">El Salvador</option>
+<option value="Equatorial Guinea">Equatorial Guinea</option>
+<option value="Eritrea">Eritrea</option>
+<option value="Estonia">Estonia</option>
+<option value="Ethiopia">Ethiopia</option>
+<option value="Falkland Islands">Falkland Islands</option>
+<option value="Faroe Islands">Faroe Islands</option>
+<option value="Fiji">Fiji</option>
+<option value="Finland">Finland</option>
+<option value="France">France</option>
+<option value="French Guiana">French Guiana</option>
+<option value="French Polynesia">French Polynesia</option>
+<option value="French Southern Ter">French Southern Ter</option>
+<option value="Gabon">Gabon</option>
+<option value="Gambia">Gambia</option>
+<option value="Georgia">Georgia</option>
+<option value="Germany">Germany</option>
+<option value="Ghana">Ghana</option>
+<option value="Gibraltar">Gibraltar</option>
+<option value="Great Britain">Great Britain</option>
+<option value="Greece">Greece</option>
+<option value="Greenland">Greenland</option>
+<option value="Grenada">Grenada</option>
+<option value="Guadeloupe">Guadeloupe</option>
+<option value="Guam">Guam</option>
+<option value="Guatemala">Guatemala</option>
+<option value="Guinea">Guinea</option>
+<option value="Guyana">Guyana</option>
+<option value="Haiti">Haiti</option>
+<option value="Hawaii">Hawaii</option>
+<option value="Honduras">Honduras</option>
+<option value="Hong Kong">Hong Kong</option>
+<option value="Hungary">Hungary</option>
+<option value="Iceland">Iceland</option>
+<option value="India">India</option>
+<option value="Indonesia">Indonesia</option>
+<option value="Iran">Iran</option>
+<option value="Iraq">Iraq</option>
+<option value="Ireland">Ireland</option>
+<option value="Isle of Man">Isle of Man</option>
+<option value="Israel">Israel</option>
+<option value="Italy">Italy</option>
+<option value="Jamaica">Jamaica</option>
+<option value="Japan">Japan</option>
+<option value="Jordan">Jordan</option>
+<option value="Kazakhstan">Kazakhstan</option>
+<option value="Kenya">Kenya</option>
+<option value="Kiribati">Kiribati</option>
+<option value="Korea North">Korea North</option>
+<option value="Korea Sout">Korea South</option>
+<option value="Kuwait">Kuwait</option>
+<option value="Kyrgyzstan">Kyrgyzstan</option>
+<option value="Laos">Laos</option>
+<option value="Latvia">Latvia</option>
+<option value="Lebanon">Lebanon</option>
+<option value="Lesotho">Lesotho</option>
+<option value="Liberia">Liberia</option>
+<option value="Libya">Libya</option>
+<option value="Liechtenstein">Liechtenstein</option>
+<option value="Lithuania">Lithuania</option>
+<option value="Luxembourg">Luxembourg</option>
+<option value="Macau">Macau</option>
+<option value="Macedonia">Macedonia</option>
+<option value="Madagascar">Madagascar</option>
+<option value="Malaysia">Malaysia</option>
+<option value="Malawi">Malawi</option>
+<option value="Maldives">Maldives</option>
+<option value="Mali">Mali</option>
+<option value="Malta">Malta</option>
+<option value="Marshall Islands">Marshall Islands</option>
+<option value="Martinique">Martinique</option>
+<option value="Mauritania">Mauritania</option>
+<option value="Mauritius">Mauritius</option>
+<option value="Mayotte">Mayotte</option>
+<option value="Mexico">Mexico</option>
+<option value="Midway Islands">Midway Islands</option>
+<option value="Moldova">Moldova</option>
+<option value="Monaco">Monaco</option>
+<option value="Mongolia">Mongolia</option>
+<option value="Montserrat">Montserrat</option>
+<option value="Morocco">Morocco</option>
+<option value="Mozambique">Mozambique</option>
+<option value="Myanmar">Myanmar</option>
+<option value="Nambia">Nambia</option>
+<option value="Nauru">Nauru</option>
+<option value="Nepal">Nepal</option>
+<option value="Netherland Antilles">Netherland Antilles</option>
+<option value="Netherlands">Netherlands (Holland, Europe)</option>
+<option value="Nevis">Nevis</option>
+<option value="New Caledonia">New Caledonia</option>
+<option value="New Zealand">New Zealand</option>
+<option value="Nicaragua">Nicaragua</option>
+<option value="Niger">Niger</option>
+<option value="Nigeria">Nigeria</option>
+<option value="Niue">Niue</option>
+<option value="Norfolk Island">Norfolk Island</option>
+<option value="Norway">Norway</option>
+<option value="Oman">Oman</option>
+<option value="Pakistan">Pakistan</option>
+<option value="Palau Island">Palau Island</option>
+<option value="Palestine">Palestine</option>
+<option value="Panama">Panama</option>
+<option value="Papua New Guinea">Papua New Guinea</option>
+<option value="Paraguay">Paraguay</option>
+<option value="Peru">Peru</option>
+<option value="Phillipines">Philippines</option>
+<option value="Pitcairn Island">Pitcairn Island</option>
+<option value="Poland">Poland</option>
+<option value="Portugal">Portugal</option>
+<option value="Puerto Rico">Puerto Rico</option>
+<option value="Qatar">Qatar</option>
+<option value="Republic of Montenegro">Republic of Montenegro</option>
+<option value="Republic of Serbia">Republic of Serbia</option>
+<option value="Reunion">Reunion</option>
+<option value="Romania">Romania</option>
+<option value="Russia">Russia</option>
+<option value="Rwanda">Rwanda</option>
+<option value="St Barthelemy">St Barthelemy</option>
+<option value="St Eustatius">St Eustatius</option>
+<option value="St Helena">St Helena</option>
+<option value="St Kitts-Nevis">St Kitts-Nevis</option>
+<option value="St Lucia">St Lucia</option>
+<option value="St Maarten">St Maarten</option>
+<option value="St Pierre &amp; Miquelon">St Pierre &amp; Miquelon</option>
+<option value="St Vincent &amp; Grenadines">St Vincent &amp; Grenadines</option>
+<option value="Saipan">Saipan</option>
+<option value="Samoa">Samoa</option>
+<option value="Samoa American">Samoa American</option>
+<option value="San Marino">San Marino</option>
+<option value="Sao Tome &amp; Principe">Sao Tome &amp; Principe</option>
+<option value="Saudi Arabia">Saudi Arabia</option>
+<option value="Senegal">Senegal</option>
+<option value="Serbia">Serbia</option>
+<option value="Seychelles">Seychelles</option>
+<option value="Sierra Leone">Sierra Leone</option>
+<option value="Singapore">Singapore</option>
+<option value="Slovakia">Slovakia</option>
+<option value="Slovenia">Slovenia</option>
+<option value="Solomon Islands">Solomon Islands</option>
+<option value="Somalia">Somalia</option>
+<option value="South Africa">South Africa</option>
+<option value="Spain">Spain</option>
+<option value="Sri Lanka">Sri Lanka</option>
+<option value="Sudan">Sudan</option>
+<option value="Suriname">Suriname</option>
+<option value="Swaziland">Swaziland</option>
+<option value="Sweden">Sweden</option>
+<option value="Switzerland">Switzerland</option>
+<option value="Syria">Syria</option>
+<option value="Tahiti">Tahiti</option>
+<option value="Taiwan">Taiwan</option>
+<option value="Tajikistan">Tajikistan</option>
+<option value="Tanzania">Tanzania</option>
+<option value="Thailand">Thailand</option>
+<option value="Togo">Togo</option>
+<option value="Tokelau">Tokelau</option>
+<option value="Tonga">Tonga</option>
+<option value="Trinidad &amp; Tobago">Trinidad &amp; Tobago</option>
+<option value="Tunisia">Tunisia</option>
+<option value="Turkey">Turkey</option>
+<option value="Turkmenistan">Turkmenistan</option>
+<option value="Turks &amp; Caicos Is">Turks &amp; Caicos Is</option>
+<option value="Tuvalu">Tuvalu</option>
+<option value="Uganda">Uganda</option>
+<option value="Ukraine">Ukraine</option>
+<option value="United Arab Erimates">United Arab Emirates</option>
+<option value="United Kingdom">United Kingdom</option>
+<option value="United States of America">United States of America</option>
+<option value="Uraguay">Uruguay</option>
+<option value="Uzbekistan">Uzbekistan</option>
+<option value="Vanuatu">Vanuatu</option>
+<option value="Vatican City State">Vatican City State</option>
+<option value="Venezuela">Venezuela</option>
+<option value="Vietnam">Vietnam</option>
+<option value="Virgin Islands (Brit)">Virgin Islands (Brit)</option>
+<option value="Virgin Islands (USA)">Virgin Islands (USA)</option>
+<option value="Wake Island">Wake Island</option>
+<option value="Wallis &amp; Futana Is">Wallis &amp; Futana Is</option>
+<option value="Yemen">Yemen</option>
+<option value="Zaire">Zaire</option>
+<option value="Zambia">Zambia</option>
+<option value="Zimbabwe">Zimbabwe</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a country</div>
+                    </div>
+                </div>
+            </div> <!-- / .row -->
+            <div class="row mb-4">
+                <div class="col-lg-3">
+                    <label class="col-form-label">Username</label>
+                </div>
+                <div class="col-lg">
+                    <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                    <small class="text-muted">Username cannot be changed.</small>
+                </div>
+            </div> <!-- / .row -->
+            <div class="d-flex justify-content-end mt-5">
+                <button type="submit" class="btn btn-primary">
+                    <div class="spinner-border spinner-border-sm" role="status" wire:loading>
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<!-- Livewire Component wire-end:BM0t6xJtChYcIGGChSst -->            </div>
+
+            <!-- Card -->
+            <div class="card border-0 scroll-mt-3" id="passwordSection">
+                <div class="card-header">
+                    <h2 class="h3 mb-0">Password</h2>
+                </div>
+
+                <div>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_password">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-lg-3">
+                    <label for="currentPassword" class="col-form-label">Current password</label>
+                </div>
+
+                <div class="col-lg">
+                    <input type="password" class="form-control" id="currentPassword" name="current_password"
+                        required>
+                                    </div>
+            </div> <!-- / .row -->
+
+            <div class="row mb-4">
+                <div class="col-lg-3">
+                    <label for="newPassword" class="col-form-label">New password</label>
+                </div>
+
+                <div class="col-lg">
+                    <div class="input-group input-group-merge">
+                        <input type="password" class="form-control" id="newPassword" name="password" autocomplete="off"
+                            data-toggle-password-input placeholder="Your new password"
+                            required>
+
+                        <button type="button" class="input-group-text px-4 text-secondary link-primary"
+                            data-toggle-password></button>
+                    </div>
+                                    </div>
+
+                <div class="col-lg">
+                    <div class="input-group input-group-merge">
+                        <input type="password" class="form-control" id="newPasswordAgain" name="password_confirmation" autocomplete="off"
+                            data-toggle-password-input placeholder="Confirm your new password"
+                            required>
+
+                        <button type="button" class="input-group-text px-4 text-secondary link-primary"
+                            data-toggle-password></button>
+                    </div>
+
+                    <div class="invalid-feedback">Please confirm your new password again</div>
+                </div>
+            </div> <!-- / .row -->
+
+            <div class="row">
+                <div class="col-lg offset-lg-3">
+                    <div class="alert alert-light mw-450px" role="alert">
+                        <h4 class="mb-3">Password requirements:</h4>
+                        <ul class="p-3 mb-0">
+                            <li>Minimum 8 characters long - the more, the better</li>
+                            <li>At least one lowercase character</li>
+                            <li>At least one uppercase character</li>
+                            <li>At least one number, symbol.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div> <!-- / .row -->
+
+            <div class="d-flex justify-content-end mt-5">
+                <!-- Button -->
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<!-- Livewire Component wire-end:I23uIHdBp07nAF1rpIrC -->            </div>
+
+
+            <!-- Card -->
+            <div class="card border-0 scroll-mt-3" id="paymentMethodsSection">
+                <div class="card-header">
+                    <h2 class="h3 mb-0">Payment methods</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-end mt-5">
+                        <div>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_payment_methods">
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label class="">Bank Name</label>
+                <input type="text" class="form-control" name="bankName" value="{{ user.bank_name|default:'' }}" placeholder="Enter Bank Name">
+            </div>
+            <div class="mb-3 col-md-6">
+                <label class="">Account Name</label>
+                <input type="text" class="form-control" name="accountName" value="{{ user.account_name|default:'' }}"
+                    placeholder="Enter Account name">
+            </div>
+            <div class="mb-3 col-md-6">
+                <label class="">Account Number</label>
+                <input type="text" class="form-control" name="accountNumber" value="{{ user.account_number|default:'' }}"
+                    placeholder="Enter Account Number">
+            </div>
+            <div class="mb-3 col-md-6">
+                <label class="">Swift Code</label>
+                <input type="text" class="form-control" name="swiftCode" value="{{ user.swift_code|default:'' }}" placeholder="Enter Swift Code">
+            </div>
+            <div class="mb-3 col-md-6">
+                <label class="">Bitcoin</label>
+                <input type="text" class="form-control" name="btcAddress" value="{{ user.btc_address|default:'' }}"
+                    placeholder="Enter Bitcoin Address">
+                <small class="fs-6">Enter your Bitcoin Address that will be used to withdraw your funds</small>
+            </div>
+            <div class="mb-3 col-md-6">
+                <label class="">Ethereum</label>
+                <input type="text" class="form-control" name="ethAddress" value="{{ user.eth_address|default:'' }}"
+                    placeholder="Enter Ethereum Address">
+                <small class="fs-6">Enter your Ethereum Address that will be used to withdraw your funds</small>
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label class="">Litecoin</label>
+                <input type="text" class="form-control" name="ltcAddress" value="{{ user.ltc_address|default:'' }}"
+                    placeholder="Enter Litecoin Address">
+                <small class="fs-6">Enter your Litecoin Address that will be used to withdraw your funds</small>
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label>USDT.TRC20</label>
+                <input type="text" class="form-control" name="usdtAddress" value="{{ user.usdt_address|default:'' }}"
+                    placeholder="Enter USDT.TRC20 Address">
+                <small class="fs-6">Enter your USDT.TRC20 wallet Address that will be used to withdraw your
+                    funds</small>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-5">
+            <button type="submit" class="btn btn-primary">
+                <div class="spinner-border spinner-border-sm" role="status" wire:loading>
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Save changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Livewire Component wire-end:gpoMDkQGAA5R0m6ggR84 -->                    </div>
+                </div>
+            </div>
+
+            <!-- Card -->
+            <div class="card border-0 scroll-mt-3" id="notificationsSection">
+                <div class="card-header">
+                    <h2 class="h3 mb-0">Notifications</h2>
+                </div>
+
+                <div class="card-body">
+                    <p class="text-muted">In this setcion you will be able to configure the behaviour of notifications
+                        in Dashly</p>
+                    <div>
+    <!-- Table -->
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_email_preferences">
+    <div class="table-responsive">
+        <table id="notificationsTable" class="table align-middle">
+            <thead class="thead-light">
+                <tr>
+                    <th class="text-uppercase py-4 align-middle min-w-300px min-w-md-auto">Type</th>
+                    <th class="text-center text-uppercase py-4">
+                        Yes
+                    </th>
+                    <th class="text-center text-uppercase py-4">
+                        No
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <h3 class="h4 mb-0">Enable E-mail notification on withdrawal</h3>
+                        <p class="small text-muted mb-0">Send confirmation OTP to my email when withdrawing my funds.</p>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="emailOnWithdrawal"
+                                value="Yes" {% if user.email_on_withdrawal %}checked{% endif %}>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="emailOnWithdrawal"
+                                value="No" {% if not user.email_on_withdrawal %}checked{% endif %}>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3 class="h4 mb-0">Enable E-mail Notifications on Profit</h3>
+                        <p class="small text-muted mb-0">Send me email when i receive profit</p>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="emailOnRoi"
+                                value="Yes" {% if user.email_on_roi %}checked{% endif %}>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="emailOnRoi"
+                                value="No" {% if not user.email_on_roi %}checked{% endif %}>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <h3 class="h4 mb-0">Enable E-mail Notifications on Expiration</h3>
+                        <p class="small text-muted mb-0">Send me email when my investment plan expires</p>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="emailOnExpiration"
+                                value="Yes" {% if user.email_on_expiration %}checked{% endif %}>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="emailOnExpiration"
+                                value="No" {% if not user.email_on_expiration %}checked{% endif %}>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> <!-- / .table-responsive -->
+    <div class="d-flex justify-content-end mt-5">
+        <!-- Button -->
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+    </form>
+</div>
+
+<!-- Livewire Component wire-end:21tWGYHerZE0yAgwIpV6 -->                </div>
+            </div>
+            <!-- Card: Transaction PIN -->
+            <div class="card border-0 scroll-mt-3 mb-4" id="transactionPinSection">
+                <div class="card-header">
+                    <h2 class="h3 mb-0">Transaction PIN</h2>
+                    <p class="text-muted small mb-0 mt-1">
+                        A 4-6 digit PIN used to authorise transfers.
+                        {% if user.has_transaction_pin %}
+                            <span class="badge bg-success">PIN set</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Not set</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'dashboard:set_transaction_pin' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">{% if user.has_transaction_pin %}New {% endif %}Transaction PIN</label>
+                                <input type="password" name="pin" class="form-control" inputmode="numeric"
+                                       pattern="[0-9]{4,6}" maxlength="6" placeholder="Enter 4-6 digit PIN" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Confirm PIN</label>
+                                <input type="password" name="confirm_pin" class="form-control" inputmode="numeric"
+                                       pattern="[0-9]{4,6}" maxlength="6" placeholder="Re-enter PIN" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">
+                            {% if user.has_transaction_pin %}Update PIN{% else %}Set PIN{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- Card -->
+            <div class="card border-0 scroll-mt-3" id="privacyAndSafetySection">
+                <div class="card-header">
+                    <h2 class="h3 mb-0">Privacy and Safety</h2>
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div class="me-2">
+                                <h3 class="h4 mb-0">Use 2-Step Verification</h3>
+                            </div>
+                            <a href="{% url 'dashboard:manage_account_security' %}" class="btn btn-sm text-bg-info-soft border-0">View</a>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div class="me-2">
+                                <h3 class="h4 mb-0">Login activity</h3>
+                            </div>
+                            <a href="{% url 'dashboard:manage_account_security' %}" class="btn btn-sm text-bg-info-soft border-0">View</a>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div class="me-2">
+                                <h3 class="h4 mb-0">Delete Account</h3>
+                            </div>
+                            <a href="{% url 'dashboard:manage_account_security' %}" class="btn btn-sm text-bg-danger-soft border-0">Delete
+                                account
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-auto">
+            <div class="container-fluid mt-4 mb-6 text-muted">
+                <div class="row justify-content-between">
+                    <div class="col">
+                        All Rights Reserved &copy; {{ site_name }} {% now "Y" %}
+                    </div>
+
+                    <div class="col-auto">
+                                                    <div id="google_translate_element"></div>
+                                            </div>
+                </div> <!-- / .row -->
+            </div>
+        </footer>
+    </main> <!-- / main -->
+
+    <!-- JAVASCRIPT-->
+    <!-- Theme JS -->
+
+    <script src="{% static 'themes/dashly/assets/js/theme.bundle.js' %}"></script>
+            <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+        </script>
+
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en'
+                }, 'google_translate_element');
+            }
+        </script>
+        <!-- Livewire Scripts -->
+
+<script src="/secure/livewire/livewire.js?id=fe747446aa84856d8b66" data-turbo-eval="false" data-turbolinks-eval="false" ></script>
+<script data-turbo-eval="false" data-turbolinks-eval="false" >
+    if (window.livewire) {
+	    console.warn('Livewire: It looks like Livewire\'s @livewireScripts JavaScript assets have already been loaded. Make sure you aren\'t loading them twice.')
+	}
+
+    window.livewire = new Livewire();
+    window.livewire.devTools(true);
+    window.Livewire = window.livewire;
+    window.livewire_app_url = '/secure';
+    window.livewire_token = 'TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW';
+
+	/* Make sure Livewire loads first. */
+	if (window.Alpine) {
+	    /* Defer showing the warning so it doesn't get buried under downstream errors. */
+	    document.addEventListener("DOMContentLoaded", function () {
+	        setTimeout(function() {
+	            console.warn("Livewire: It looks like AlpineJS has already been loaded. Make sure Livewire\'s scripts are loaded before Alpine.\\n\\n Reference docs for more info: http://laravel-livewire.com/docs/alpine-js")
+	        })
+	    });
+	}
+
+	/* Make Alpine wait until Livewire is finished rendering to do its thing. */
+    window.deferLoadingAlpine = function (callback) {
+        window.addEventListener('livewire:load', function () {
+            callback();
+        });
+    };
+
+    let started = false;
+
+    window.addEventListener('alpine:initializing', function () {
+        if (! started) {
+            window.livewire.start();
+
+            started = true;
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (! started) {
+            window.livewire.start();
+
+            started = true;
+        }
+    });
+</script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script>
+        window.addEventListener('profile-updated', event => {
+            var toastOptions = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            if (event.detail.type == 'success') {
+                Command: toastr["success"](event.detail.message, "Success")
+                toastr.options = toastOptions;
+            }
+
+            if (event.detail.type == 'error') {
+                Command: toastr["error"](event.detail.message, "Error")
+                toastr.options = toastOptions;
+            }
+
+        })
+    </script>
+</body>
+
+</html>

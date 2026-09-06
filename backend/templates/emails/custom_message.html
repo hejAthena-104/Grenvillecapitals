@@ -1,0 +1,15 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>{{ email_subject }}</h2>
+
+<p>Hi {{ first_name }},</p>
+
+{{ email_content|safe }}
+
+<div class="divider"></div>
+
+<p>Thank you for being a valued member of {{ site_name }}.</p>
+
+<p>Best regards,<br>The {{ site_name }} Team</p>
+{% endblock %}

@@ -1,0 +1,27 @@
+# Keep the Docker context lean — Django source only.
+.git
+.gitignore
+.venv
+venv
+env
+.env
+.env.*
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.mypy_cache
+.ruff_cache
+db.sqlite3
+db.sqlite3-journal
+staticfiles
+*.log
+
+# Dev/inspection scripts that don't belong in the image
+check_transfer.py
+check_transfers.py
+check_user_data.py
+create_test_user.py
+*.md

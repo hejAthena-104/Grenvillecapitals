@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-sidebar-behaviour="fixed" data-navigation-color="inverted" data-is-fluid="true">
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+    {% load static %}
+    
+    <meta charset="utf-8">
+    <meta name="csrf-token" content="TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="Webinning" name="author">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.bundle.css' %}" id="stylesheetLTR">
+    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.rtl.bundle.css' %}" id="stylesheetRTL">
+    <link rel="stylesheet" href="{% static 'css/grenville-theme.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- no-JS fallback -->
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    </noscript>
+
+    <script>
+        // Add your client ID and secret
+        var PAYPAL_CLIENT = 'iidjdjdj';
+        var PAYPAL_SECRET = 'jijdjkdkdk';
+        // Point your server to the PayPal API
+        var PAYPAL_ORDER_API = 'https://api.paypal.com/v2/checkout/orders/';
+    </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=iidjdjdj"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script>
+        // Theme switcher
+        let themeSwitcher = document.getElementById('themeSwitcher');
+
+        const getPreferredTheme = () => {
+            if (localStorage.getItem('theme') != null) {
+                return localStorage.getItem('theme');
+            }
+
+            return document.documentElement.dataset.theme;
+        };
+
+        const setTheme = function(theme) {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                    'dark' : 'light';
+            } else {
+                document.documentElement.dataset.theme = theme;
+            }
+
+            localStorage.setItem('theme', theme);
+        };
+
+        const showActiveTheme = theme => {
+            const activeBtn = document.querySelector(`[data-theme-value="${theme}"]`);
+
+            document.querySelectorAll('[data-theme-value]').forEach(element => {
+                element.classList.remove('active');
+            });
+
+            activeBtn && activeBtn.classList.add('active');
+
+            // Set button if demo mode is enabled
+            document.querySelectorAll('[data-theme-control="theme"]').forEach(element => {
+                if (element.value == theme) {
+                    element.checked = true;
+                }
+            });
+        };
+
+        function reloadPage() {
+            window.location = window.location.pathname;
+        }
+
+
+        setTheme(getPreferredTheme());
+
+        if (typeof themeSwitcher != 'undefined') {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (localStorage.getItem('theme') != null) {
+                    if (localStorage.getItem('theme') == 'auto') {
+                        reloadPage();
+                    }
+                }
+            });
+
+            window.addEventListener('load', () => {
+                showActiveTheme(getPreferredTheme());
+
+                document.querySelectorAll('[data-theme-value]').forEach(element => {
+                    element.addEventListener('click', () => {
+                        const theme = element.getAttribute('data-theme-value');
+
+                        localStorage.setItem('theme', theme);
+                        reloadPage();
+                    })
+                })
+            });
+        }
+    </script>
+    <!-- Favicon -->
+        <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
+
+    <!-- Demo script -->
+    <script>
+        var themeConfig = {
+            theme: JSON.parse('"light"'),
+            isRTL: JSON.parse('false'),
+            isFluid: JSON.parse('true'),
+            sidebarBehaviour: JSON.parse('"fixed"'),
+            navigationColor: JSON.parse('"inverted"')
+        };
+
+        var isRTL = localStorage.getItem('isRTL') === 'true',
+            isFluid = localStorage.getItem('isFluid') === 'true',
+            theme = localStorage.getItem('theme'),
+            sidebarSizing = localStorage.getItem('sidebarSizing'),
+            linkLTR = document.getElementById('stylesheetLTR'),
+            linkRTL = document.getElementById('stylesheetRTL'),
+            html = document.documentElement;
+
+        if (isRTL) {
+            linkLTR.setAttribute('disabled', '');
+            linkRTL.removeAttribute('disabled');
+            html.setAttribute('dir', 'rtl');
+        } else {
+            linkRTL.setAttribute('disabled', '');
+            linkLTR.removeAttribute('disabled');
+            html.removeAttribute('dir');
+        }
+    </script>
+
+    <!-- Page Title -->
+    <title>Support | {{ site_name }}</title>
+        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
+    <!-- Livewire Styles -->
+<style >
+    [wire\:loading], [wire\:loading\.delay], [wire\:loading\.inline-block], [wire\:loading\.inline], [wire\:loading\.block], [wire\:loading\.flex], [wire\:loading\.table], [wire\:loading\.grid], [wire\:loading\.inline-flex] {
+        display: none;
+    }
+
+    [wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short], [wire\:loading\.delay\.long], [wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest] {
+        display:none;
+    }
+
+    [wire\:offline] {
+        display: none;
+    }
+
+    [wire\:dirty]:not(textarea):not(input):not(select) {
+        display: none;
+    }
+
+    input:-webkit-autofill, select:-webkit-autofill, textarea:-webkit-autofill {
+        animation-duration: 50000s;
+        animation-name: livewireautofill;
+    }
+
+    @keyframes livewireautofill { from {} }
+</style>
+</head>
+
+<body>
+    <!-- Django Messages -->
+    {% include 'includes/messages.html' %}
+
+
+    
+    <script>
+        
+    </script>
+    <!-- THEME CONFIGURATION -->
+    <script>
+        let themeAttrs = document.documentElement.dataset;
+
+        for (let attr in themeAttrs) {
+            if (localStorage.getItem(attr) != null) {
+                document.documentElement.dataset[attr] = localStorage.getItem(attr);
+
+                if (theme === 'auto') {
+                    document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                        'dark' : 'light';
+
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        e.matches ? document.documentElement.dataset.theme = 'dark' : document.documentElement
+                            .dataset.theme = 'light';
+                    });
+                }
+            }
+        }
+    </script>
+    <!-- NAVIGATION -->
+    {% include "includes/sidebar.html" %}
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HEADER -->
+        <header class="container-fluid d-flex py-6 mb-4">
+            <!-- Top buttons -->
+            <div class="d-flex align-items-center ms-auto me-n1 me-lg-n2">
+
+                <!-- Dropdown -->
+                <div class="dropdown" id="themeSwitcher">
+                    <a href="javascript: void(0);"
+                        class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
+                        role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        data-bs-offset="0,0">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="18" width="18">
+                            <g>
+                                <path
+                                    d="M12,4.64A7.36,7.36,0,1,0,19.36,12,7.37,7.37,0,0,0,12,4.64Zm0,12.72A5.36,5.36,0,1,1,17.36,12,5.37,5.37,0,0,1,12,17.36Z"
+                                    style="fill: currentColor" />
+                                <path d="M12,3.47a1,1,0,0,0,1-1V1a1,1,0,0,0-2,0V2.47A1,1,0,0,0,12,3.47Z"
+                                    style="fill: currentColor" />
+                                <path
+                                    d="M4.55,6a1,1,0,0,0,.71.29A1,1,0,0,0,6,6,1,1,0,0,0,6,4.55l-1-1A1,1,0,0,0,3.51,4.93Z"
+                                    style="fill: currentColor" />
+                                <path d="M2.47,11H1a1,1,0,0,0,0,2H2.47a1,1,0,1,0,0-2Z" style="fill: currentColor" />
+                                <path
+                                    d="M4.55,18l-1,1a1,1,0,0,0,0,1.42,1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29l1-1A1,1,0,0,0,4.55,18Z"
+                                    style="fill: currentColor" />
+                                <path d="M12,20.53a1,1,0,0,0-1,1V23a1,1,0,0,0,2,0V21.53A1,1,0,0,0,12,20.53Z"
+                                    style="fill: currentColor" />
+                                <path
+                                    d="M19.45,18A1,1,0,0,0,18,19.45l1,1a1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z"
+                                    style="fill: currentColor" />
+                                <path d="M23,11H21.53a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z" style="fill: currentColor" />
+                                <path
+                                    d="M18.74,6.26A1,1,0,0,0,19.45,6l1-1a1,1,0,1,0-1.42-1.42l-1,1A1,1,0,0,0,18,6,1,1,0,0,0,18.74,6.26Z"
+                                    style="fill: currentColor" />
+                            </g>
+                        </svg>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button type="button" class="dropdown-item active" data-theme-value="light">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <g>
+                                        <path
+                                            d="M12,4.64A7.36,7.36,0,1,0,19.36,12,7.37,7.37,0,0,0,12,4.64Zm0,12.72A5.36,5.36,0,1,1,17.36,12,5.37,5.37,0,0,1,12,17.36Z"
+                                            style="fill: currentColor" />
+                                        <path d="M12,3.47a1,1,0,0,0,1-1V1a1,1,0,0,0-2,0V2.47A1,1,0,0,0,12,3.47Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M4.55,6a1,1,0,0,0,.71.29A1,1,0,0,0,6,6,1,1,0,0,0,6,4.55l-1-1A1,1,0,0,0,3.51,4.93Z"
+                                            style="fill: currentColor" />
+                                        <path d="M2.47,11H1a1,1,0,0,0,0,2H2.47a1,1,0,1,0,0-2Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M4.55,18l-1,1a1,1,0,0,0,0,1.42,1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29l1-1A1,1,0,0,0,4.55,18Z"
+                                            style="fill: currentColor" />
+                                        <path d="M12,20.53a1,1,0,0,0-1,1V23a1,1,0,0,0,2,0V21.53A1,1,0,0,0,12,20.53Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M19.45,18A1,1,0,0,0,18,19.45l1,1a1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z"
+                                            style="fill: currentColor" />
+                                        <path d="M23,11H21.53a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M18.74,6.26A1,1,0,0,0,19.45,6l1-1a1,1,0,1,0-1.42-1.42l-1,1A1,1,0,0,0,18,6,1,1,0,0,0,18.74,6.26Z"
+                                            style="fill: currentColor" />
+                                    </g>
+                                </svg>
+                                Light mode
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-theme-value="dark">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <path
+                                        d="M19.57,23.34a1,1,0,0,0,0-1.9,9.94,9.94,0,0,1,0-18.88,1,1,0,0,0,.68-.94,1,1,0,0,0-.68-.95A11.58,11.58,0,0,0,8.88,2.18,12.33,12.33,0,0,0,3.75,12a12.31,12.31,0,0,0,5.11,9.79A11.49,11.49,0,0,0,15.61,24,12.55,12.55,0,0,0,19.57,23.34ZM10,20.17A10.29,10.29,0,0,1,5.75,12a10.32,10.32,0,0,1,4.3-8.19A9.34,9.34,0,0,1,15.59,2a.17.17,0,0,1,.17.13.18.18,0,0,1-.07.2,11.94,11.94,0,0,0-.18,19.21.25.25,0,0,1-.16.45A9.5,9.5,0,0,1,10,20.17Z"
+                                        style="fill: currentColor" />
+                                </svg>
+                                Dark mode
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-theme-value="auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <path
+                                        d="M24,12a1,1,0,0,0-1-1H19.09a.51.51,0,0,1-.49-.4,6.83,6.83,0,0,0-.94-2.28.5.5,0,0,1,.06-.63l2.77-2.76a1,1,0,1,0-1.42-1.42L16.31,6.28a.5.5,0,0,1-.63.06A6.83,6.83,0,0,0,13.4,5.4a.5.5,0,0,1-.4-.49V1a1,1,0,0,0-2,0V4.91a.51.51,0,0,1-.4.49,6.83,6.83,0,0,0-2.28.94.5.5,0,0,1-.63-.06L4.93,3.51A1,1,0,0,0,3.51,4.93L6.28,7.69a.5.5,0,0,1,.06.63A6.83,6.83,0,0,0,5.4,10.6a.5.5,0,0,1-.49.4H1a1,1,0,0,0,0,2H4.91a.51.51,0,0,1,.49.4,6.83,6.83,0,0,0,.94,2.28.5.5,0,0,1-.06.63L3.51,19.07a1,1,0,1,0,1.42,1.42l2.76-2.77a.5.5,0,0,1,.63-.06,6.83,6.83,0,0,0,2.28.94.5.5,0,0,1,.4.49V23a1,1,0,0,0,2,0V19.09a.51.51,0,0,1,.4-.49,6.83,6.83,0,0,0,2.28-.94.5.5,0,0,1,.63.06l2.76,2.77a1,1,0,1,0,1.42-1.42l-2.77-2.76a.5.5,0,0,1-.06-.63,6.83,6.83,0,0,0,.94-2.28.5.5,0,0,1,.49-.4H23A1,1,0,0,0,24,12Zm-8.74,2.5A5.76,5.76,0,0,1,9.5,8.74a5.66,5.66,0,0,1,.16-1.31A.49.49,0,0,1,10,7.07a5.36,5.36,0,0,1,1.8-.31,5.47,5.47,0,0,1,5.46,5.46,5.36,5.36,0,0,1-.31,1.8.49.49,0,0,1-.35.32A5.53,5.53,0,0,1,15.26,14.5Z"
+                                        style="fill: currentColor" />
+                                </svg>
+                                Auto
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Separator -->
+                <div class="vr bg-gray-700 mx-2 mx-lg-3"></div>
+                <!-- Button -->
+                <a class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px position-relative link-secondary"
+                    data-bs-toggle="offcanvas" href="#offcanvasNotifications" role="button"
+                    aria-controls="offcanvasNotifications">
+                    <svg viewBox="0 0 24 24" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10,21.75a2.087,2.087,0,0,0,4.005,0" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                        <path d="M12 3L12 0.75" fill="none" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="1.5" />
+                        <path
+                            d="M12,3a7.5,7.5,0,0,1,7.5,7.5c0,7.046,1.5,8.25,1.5,8.25H3s1.5-1.916,1.5-8.25A7.5,7.5,0,0,1,12,3Z"
+                            fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5" />
+                    </svg>
+                    <div>
+    </div>
+
+<!-- Livewire Component wire-end:rlKsKlatVSeJCc3w1JLs -->                </a>
+
+                <!-- Notifications offcanvas -->
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotifications"
+                    aria-labelledby="offcanvasNotificationsLabel">
+                    <div class="offcanvas-header px-5">
+                        <h3 class="offcanvas-title" id="offcanvasNotificationsLabel">Notifications</h3>
+                        <div class="d-flex align-items-start">
+                            <!-- Button -->
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                    <div class="offcanvas-body p-0">
+                        <div class="list-group list-group-flush">
+                            <div>
+            <div class="text-center py-5 mt-5">
+            <i class="bi bi-bell-slash fs-1 text-secondary"></i>
+            <p class="text-secondary">There are no new notifications</p>
+        </div>
+    </div>
+<!-- Livewire Component wire-end:WmvsMdrq7FXPNSTJG0hG -->                        </div>
+                    </div>
+                </div>
+                <!-- Separator -->
+                <div class="vr bg-gray-700 mx-2 mx-lg-3"></div>
+
+                <!-- Dropdown -->
+                <div class="dropdown">
+                    <a href="javascript: void(0);" class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
+                        role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="Account">
+                        <i class="bi bi-person-fill" style="font-size: 20px;"></i>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <div class="dropdown-item-text">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h4 class="mb-0">{{ user.get_full_name }}</h4>
+                                    <p class="card-text">{{ user.email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <!-- Dropdown -->
+                        <div class="dropdown dropend">
+                            <a class="dropdown-item dropdown-toggle" href="javascript: void(0);" id="statusDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="-16,10">
+                                Quick links
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end navbar-dropdown-menu navbar-dropdown-menu-borderless navbar-dropdown-sub-menu"
+                                aria-labelledby="statusDropdown">
+                                <a class="dropdown-item" href="{% url 'dashboard:deposits' %}">
+                                    Deposit
+                                </a>
+                                <a class="dropdown-item" href="{% url 'dashboard:withdrawals' %}">
+                                    Withdrawal request
+                                </a>
+                            </div>
+                        </div>
+                        <!-- End Dropdown -->
+
+                        <a class="dropdown-item" href="{% url 'dashboard:account_settings' %}">Profile & account</a>
+                                                    <a class="dropdown-item" href="{% url 'dashboard:transfer_funds' %}">Transfer</a>
+                                                <hr class="dropdown-divider">
+
+                        <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}"
+                            onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">Sign
+                            out</a>
+                        <form id="logout-form" action="{% url 'accounts:logout' %}" method="POST"
+                            style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid mb-5">
+                <!-- Title -->
+    <h1 class="h2">
+        Help Center
+    </h1>
+    <div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <!-- Card -->
+    <div class="card border-0">
+        <div class="card-body py-7">
+            <div class="row justify-content-center">
+                <div class="col-lg-4">
+                    <input type="text" wire:model='search'
+                        class="form-control form-control-lg border-2 border-primary rounded-pill mb-4"
+                        placeholder="Write a question or problem">
+                </div>
+            </div> <!-- / .row -->
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-6 text-center mb-7">
+                    <a href="javascript: void(0);" class="badge fs-5 text-bg-gray-300 py-2 px-3 m-2 mb-1">How secure is
+                        your
+                        Payment method?</a>
+                    <a href="javascript: void(0);" class="badge fs-5 text-bg-gray-300 py-2 px-3 m-2 mb-1">How secure is
+                        my
+                        data?</a>
+                    <a href="javascript: void(0);" class="badge fs-5 text-bg-gray-300 py-2 px-3 m-2 mb-1">How can I
+                        upgrade
+                        my plan?</a>
+                    <a href="javascript: void(0);" class="badge fs-5 text-bg-gray-300 py-2 px-3 m-2 mb-1">How do I know
+                        I
+                        have the latest version?</a>
+                    <a href="javascript: void(0);" class="badge fs-5 text-bg-gray-300 py-2 px-3 m-2 mb-1">Can I invite
+                        others?</a>
+                    <a href="javascript: void(0);" class="badge fs-5 text-bg-gray-300 py-2 px-3 m-2 mb-1">Where do I
+                        find my
+                        Profit history?</a>
+                </div>
+            </div> <!-- / .row -->
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xxl-9">
+                    <h2 class="h3 text-center">Frequently Asked Questions</h2>
+
+                    <div class="row mb-6">
+                                                    <div class="py-4 col-12">
+                                <h2 class="h4 text-center">No FAQs at the moment.</h2>
+                            </div>
+                                            </div>
+                </div>
+
+                <div
+                    class="d-flex align-items-end bg-primary rounded text-center pt-6 px-4 position-relative min-h-200px">
+                    <div class="position-absolute top-50 start-50 translate-middle">
+                        <h4 class="h3 text-white">Can't find what you're looking for?</h4>
+
+                        <!-- Link -->
+                        <a class="btn btn-lg btn-white link-primary"
+                            href="mailto:{{ support_email }}">Contact Us</a>
+                    </div>
+                    <img src="https://d33wubrfki0l68.cloudfront.net/3b17577d9510ca8e973cf1ec6558bb69279745e7/40233/assets/images/illustrations/faq-illustration.svg"
+                        class="img-fluid ms-auto d-none d-md-block" alt="..." width="150" height="150">
+                </div>
+            </div>
+        </div> <!-- / .row -->
+    </div>
+</div>
+</div>
+
+<!-- Livewire Component wire-end:eYwgfHLbUz8qg71E2gIE -->        </div>
+
+        <!-- Footer -->
+        <footer class="mt-auto">
+            <div class="container-fluid mt-4 mb-6 text-muted">
+                <div class="row justify-content-between">
+                    <div class="col">
+                        All Rights Reserved &copy; {{ site_name }} {% now "Y" %}
+                    </div>
+
+                    <div class="col-auto">
+                                                    <div id="google_translate_element"></div>
+                                            </div>
+                </div> <!-- / .row -->
+            </div>
+        </footer>
+    </main> <!-- / main -->
+
+    <!-- JAVASCRIPT-->
+    <!-- Theme JS -->
+
+    <script src="{% static 'themes/dashly/assets/js/theme.bundle.js' %}"></script>
+            <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+        </script>
+
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en'
+                }, 'google_translate_element');
+            }
+        </script>
+        <!-- Livewire Scripts -->
+
+<script src="/secure/livewire/livewire.js?id=fe747446aa84856d8b66" data-turbo-eval="false" data-turbolinks-eval="false" ></script>
+<script data-turbo-eval="false" data-turbolinks-eval="false" >
+    if (window.livewire) {
+	    console.warn('Livewire: It looks like Livewire\'s @livewireScripts JavaScript assets have already been loaded. Make sure you aren\'t loading them twice.')
+	}
+
+    window.livewire = new Livewire();
+    window.livewire.devTools(true);
+    window.Livewire = window.livewire;
+    window.livewire_app_url = '/secure';
+    window.livewire_token = 'TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW';
+
+	/* Make sure Livewire loads first. */
+	if (window.Alpine) {
+	    /* Defer showing the warning so it doesn't get buried under downstream errors. */
+	    document.addEventListener("DOMContentLoaded", function () {
+	        setTimeout(function() {
+	            console.warn("Livewire: It looks like AlpineJS has already been loaded. Make sure Livewire\'s scripts are loaded before Alpine.\\n\\n Reference docs for more info: http://laravel-livewire.com/docs/alpine-js")
+	        })
+	    });
+	}
+
+	/* Make Alpine wait until Livewire is finished rendering to do its thing. */
+    window.deferLoadingAlpine = function (callback) {
+        window.addEventListener('livewire:load', function () {
+            callback();
+        });
+    };
+
+    let started = false;
+
+    window.addEventListener('alpine:initializing', function () {
+        if (! started) {
+            window.livewire.start();
+
+            started = true;
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (! started) {
+            window.livewire.start();
+
+            started = true;
+        }
+    });
+</script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    </body>
+
+</html>

@@ -1,0 +1,576 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}Create Account | {{ site_name }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    :root {
+        --tc-primary: #12325a;
+        --tc-primary-dark: #0e2a4c;
+        --tc-primary-darker: #0a2038;
+    }
+    .auth-wrapper {
+        min-height: 100vh;
+    }
+    .auth-brand-side {
+        background: linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-primary-dark) 50%, var(--tc-primary-darker) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    .auth-brand-side::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.1) 0%, transparent 40%);
+        animation: shimmer 20s ease-in-out infinite;
+    }
+    .auth-brand-side::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+        pointer-events: none;
+    }
+    @keyframes shimmer {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        25% { transform: translate(5%, 5%) rotate(1deg); }
+        50% { transform: translate(0, 10%) rotate(0deg); }
+        75% { transform: translate(-5%, 5%) rotate(-1deg); }
+    }
+    .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+        color: rgba(255,255,255,0.95);
+    }
+    .benefit-icon {
+        width: 44px;
+        height: 44px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .benefit-icon i {
+        font-size: 1.1rem;
+        color: #fff;
+    }
+    .auth-form-side {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow-y: auto;
+        background: var(--bs-body-bg);
+    }
+    .form-card {
+        max-width: 520px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 2rem 0;
+    }
+    .glass-card {
+        background: rgba(255,255,255,0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(18, 50, 90, 0.08);
+    }
+    [data-theme="dark"] .glass-card {
+        background: rgba(30,30,40,0.7);
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .section-card {
+        background: rgba(255,255,255,0.5);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(18, 50, 90, 0.08);
+        border-radius: 16px;
+        margin-bottom: 1.25rem;
+        overflow: hidden;
+    }
+    [data-theme="dark"] .section-card {
+        background: rgba(40,40,50,0.5);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+    .section-card .card-header {
+        background: linear-gradient(135deg, rgba(18, 50, 90, 0.05) 0%, transparent 100%);
+        border-bottom: 1px solid rgba(18, 50, 90, 0.08);
+        padding: 0.875rem 1.25rem;
+    }
+    [data-theme="dark"] .section-card .card-header {
+        background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .section-card .card-body {
+        padding: 1.25rem;
+    }
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding: 0 1rem;
+    }
+    .step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+    }
+    .step::after {
+        content: '';
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--tc-primary) 0%, rgba(18, 50, 90, 0.2) 100%);
+        border-radius: 2px;
+    }
+    .step:last-child::after {
+        display: none;
+    }
+    .step-circle {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(18, 50, 90, 0.1);
+        color: var(--tc-primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+    .step.active .step-circle {
+        background: linear-gradient(135deg, #12325a 0%, #0e2a4c 100%);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(18, 50, 90, 0.3);
+    }
+    .step-label {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--bs-secondary);
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        border: 1px solid rgba(18, 50, 90, 0.15);
+        transition: all 0.3s ease;
+        background: rgba(255,255,255,0.8);
+    }
+    [data-theme="dark"] .form-control {
+        background: rgba(30,30,40,0.8);
+    }
+    .form-control:focus {
+        border-color: var(--tc-primary);
+        box-shadow: 0 0 0 4px rgba(18, 50, 90, 0.1);
+    }
+    .input-group-text {
+        border-radius: 10px;
+        background: rgba(18, 50, 90, 0.05);
+        border: 1px solid rgba(18, 50, 90, 0.15);
+        color: var(--tc-primary);
+    }
+    .password-strength {
+        height: 4px;
+        background: rgba(18, 50, 90, 0.1);
+        border-radius: 2px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+    .password-strength-bar {
+        height: 100%;
+        width: 0;
+        transition: all 0.3s;
+        border-radius: 2px;
+    }
+    .testimonial-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    .testimonial-text {
+        font-style: italic;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+    }
+    .testimonial-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255,255,255,0.3);
+        margin-right: 0.875rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #12325a 0%, #0e2a4c 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 15px rgba(18, 50, 90, 0.3);
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #0e2a4c 0%, #0a2038 100%);
+        box-shadow: 0 6px 20px rgba(18, 50, 90, 0.4);
+        transform: translateY(-1px);
+    }
+    .text-primary {
+        color: var(--tc-primary) !important;
+    }
+    a.text-primary:hover {
+        color: var(--tc-primary-dark) !important;
+    }
+    .form-check-input:checked {
+        background-color: var(--tc-primary);
+        border-color: var(--tc-primary);
+    }
+    .trust-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50px;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 1.25rem;
+    }
+    .trust-badge i {
+        color: #10b981;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-0 auth-wrapper">
+    <!-- Left Side - Branding -->
+    <div class="col-lg-5 d-none d-lg-flex auth-brand-side flex-column justify-content-center p-5">
+        <div class="position-relative z-1 px-4">
+            <!-- Trust Badge -->
+            <div class="trust-badge">
+                <i class="bi bi-shield-check"></i>
+                <span>Free & Secure Registration</span>
+            </div>
+
+            <!-- Logo -->
+            <div class="mb-4">
+                <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}" style="height: 50px;">
+            </div>
+
+            <!-- Headline -->
+            <h1 class="h2 fw-bold text-white mb-3" style="line-height: 1.3;">
+                Start Your Investment<br>Journey Today
+            </h1>
+            <p style="color: rgba(255,255,255,0.75);" class="mb-4">
+                Join thousands of successful investors earning daily profits with {{ site_name }}.
+            </p>
+
+            <!-- Benefits -->
+            <div class="benefits">
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-white fw-semibold">Free to Join</h6>
+                        <small style="color: rgba(255,255,255,0.7);">No registration fees or hidden charges</small>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-white fw-semibold">Multiple Investment Plans</h6>
+                        <small style="color: rgba(255,255,255,0.7);">Choose plans that suit your budget</small>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-white fw-semibold">Instant Withdrawals</h6>
+                        <small style="color: rgba(255,255,255,0.7);">Fast and secure processing</small>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-white fw-semibold">Referral Bonuses</h6>
+                        <small style="color: rgba(255,255,255,0.7);">Earn extra by inviting friends</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial -->
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "I've been investing with {{ site_name }} for 6 months now. The returns are consistent and the platform is very easy to use."
+                </p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">
+                        <i class="bi bi-person-fill text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white fw-semibold">Sarah M.</div>
+                        <small style="color: rgba(255,255,255,0.7);">Verified Investor</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="col-lg-7 auth-form-side p-4 p-lg-5">
+        <div class="form-card">
+            <!-- Mobile Logo -->
+            <div class="text-center d-lg-none mb-4">
+                <a href="{% url 'accounts:login' %}">
+                    <img src="{% static 'images/logo-dark.png' %}" alt="Logo" style="height: 40px;">
+                </a>
+            </div>
+
+            <div class="glass-card">
+                <!-- Title -->
+                <h1 class="h3 mb-2 fw-bold">Create Your Account</h1>
+                <p class="text-secondary mb-4">
+                    Fill in your details to get started with investing.
+                </p>
+
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step active">
+                        <span class="step-circle">1</span>
+                        <span class="step-label">Personal Info</span>
+                    </div>
+                    <div class="step active">
+                        <span class="step-circle">2</span>
+                        <span class="step-label">Account</span>
+                    </div>
+                    <div class="step active">
+                        <span class="step-circle">3</span>
+                        <span class="step-label">Security</span>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form method="POST" action="{% url 'accounts:register' %}">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+
+                    <!-- Personal Info Section -->
+                    <div class="section-card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="bi bi-person me-2" style="color: var(--tc-primary);"></i>Personal Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">First Name</label>
+                                    <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}"
+                                        class="form-control {% if form.first_name.errors %}is-invalid{% endif %}"
+                                        placeholder="John" required>
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback">{% for error in form.first_name.errors %}{{ error }}{% endfor %}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">Last Name</label>
+                                    <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}"
+                                        class="form-control {% if form.last_name.errors %}is-invalid{% endif %}"
+                                        placeholder="Doe" required>
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback">{% for error in form.last_name.errors %}{{ error }}{% endfor %}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-medium">Phone Number <span class="text-muted fw-normal">(Optional)</span></label>
+                                    <input type="tel" name="phone" value="{{ form.phone.value|default:'' }}"
+                                        class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                                        placeholder="+1 234 567 8900">
+                                    {% if form.phone.errors %}
+                                        <div class="invalid-feedback">{% for error in form.phone.errors %}{{ error }}{% endfor %}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Section -->
+                    <div class="section-card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="bi bi-at me-2" style="color: var(--tc-primary);"></i>Account Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">Username</label>
+                                    <input type="text" name="username" value="{{ form.username.value|default:'' }}"
+                                        class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                                        placeholder="johndoe" required>
+                                    {% if form.username.errors %}
+                                        <div class="invalid-feedback">{% for error in form.username.errors %}{{ error }}{% endfor %}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">Email Address</label>
+                                    <input type="email" name="email" value="{{ form.email.value|default:'' }}"
+                                        class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                        placeholder="john@example.com" required>
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback">{% for error in form.email.errors %}{{ error }}{% endfor %}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-medium">Referral Code <span class="text-muted fw-normal">(Optional)</span></label>
+                                    <input type="text" name="referral_code_input" value="{{ form.referral_code_input.value|default:'' }}"
+                                        class="form-control {% if form.referral_code_input.errors %}is-invalid{% endif %}"
+                                        placeholder="Enter referral code if you have one">
+                                    {% if form.referral_code_input.errors %}
+                                        <div class="invalid-feedback">{% for error in form.referral_code_input.errors %}{{ error }}{% endfor %}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Section -->
+                    <div class="section-card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-semibold"><i class="bi bi-shield-lock me-2" style="color: var(--tc-primary);"></i>Security</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                                            data-toggle-password-input placeholder="Create password" name="password1" id="password1" required>
+                                        <button type="button" class="input-group-text"
+                                            data-toggle-password></button>
+                                    </div>
+                                    <div class="password-strength">
+                                        <div class="password-strength-bar" id="strengthBar"></div>
+                                    </div>
+                                    {% if form.password1.errors %}
+                                        <div class="invalid-feedback d-block">{% for error in form.password1.errors %}{{ error }}{% endfor %}</div>
+                                    {% else %}
+                                        <small class="text-muted">Min. 8 characters</small>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-medium">Confirm Password</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                                            data-toggle-password-input placeholder="Confirm password" name="password2" required>
+                                        <button type="button" class="input-group-text"
+                                            data-toggle-password></button>
+                                    </div>
+                                    {% if form.password2.errors %}
+                                        <div class="invalid-feedback d-block">{% for error in form.password2.errors %}{{ error }}{% endfor %}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="form-check mb-4">
+                        <input type="checkbox" class="form-check-input" name="terms" id="terms" required>
+                        <label class="form-check-label" for="terms">
+                            I agree to the <a href="#" class="text-primary fw-medium">Terms of Service</a> and <a href="#" class="text-primary fw-medium">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-4">
+                        <i class="bi bi-person-plus me-2"></i>Create Account
+                    </button>
+
+                    <div class="text-center">
+                        <span class="text-muted">Already have an account?</span>
+                        <a href="{% url 'accounts:login' %}" class="fw-semibold text-primary ms-1">Sign In</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Password strength indicator with blue theme
+    document.getElementById('password1')?.addEventListener('input', function(e) {
+        const password = e.target.value;
+        const bar = document.getElementById('strengthBar');
+        let strength = 0;
+
+        if (password.length >= 8) strength += 25;
+        if (password.match(/[a-z]/)) strength += 25;
+        if (password.match(/[A-Z]/)) strength += 25;
+        if (password.match(/[0-9]/) || password.match(/[^a-zA-Z0-9]/)) strength += 25;
+
+        bar.style.width = strength + '%';
+        if (strength <= 25) {
+            bar.style.background = '#dc3545';
+        } else if (strength <= 50) {
+            bar.style.background = '#fd7e14';
+        } else if (strength <= 75) {
+            bar.style.background = '#0e2a4c';
+        } else {
+            bar.style.background = '#12325a';
+        }
+    });
+</script>
+{% endblock %}

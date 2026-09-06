@@ -1,0 +1,42 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>New Login Detected</h2>
+
+<p>Hi {{ first_name }},</p>
+
+<p>We detected a new login to your {{ site_name }} account. If this was you, you can safely ignore this email.</p>
+
+<div class="info-box">
+    <p><strong>Login Details:</strong></p>
+    <ul style="margin-top: 10px; margin-left: 20px; color: #4a5568;">
+        <li><strong>Time:</strong> Just now</li>
+        <li><strong>IP Address:</strong> {{ ip_address }}</li>
+        <li><strong>Device:</strong> {{ user_agent|truncatechars:50 }}</li>
+    </ul>
+</div>
+
+<div class="divider"></div>
+
+<div class="info-box" style="background-color: #f4f7fb; border-left-color: #8fa2bd;">
+    <p><strong>⚠️ Didn't recognize this login?</strong></p>
+    <p style="margin-top: 10px;">If you didn't log in, your account may have been compromised. Please take the following actions immediately:</p>
+    <ol style="margin-top: 10px; margin-left: 20px; color: #4a5568;">
+        <li>Change your password</li>
+        <li>Review your recent account activity</li>
+        <li>Contact our support team</li>
+    </ol>
+</div>
+
+<div style="text-align: center;">
+    <a href="{{ site_url }}/accounts/forgot-password/" class="btn" style="display:inline-block;padding:14px 34px;background-color:#12325a;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;margin:18px 0;">Reset Password</a>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size: 14px; color: #718096;">
+    We send these alerts to help keep your account secure. If you have any concerns, please don't hesitate to contact us.
+</p>
+
+<p>Best regards,<br>The {{ site_name }} Security Team</p>
+{% endblock %}

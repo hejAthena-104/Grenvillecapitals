@@ -1,0 +1,37 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>Withdrawal Approved ✅</h2>
+
+<p>Hi {{ first_name }},</p>
+
+<p>Great news! Your withdrawal request has been approved and processed.</p>
+
+<div class="info-box" style="background-color: #f0fff4; border-left-color: #48bb78;">
+    <p><strong>Transaction Details:</strong></p>
+    <ul style="margin-top: 10px; margin-left: 20px; color: #4a5568;">
+        <li><strong>Amount:</strong> ${{ amount }}</li>
+        <li><strong>Destination:</strong> {{ destination }}</li>
+        <li><strong>Status:</strong> <span style="color: #48bb78;">Approved</span></li>
+        <li><strong>Reference:</strong> {{ reference }}</li>
+    </ul>
+</div>
+
+<p>The funds will arrive in your account according to your payment method's processing time:</p>
+
+<ul style="color: #4a5568; margin-left: 20px; margin-bottom: 20px;">
+    <li><strong>Bank Transfer:</strong> 1-3 business days</li>
+    <li><strong>Cryptocurrency:</strong> 10-60 minutes</li>
+    <li><strong>E-Wallet:</strong> Instant to 24 hours</li>
+</ul>
+
+<div style="text-align: center;">
+    <a href="{{ dashboard_url }}" class="btn" style="display:inline-block;padding:14px 34px;background-color:#12325a;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;margin:18px 0;">View Dashboard</a>
+</div>
+
+<div class="divider"></div>
+
+<p>Thank you for choosing {{ site_name }}.</p>
+
+<p>Best regards,<br>The {{ site_name }} Team</p>
+{% endblock %}

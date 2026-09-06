@@ -1,0 +1,371 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+
+{% block title %}Sign In | {{ site_name }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    :root {
+        --tc-primary: #12325a;
+        --tc-primary-dark: #0e2a4c;
+        --tc-primary-darker: #0a2038;
+    }
+    .auth-wrapper {
+        min-height: 100vh;
+    }
+    .auth-brand-side {
+        background: linear-gradient(135deg, var(--tc-primary) 0%, var(--tc-primary-dark) 50%, var(--tc-primary-darker) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    .auth-brand-side::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.1) 0%, transparent 40%);
+        animation: shimmer 20s ease-in-out infinite;
+    }
+    .auth-brand-side::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+        pointer-events: none;
+    }
+    @keyframes shimmer {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        25% { transform: translate(5%, 5%) rotate(1deg); }
+        50% { transform: translate(0, 10%) rotate(0deg); }
+        75% { transform: translate(-5%, 5%) rotate(-1deg); }
+    }
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        color: rgba(255,255,255,0.95);
+    }
+    .feature-icon {
+        width: 52px;
+        height: 52px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .feature-icon i {
+        font-size: 1.5rem;
+        color: #fff;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 2.5rem;
+    }
+    .stat-card {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 16px;
+        padding: 1.25rem;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stat-label {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.8);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 0.25rem;
+    }
+    .auth-form-side {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: var(--bs-body-bg);
+    }
+    .form-card {
+        max-width: 440px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    .glass-card {
+        background: rgba(255,255,255,0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 32px rgba(18, 50, 90, 0.08);
+    }
+    [data-theme="dark"] .glass-card {
+        background: rgba(30,30,40,0.7);
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .form-control {
+        border-radius: 12px;
+        padding: 0.875rem 1rem;
+        border: 1px solid rgba(18, 50, 90, 0.15);
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: var(--tc-primary);
+        box-shadow: 0 0 0 4px rgba(18, 50, 90, 0.1);
+    }
+    .input-group-text {
+        border-radius: 12px;
+        background: rgba(18, 50, 90, 0.05);
+        border: 1px solid rgba(18, 50, 90, 0.15);
+        color: var(--tc-primary);
+    }
+    .input-group .form-control {
+        border-left: none;
+    }
+    .input-group-text:first-child {
+        border-right: none;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #12325a 0%, #0e2a4c 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 15px rgba(18, 50, 90, 0.3);
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #0e2a4c 0%, #0a2038 100%);
+        box-shadow: 0 6px 20px rgba(18, 50, 90, 0.4);
+        transform: translateY(-1px);
+    }
+    .text-primary {
+        color: var(--tc-primary) !important;
+    }
+    a.text-primary:hover {
+        color: var(--tc-primary-dark) !important;
+    }
+    .form-check-input:checked {
+        background-color: var(--tc-primary);
+        border-color: var(--tc-primary);
+    }
+    .trust-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 50px;
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 1.5rem;
+    }
+    .trust-badge i {
+        color: #10b981;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-0 auth-wrapper">
+    <!-- Left Side - Branding -->
+    <div class="col-lg-6 d-none d-lg-flex auth-brand-side flex-column justify-content-center p-5">
+        <div class="position-relative z-1 px-4">
+            <!-- Trust Badge -->
+            <div class="trust-badge">
+                <i class="bi bi-shield-check"></i>
+                <span>Secure & Trusted Platform</span>
+            </div>
+
+            <!-- Logo -->
+            <div class="mb-5">
+                <img src="{% static 'images/logo.png' %}" alt="{{ site_name }}" style="height: 55px;">
+            </div>
+
+            <!-- Headline -->
+            <h1 class="display-5 fw-bold text-white mb-3" style="line-height: 1.2;">
+                Welcome Back to<br>{{ site_name }}
+            </h1>
+            <p class="lead mb-5" style="color: rgba(255,255,255,0.75);">
+                Secure, reliable investment platform trusted by thousands of investors worldwide.
+            </p>
+
+            <!-- Features -->
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-white fw-semibold">Secure Platform</h6>
+                        <small style="color: rgba(255,255,255,0.7);">Bank-grade security & encryption</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-white fw-semibold">Daily Profits</h6>
+                        <small style="color: rgba(255,255,255,0.7);">Earn consistent daily returns</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 text-white fw-semibold">24/7 Support</h6>
+                        <small style="color: rgba(255,255,255,0.7);">Always here to help you</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$50M+</div>
+                    <div class="stat-label">Total Invested</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">15K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">98%</div>
+                    <div class="stat-label">Satisfaction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Support</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="col-lg-6 auth-form-side p-4 p-lg-5">
+        <div class="form-card">
+            <!-- Mobile Logo -->
+            <div class="text-center d-lg-none mb-4">
+                <a href="{% url 'accounts:login' %}">
+                    <img src="{% static 'images/logo-dark.png' %}" alt="Logo" style="height: 45px;">
+                </a>
+            </div>
+
+            <div class="glass-card">
+                <!-- Title -->
+                <h1 class="h2 mb-2 fw-bold">
+                    Sign In
+                </h1>
+                <p class="text-secondary mb-4">
+                    Enter your credentials to access your account.
+                </p>
+
+                <!-- Form -->
+                <form method="POST" action="{% url 'accounts:login' %}">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <label class="form-label fw-medium">Username or Email</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" name="username" value="{{ form.username.value|default:'' }}"
+                                class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                                placeholder="Enter your username or email" required>
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.username.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label fw-medium mb-0">Password</label>
+                            <a href="{% url 'accounts:forgot_password' %}" class="small text-primary fw-medium">Forgot password?</a>
+                        </div>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+                                autocomplete="off" data-toggle-password-input
+                                placeholder="Enter your password" name="password" required>
+                            <button type="button" class="input-group-text px-3"
+                                data-toggle-password></button>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input type="checkbox" class="form-check-input" name="remember" id="remember">
+                        <label class="form-check-label" for="remember">
+                            Keep me signed in
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-4">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                    </button>
+
+                    <div class="text-center">
+                        <span class="text-muted">Don't have an account?</span>
+                        <a href="{% url 'accounts:register' %}" class="fw-semibold text-primary ms-1">Create Account</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer Links -->
+            <div class="mt-4 text-center">
+                <small class="text-muted">
+                    <a href="#" class="text-muted me-3">Privacy Policy</a>
+                    <a href="#" class="text-muted me-3">Terms of Service</a>
+                    <a href="#" class="text-muted">Support</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

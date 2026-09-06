@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-sidebar-behaviour="fixed" data-navigation-color="inverted" data-is-fluid="true">
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+    {% load static %}
+    
+    <meta charset="utf-8">
+    <meta name="csrf-token" content="TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="Webinning" name="author">
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.bundle.css' %}" id="stylesheetLTR">
+    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.rtl.bundle.css' %}" id="stylesheetRTL">
+    <link rel="stylesheet" href="{% static 'css/grenville-theme.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');"
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- no-JS fallback -->
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+    </noscript>
+
+    <script>
+        // Add your client ID and secret
+        var PAYPAL_CLIENT = 'iidjdjdj';
+        var PAYPAL_SECRET = 'jijdjkdkdk';
+        // Point your server to the PayPal API
+        var PAYPAL_ORDER_API = 'https://api.paypal.com/v2/checkout/orders/';
+    </script>
+    <script src="https://www.paypal.com/sdk/js?client-id=iidjdjdj"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script>
+        // Theme switcher
+        let themeSwitcher = document.getElementById('themeSwitcher');
+
+        const getPreferredTheme = () => {
+            if (localStorage.getItem('theme') != null) {
+                return localStorage.getItem('theme');
+            }
+
+            return document.documentElement.dataset.theme;
+        };
+
+        const setTheme = function(theme) {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                    'dark' : 'light';
+            } else {
+                document.documentElement.dataset.theme = theme;
+            }
+
+            localStorage.setItem('theme', theme);
+        };
+
+        const showActiveTheme = theme => {
+            const activeBtn = document.querySelector(`[data-theme-value="${theme}"]`);
+
+            document.querySelectorAll('[data-theme-value]').forEach(element => {
+                element.classList.remove('active');
+            });
+
+            activeBtn && activeBtn.classList.add('active');
+
+            // Set button if demo mode is enabled
+            document.querySelectorAll('[data-theme-control="theme"]').forEach(element => {
+                if (element.value == theme) {
+                    element.checked = true;
+                }
+            });
+        };
+
+        function reloadPage() {
+            window.location = window.location.pathname;
+        }
+
+
+        setTheme(getPreferredTheme());
+
+        if (typeof themeSwitcher != 'undefined') {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (localStorage.getItem('theme') != null) {
+                    if (localStorage.getItem('theme') == 'auto') {
+                        reloadPage();
+                    }
+                }
+            });
+
+            window.addEventListener('load', () => {
+                showActiveTheme(getPreferredTheme());
+
+                document.querySelectorAll('[data-theme-value]').forEach(element => {
+                    element.addEventListener('click', () => {
+                        const theme = element.getAttribute('data-theme-value');
+
+                        localStorage.setItem('theme', theme);
+                        reloadPage();
+                    })
+                })
+            });
+        }
+    </script>
+    <!-- Favicon -->
+        <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
+
+    <!-- Demo script -->
+    <script>
+        var themeConfig = {
+            theme: JSON.parse('"light"'),
+            isRTL: JSON.parse('false'),
+            isFluid: JSON.parse('true'),
+            sidebarBehaviour: JSON.parse('"fixed"'),
+            navigationColor: JSON.parse('"inverted"')
+        };
+
+        var isRTL = localStorage.getItem('isRTL') === 'true',
+            isFluid = localStorage.getItem('isFluid') === 'true',
+            theme = localStorage.getItem('theme'),
+            sidebarSizing = localStorage.getItem('sidebarSizing'),
+            linkLTR = document.getElementById('stylesheetLTR'),
+            linkRTL = document.getElementById('stylesheetRTL'),
+            html = document.documentElement;
+
+        if (isRTL) {
+            linkLTR.setAttribute('disabled', '');
+            linkRTL.removeAttribute('disabled');
+            html.setAttribute('dir', 'rtl');
+        } else {
+            linkRTL.setAttribute('disabled', '');
+            linkLTR.removeAttribute('disabled');
+            html.removeAttribute('dir');
+        }
+    </script>
+
+    <!-- Page Title -->
+    <title>Advance Security Settings | {{ site_name }}</title>
+        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
+    <!-- Livewire Styles -->
+<style >
+    [wire\:loading], [wire\:loading\.delay], [wire\:loading\.inline-block], [wire\:loading\.inline], [wire\:loading\.block], [wire\:loading\.flex], [wire\:loading\.table], [wire\:loading\.grid], [wire\:loading\.inline-flex] {
+        display: none;
+    }
+
+    [wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short], [wire\:loading\.delay\.long], [wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest] {
+        display:none;
+    }
+
+    [wire\:offline] {
+        display: none;
+    }
+
+    [wire\:dirty]:not(textarea):not(input):not(select) {
+        display: none;
+    }
+
+    input:-webkit-autofill, select:-webkit-autofill, textarea:-webkit-autofill {
+        animation-duration: 50000s;
+        animation-name: livewireautofill;
+    }
+
+    @keyframes livewireautofill { from {} }
+</style>
+</head>
+
+<body>
+    <!-- Django Messages -->
+    {% include 'includes/messages.html' %}
+
+
+    
+    <script>
+        
+    </script>
+    <!-- THEME CONFIGURATION -->
+    <script>
+        let themeAttrs = document.documentElement.dataset;
+
+        for (let attr in themeAttrs) {
+            if (localStorage.getItem(attr) != null) {
+                document.documentElement.dataset[attr] = localStorage.getItem(attr);
+
+                if (theme === 'auto') {
+                    document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                        'dark' : 'light';
+
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        e.matches ? document.documentElement.dataset.theme = 'dark' : document.documentElement
+                            .dataset.theme = 'light';
+                    });
+                }
+            }
+        }
+    </script>
+    <!-- NAVIGATION -->
+    {% include "includes/sidebar.html" %}
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HEADER -->
+        <header class="container-fluid d-flex py-6 mb-4">
+            <!-- Top buttons -->
+            <div class="d-flex align-items-center ms-auto me-n1 me-lg-n2">
+
+                <!-- Dropdown -->
+                <div class="dropdown" id="themeSwitcher">
+                    <a href="javascript: void(0);"
+                        class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
+                        role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        data-bs-offset="0,0">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="18" width="18">
+                            <g>
+                                <path
+                                    d="M12,4.64A7.36,7.36,0,1,0,19.36,12,7.37,7.37,0,0,0,12,4.64Zm0,12.72A5.36,5.36,0,1,1,17.36,12,5.37,5.37,0,0,1,12,17.36Z"
+                                    style="fill: currentColor" />
+                                <path d="M12,3.47a1,1,0,0,0,1-1V1a1,1,0,0,0-2,0V2.47A1,1,0,0,0,12,3.47Z"
+                                    style="fill: currentColor" />
+                                <path
+                                    d="M4.55,6a1,1,0,0,0,.71.29A1,1,0,0,0,6,6,1,1,0,0,0,6,4.55l-1-1A1,1,0,0,0,3.51,4.93Z"
+                                    style="fill: currentColor" />
+                                <path d="M2.47,11H1a1,1,0,0,0,0,2H2.47a1,1,0,1,0,0-2Z" style="fill: currentColor" />
+                                <path
+                                    d="M4.55,18l-1,1a1,1,0,0,0,0,1.42,1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29l1-1A1,1,0,0,0,4.55,18Z"
+                                    style="fill: currentColor" />
+                                <path d="M12,20.53a1,1,0,0,0-1,1V23a1,1,0,0,0,2,0V21.53A1,1,0,0,0,12,20.53Z"
+                                    style="fill: currentColor" />
+                                <path
+                                    d="M19.45,18A1,1,0,0,0,18,19.45l1,1a1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z"
+                                    style="fill: currentColor" />
+                                <path d="M23,11H21.53a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z" style="fill: currentColor" />
+                                <path
+                                    d="M18.74,6.26A1,1,0,0,0,19.45,6l1-1a1,1,0,1,0-1.42-1.42l-1,1A1,1,0,0,0,18,6,1,1,0,0,0,18.74,6.26Z"
+                                    style="fill: currentColor" />
+                            </g>
+                        </svg>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <button type="button" class="dropdown-item active" data-theme-value="light">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <g>
+                                        <path
+                                            d="M12,4.64A7.36,7.36,0,1,0,19.36,12,7.37,7.37,0,0,0,12,4.64Zm0,12.72A5.36,5.36,0,1,1,17.36,12,5.37,5.37,0,0,1,12,17.36Z"
+                                            style="fill: currentColor" />
+                                        <path d="M12,3.47a1,1,0,0,0,1-1V1a1,1,0,0,0-2,0V2.47A1,1,0,0,0,12,3.47Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M4.55,6a1,1,0,0,0,.71.29A1,1,0,0,0,6,6,1,1,0,0,0,6,4.55l-1-1A1,1,0,0,0,3.51,4.93Z"
+                                            style="fill: currentColor" />
+                                        <path d="M2.47,11H1a1,1,0,0,0,0,2H2.47a1,1,0,1,0,0-2Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M4.55,18l-1,1a1,1,0,0,0,0,1.42,1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29l1-1A1,1,0,0,0,4.55,18Z"
+                                            style="fill: currentColor" />
+                                        <path d="M12,20.53a1,1,0,0,0-1,1V23a1,1,0,0,0,2,0V21.53A1,1,0,0,0,12,20.53Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M19.45,18A1,1,0,0,0,18,19.45l1,1a1,1,0,0,0,.71.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.42Z"
+                                            style="fill: currentColor" />
+                                        <path d="M23,11H21.53a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z"
+                                            style="fill: currentColor" />
+                                        <path
+                                            d="M18.74,6.26A1,1,0,0,0,19.45,6l1-1a1,1,0,1,0-1.42-1.42l-1,1A1,1,0,0,0,18,6,1,1,0,0,0,18.74,6.26Z"
+                                            style="fill: currentColor" />
+                                    </g>
+                                </svg>
+                                Light mode
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-theme-value="dark">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <path
+                                        d="M19.57,23.34a1,1,0,0,0,0-1.9,9.94,9.94,0,0,1,0-18.88,1,1,0,0,0,.68-.94,1,1,0,0,0-.68-.95A11.58,11.58,0,0,0,8.88,2.18,12.33,12.33,0,0,0,3.75,12a12.31,12.31,0,0,0,5.11,9.79A11.49,11.49,0,0,0,15.61,24,12.55,12.55,0,0,0,19.57,23.34ZM10,20.17A10.29,10.29,0,0,1,5.75,12a10.32,10.32,0,0,1,4.3-8.19A9.34,9.34,0,0,1,15.59,2a.17.17,0,0,1,.17.13.18.18,0,0,1-.07.2,11.94,11.94,0,0,0-.18,19.21.25.25,0,0,1-.16.45A9.5,9.5,0,0,1,10,20.17Z"
+                                        style="fill: currentColor" />
+                                </svg>
+                                Dark mode
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item" data-theme-value="auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="me-2"
+                                    height="18" width="18">
+                                    <path
+                                        d="M24,12a1,1,0,0,0-1-1H19.09a.51.51,0,0,1-.49-.4,6.83,6.83,0,0,0-.94-2.28.5.5,0,0,1,.06-.63l2.77-2.76a1,1,0,1,0-1.42-1.42L16.31,6.28a.5.5,0,0,1-.63.06A6.83,6.83,0,0,0,13.4,5.4a.5.5,0,0,1-.4-.49V1a1,1,0,0,0-2,0V4.91a.51.51,0,0,1-.4.49,6.83,6.83,0,0,0-2.28.94.5.5,0,0,1-.63-.06L4.93,3.51A1,1,0,0,0,3.51,4.93L6.28,7.69a.5.5,0,0,1,.06.63A6.83,6.83,0,0,0,5.4,10.6a.5.5,0,0,1-.49.4H1a1,1,0,0,0,0,2H4.91a.51.51,0,0,1,.49.4,6.83,6.83,0,0,0,.94,2.28.5.5,0,0,1-.06.63L3.51,19.07a1,1,0,1,0,1.42,1.42l2.76-2.77a.5.5,0,0,1,.63-.06,6.83,6.83,0,0,0,2.28.94.5.5,0,0,1,.4.49V23a1,1,0,0,0,2,0V19.09a.51.51,0,0,1,.4-.49,6.83,6.83,0,0,0,2.28-.94.5.5,0,0,1,.63.06l2.76,2.77a1,1,0,1,0,1.42-1.42l-2.77-2.76a.5.5,0,0,1-.06-.63,6.83,6.83,0,0,0,.94-2.28.5.5,0,0,1,.49-.4H23A1,1,0,0,0,24,12Zm-8.74,2.5A5.76,5.76,0,0,1,9.5,8.74a5.66,5.66,0,0,1,.16-1.31A.49.49,0,0,1,10,7.07a5.36,5.36,0,0,1,1.8-.31,5.47,5.47,0,0,1,5.46,5.46,5.36,5.36,0,0,1-.31,1.8.49.49,0,0,1-.35.32A5.53,5.53,0,0,1,15.26,14.5Z"
+                                        style="fill: currentColor" />
+                                </svg>
+                                Auto
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Separator -->
+                <div class="vr bg-gray-700 mx-2 mx-lg-3"></div>
+                <!-- Button -->
+                <a class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px position-relative link-secondary"
+                    data-bs-toggle="offcanvas" href="#offcanvasNotifications" role="button"
+                    aria-controls="offcanvasNotifications">
+                    <svg viewBox="0 0 24 24" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10,21.75a2.087,2.087,0,0,0,4.005,0" fill="none" stroke="currentColor"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                        <path d="M12 3L12 0.75" fill="none" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="1.5" />
+                        <path
+                            d="M12,3a7.5,7.5,0,0,1,7.5,7.5c0,7.046,1.5,8.25,1.5,8.25H3s1.5-1.916,1.5-8.25A7.5,7.5,0,0,1,12,3Z"
+                            fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5" />
+                    </svg>
+                    <div>
+    </div>
+
+<!-- Livewire Component wire-end:3sgKOmp8jlYh6hhSFYXg -->                </a>
+
+                <!-- Notifications offcanvas -->
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotifications"
+                    aria-labelledby="offcanvasNotificationsLabel">
+                    <div class="offcanvas-header px-5">
+                        <h3 class="offcanvas-title" id="offcanvasNotificationsLabel">Notifications</h3>
+                        <div class="d-flex align-items-start">
+                            <!-- Button -->
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                    </div>
+
+                    <div class="offcanvas-body p-0">
+                        <div class="list-group list-group-flush">
+                            <div>
+            <div class="text-center py-5 mt-5">
+            <i class="bi bi-bell-slash fs-1 text-secondary"></i>
+            <p class="text-secondary">There are no new notifications</p>
+        </div>
+    </div>
+<!-- Livewire Component wire-end:rAPhmt8eI9hmjzmWlsh0 -->                        </div>
+                    </div>
+                </div>
+                <!-- Separator -->
+                <div class="vr bg-gray-700 mx-2 mx-lg-3"></div>
+
+                <!-- Dropdown -->
+                <div class="dropdown">
+                    <a href="javascript: void(0);" class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
+                        role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="Account">
+                        <i class="bi bi-person-fill" style="font-size: 20px;"></i>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <div class="dropdown-item-text">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 ms-3">
+                                    <h4 class="mb-0">{{ user.get_full_name }}</h4>
+                                    <p class="card-text">{{ user.email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <!-- Dropdown -->
+                        <div class="dropdown dropend">
+                            <a class="dropdown-item dropdown-toggle" href="javascript: void(0);" id="statusDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="-16,10">
+                                Quick links
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end navbar-dropdown-menu navbar-dropdown-menu-borderless navbar-dropdown-sub-menu"
+                                aria-labelledby="statusDropdown">
+                                <a class="dropdown-item" href="{% url 'dashboard:deposits' %}">
+                                    Deposit
+                                </a>
+                                <a class="dropdown-item" href="{% url 'dashboard:withdrawals' %}">
+                                    Withdrawal request
+                                </a>
+                            </div>
+                        </div>
+                        <!-- End Dropdown -->
+
+                        <a class="dropdown-item" href="{% url 'dashboard:account_settings' %}">Profile & account</a>
+                                                    <a class="dropdown-item" href="{% url 'dashboard:transfer_funds' %}">Transfer</a>
+                                                <hr class="dropdown-divider">
+
+                        <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}"
+                            onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();">Sign
+                            out</a>
+                        <form id="logout-form" action="{% url 'accounts:logout' %}" method="POST"
+                            style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid mb-5">
+                <!-- Title -->
+    <h1 class="h2">
+        Security/Account Deletion
+    </h1>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div class="row">
+        <div class="p-2 text-center col-md-12 p-md-3">
+                            <div>
+                    <div >
+    <div class="mt-5">
+        <div class="px-4 py-5  shadow ">
+            <h2 class="">Two Factor Authentication</h2>
+        <h3 class="h6">
+                            You have not enabled two factor authentication.
+                    </h3>
+
+        <div class="mt-3 text-sm ">
+           
+            <h5> Add additional security to your account using two factor authentication.</h5>
+            <p>
+                When two factor authentication is enabled, you will be prompted for a secure, random token during authentication. You may retrieve this token from your phone&#039;s Google Authenticator application.
+            </p>
+        </div>
+
+        
+        <div class="mt-5">
+                            <span
+    wire:then="enableTwoFactorAuthentication"
+    x-data
+    x-ref="span"
+    x-on:click="$wire.startConfirmingPassword('ab2d1de5297198533ed96f794eb99eac')"
+    x-on:password-confirmed.window="setTimeout(() => $event.detail.id === 'ab2d1de5297198533ed96f794eb99eac' && $refs.span.dispatchEvent(new CustomEvent('then', { bubbles: false })), 250);"
+>
+    <button type="button" class="btn btn-primary btn-sm rounded inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150 btn btn-primary" wire:loading.attr="disabled">
+    Enable
+</button>
+</span>
+
+<div x-data="{
+    show: window.Livewire.find('vcGKr4JvCvkmsgg3WoTh').entangle('confirmingPassword').defer,
+    focusables() {
+        // All focusable element types...
+        let selector = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
+
+        return [...$el.querySelectorAll(selector)]
+            // All non-disabled elements...
+            .filter(el => !el.hasAttribute('disabled'))
+    },
+    firstFocusable() { return this.focusables()[0] },
+    lastFocusable() { return this.focusables().slice(-1)[0] },
+    nextFocusable() { return this.focusables()[this.nextFocusableIndex()] || this.firstFocusable() },
+    prevFocusable() { return this.focusables()[this.prevFocusableIndex()] || this.lastFocusable() },
+    nextFocusableIndex() { return (this.focusables().indexOf(document.activeElement) + 1) % (this.focusables().length + 1) },
+    prevFocusableIndex() { return Math.max(0, this.focusables().indexOf(document.activeElement)) - 1 },
+}" x-init="$watch('show', value => {
+    if (value) {
+        document.body.classList.add('overflow-y-hidden');
+    } else {
+        document.body.classList.remove('overflow-y-hidden');
+    }
+})" x-on:close.stop="show = false"
+    x-on:keydown.escape.window="show = false" x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
+    x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-show="show" id="506a8cb247bad8f18658bdb3f794fabc"
+    class="fixed inset-0 z-50 px-4 py-6 overflow-y-auto jetstream-modal sm:px-0 w-100" style="display: none;">
+    <div x-show="show" class="fixed inset-0 transition-all transform" x-on:click="show = false"
+        x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+
+    <div x-show="show"
+        class="mb-6 overflow-hidden transition-all transform bg-white rounded-lg shadow-xl sm:w-full w-100 sm:mx-auto"
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+        <div class="" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title"><h4 class="">Confirm Password</h4></h5>
+                </div>
+                <div class="modal-body">
+                    <p class=""> For your security, please confirm your password to continue.</p>
+       
+        <div class="mt-4 border-none" x-data="{}" x-on:confirming-password.window="setTimeout(() => $refs.confirmable_password.focus(), 250)">
+            <input  class="border form-control   rounded shadow form-control" type="password" placeholder="Password" x-ref="confirmable_password" wire:model.defer="confirmablePassword" wire:keydown.enter="confirmPassword">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="inline-flex items-center btn btn-secondary px-4 py-2 border" wire:click="stopConfirmingPassword" wire:loading.attr="disabled">
+    Cancel
+</button>
+
+        <button type="submit" class="btn btn-primary btn-sm rounded inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150 ml-2" dusk="confirm-password-button" wire:click="confirmPassword" wire:loading.attr="disabled">
+    Confirm
+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+                    </div>
+        </div>
+    </div>
+</div>
+
+<!-- Livewire Component wire-end:vcGKr4JvCvkmsgg3WoTh -->                </div>
+                    </div>
+    </div>
+    <div class="row">
+        <div class="p-2 text-center col-md-12">
+            <div >
+    <div class="mt-5">
+        <div class="px-4 py-5  shadow ">
+            <div class="max-w-xl text-sm ">
+            <h2 class="textdark">Browser Sessions</h2>
+            <h5> Manage and log out your active sessions on other browsers and devices.</h5>
+            If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.
+        </div>
+
+                    <div class="mt-5">
+                <!-- Other Browser Sessions -->
+                                    <div class="d-flex justify-content-center">
+                        <div class="d-inline">
+                                                            <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor" style="width:30px;" class=" d-flex">
+                                    <path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                                    </div>
+
+                        <div class="">
+                            <div class="">
+                                Windows - Edge
+                            </div>
+
+                            <div>
+                                <div class="">
+                                    102.88.114.189,
+
+                                                                            <span class="text-success">This device</span>
+                                                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                            </div>
+        
+        <div class="flex items-center mt-5">
+            <button type="submit" class="btn btn-primary btn-sm rounded inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150" wire:click="confirmLogout" wire:loading.attr="disabled">
+    Log Out Other Browser Sessions
+</button>
+
+            <div x-data="{ shown: false, timeout: null }"
+    x-init="window.livewire.find('spnTpYrnqPFAYC2TzZtv').on('loggedOut', () => { clearTimeout(timeout); shown = true; timeout = setTimeout(() => { shown = false }, 2000);  })"
+    x-show.transition.opacity.out.duration.1500ms="shown"
+    style="display: none;"
+    class="text-sm text-gray-600 ml-3">
+    Done.
+</div>
+        </div>
+
+        <!-- Log Out Other Devices Confirmation Modal -->
+        <div x-data="{
+    show: window.Livewire.find('spnTpYrnqPFAYC2TzZtv').entangle('confirmingLogout').defer,
+    focusables() {
+        // All focusable element types...
+        let selector = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
+
+        return [...$el.querySelectorAll(selector)]
+            // All non-disabled elements...
+            .filter(el => !el.hasAttribute('disabled'))
+    },
+    firstFocusable() { return this.focusables()[0] },
+    lastFocusable() { return this.focusables().slice(-1)[0] },
+    nextFocusable() { return this.focusables()[this.nextFocusableIndex()] || this.firstFocusable() },
+    prevFocusable() { return this.focusables()[this.prevFocusableIndex()] || this.lastFocusable() },
+    nextFocusableIndex() { return (this.focusables().indexOf(document.activeElement) + 1) % (this.focusables().length + 1) },
+    prevFocusableIndex() { return Math.max(0, this.focusables().indexOf(document.activeElement)) - 1 },
+}" x-init="$watch('show', value => {
+    if (value) {
+        document.body.classList.add('overflow-y-hidden');
+    } else {
+        document.body.classList.remove('overflow-y-hidden');
+    }
+})" x-on:close.stop="show = false"
+    x-on:keydown.escape.window="show = false" x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
+    x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-show="show" id="7bfef3bbc87b550e8528db202ce06cfb"
+    class="fixed inset-0 z-50 px-4 py-6 overflow-y-auto jetstream-modal sm:px-0 w-100" style="display: none;">
+    <div x-show="show" class="fixed inset-0 transition-all transform" x-on:click="show = false"
+        x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+
+    <div x-show="show"
+        class="mb-6 overflow-hidden transition-all transform bg-white rounded-lg shadow-xl sm:w-full w-100 sm:mx-auto"
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+        <div class="" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title"><h3 class="">Log Out Other Browser Sessions</h3></h5>
+                </div>
+                <div class="modal-body">
+                    <p class="">Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.</p>
+                
+
+                <div class="mt-4" x-data="{}" x-on:confirming-logout-other-browser-sessions.window="setTimeout(() => $refs.password.focus(), 250)">
+                    <input  class="border form-control   rounded shadow d-block form-control" type="password" placeholder="Password" x-ref="password" wire:model.defer="password" wire:keydown.enter="logoutOtherBrowserSessions">
+
+                                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="inline-flex items-center btn btn-secondary px-4 py-2 border" wire:click="$toggle('confirmingLogout')" wire:loading.attr="disabled">
+    Cancel
+</button>
+
+                <button type="submit" class="btn btn-primary btn-sm rounded inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray disabled:opacity-25 transition ease-in-out duration-150 ml-2" wire:click="logoutOtherBrowserSessions" wire:loading.attr="disabled">
+    Log Out
+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Livewire Component wire-end:spnTpYrnqPFAYC2TzZtv -->        </div>
+    </div>
+    <div class="row">
+        <div class="p-2 text-center col-md-12">
+                            <div class="hidden sm:block">
+    <div class="py-8">
+        <div class="border-t border-gray-200"></div>
+    </div>
+</div>
+                <div >
+    <div class="mt-5">
+        <div class="px-4 py-5  shadow ">
+            <h2 class="">Delete Account</h2>
+        <h5 class=""> Permanently delete your account.</h5>
+        <div class="max-w-xl text-sm ">
+            Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.
+        </div>
+
+        <div class="mt-5">
+            <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent btn btn-danger btn-sm rounded font-semibold text-xs text-white uppercase active:bg-red-600 transition ease-in-out duration-150" wire:click="confirmUserDeletion" wire:loading.attr="disabled">
+    Delete Account
+</button>
+        </div>
+
+        <!-- Delete User Confirmation Modal -->
+        <div x-data="{
+    show: window.Livewire.find('2xEkqgzIYS3alcioaKqE').entangle('confirmingUserDeletion').defer,
+    focusables() {
+        // All focusable element types...
+        let selector = 'a, button, input, textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
+
+        return [...$el.querySelectorAll(selector)]
+            // All non-disabled elements...
+            .filter(el => !el.hasAttribute('disabled'))
+    },
+    firstFocusable() { return this.focusables()[0] },
+    lastFocusable() { return this.focusables().slice(-1)[0] },
+    nextFocusable() { return this.focusables()[this.nextFocusableIndex()] || this.firstFocusable() },
+    prevFocusable() { return this.focusables()[this.prevFocusableIndex()] || this.lastFocusable() },
+    nextFocusableIndex() { return (this.focusables().indexOf(document.activeElement) + 1) % (this.focusables().length + 1) },
+    prevFocusableIndex() { return Math.max(0, this.focusables().indexOf(document.activeElement)) - 1 },
+}" x-init="$watch('show', value => {
+    if (value) {
+        document.body.classList.add('overflow-y-hidden');
+    } else {
+        document.body.classList.remove('overflow-y-hidden');
+    }
+})" x-on:close.stop="show = false"
+    x-on:keydown.escape.window="show = false" x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
+    x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-show="show" id="36ac91a8122577c7b197539ebb1a5123"
+    class="fixed inset-0 z-50 px-4 py-6 overflow-y-auto jetstream-modal sm:px-0 w-100" style="display: none;">
+    <div x-show="show" class="fixed inset-0 transition-all transform" x-on:click="show = false"
+        x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+
+    <div x-show="show"
+        class="mb-6 overflow-hidden transition-all transform bg-white rounded-lg shadow-xl sm:w-full w-100 sm:mx-auto"
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+        <div class="" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title"><h3 class="">Delete Account</h3></h5>
+                </div>
+                <div class="modal-body">
+                    <p class="">Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.</p>
+            
+                <div class="mt-4" x-data="{}" x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
+                    <input  class="border form-control   rounded shadow form-control" type="password" placeholder="Password" x-ref="password" wire:model.defer="password" wire:keydown.enter="deleteUser">
+
+                                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="inline-flex items-center btn btn-secondary px-4 py-2 border" wire:click="$toggle('confirmingUserDeletion')" wire:loading.attr="disabled">
+    Cancel
+</button>
+
+                <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent btn btn-danger btn-sm rounded font-semibold text-xs text-white uppercase active:bg-red-600 transition ease-in-out duration-150 ml-2" wire:click="deleteUser" wire:loading.attr="disabled">
+    Delete Account
+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Livewire Component wire-end:2xEkqgzIYS3alcioaKqE -->                    </div>
+    </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-auto">
+            <div class="container-fluid mt-4 mb-6 text-muted">
+                <div class="row justify-content-between">
+                    <div class="col">
+                        All Rights Reserved &copy; {{ site_name }} {% now "Y" %}
+                    </div>
+
+                    <div class="col-auto">
+                                                    <div id="google_translate_element"></div>
+                                            </div>
+                </div> <!-- / .row -->
+            </div>
+        </footer>
+    </main> <!-- / main -->
+
+    <!-- JAVASCRIPT-->
+    <!-- Theme JS -->
+
+    <script src="{% static 'themes/dashly/assets/js/theme.bundle.js' %}"></script>
+            <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+        </script>
+
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en'
+                }, 'google_translate_element');
+            }
+        </script>
+        <!-- Livewire Scripts -->
+
+<script src="/secure/livewire/livewire.js?id=fe747446aa84856d8b66" data-turbo-eval="false" data-turbolinks-eval="false" ></script>
+<script data-turbo-eval="false" data-turbolinks-eval="false" >
+    if (window.livewire) {
+	    console.warn('Livewire: It looks like Livewire\'s @livewireScripts JavaScript assets have already been loaded. Make sure you aren\'t loading them twice.')
+	}
+
+    window.livewire = new Livewire();
+    window.livewire.devTools(true);
+    window.Livewire = window.livewire;
+    window.livewire_app_url = '/secure';
+    window.livewire_token = 'TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW';
+
+	/* Make sure Livewire loads first. */
+	if (window.Alpine) {
+	    /* Defer showing the warning so it doesn't get buried under downstream errors. */
+	    document.addEventListener("DOMContentLoaded", function () {
+	        setTimeout(function() {
+	            console.warn("Livewire: It looks like AlpineJS has already been loaded. Make sure Livewire\'s scripts are loaded before Alpine.\\n\\n Reference docs for more info: http://laravel-livewire.com/docs/alpine-js")
+	        })
+	    });
+	}
+
+	/* Make Alpine wait until Livewire is finished rendering to do its thing. */
+    window.deferLoadingAlpine = function (callback) {
+        window.addEventListener('livewire:load', function () {
+            callback();
+        });
+    };
+
+    let started = false;
+
+    window.addEventListener('alpine:initializing', function () {
+        if (! started) {
+            window.livewire.start();
+
+            started = true;
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        if (! started) {
+            window.livewire.start();
+
+            started = true;
+        }
+    });
+</script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    </body>
+
+</html>

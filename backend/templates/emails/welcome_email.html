@@ -1,0 +1,51 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>Welcome to {{ site_name }}, {{ first_name }}! 🎉</h2>
+
+<p>Congratulations! Your account has been successfully created and verified.</p>
+
+<p>You're now part of a growing community of investors who trust {{ site_name }} for their digital asset investments.</p>
+
+<div style="text-align: center;">
+    <a href="{{ dashboard_url }}" class="btn" style="display:inline-block;padding:14px 34px;background-color:#12325a;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;margin:18px 0;">Go to Dashboard</a>
+</div>
+
+<div class="info-box">
+    <p><strong>Getting Started</strong></p>
+    <p style="margin-top: 10px;">Your account is ready to use. Log in to explore our investment plans and start building your portfolio.</p>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size: 16px;"><strong>What's Next?</strong></p>
+
+<ol style="color: #4a5568; margin-left: 20px; margin-bottom: 20px; line-height: 1.8;">
+    <li><strong>Fund Your Account:</strong> Make your first deposit to start investing</li>
+    <li><strong>Choose a Plan:</strong> Select from our diverse investment plans tailored to your goals</li>
+    <li><strong>Monitor Performance:</strong> Track your investments in real-time from your dashboard</li>
+    <li><strong>Refer & Earn:</strong> Share your unique referral code and earn bonuses</li>
+</ol>
+
+<div class="info-box" style="background-color: #f4f7fb; border-left-color: #8fa2bd;">
+    <p><strong>🔐 Security Tips</strong></p>
+    <ul style="margin-top: 10px; margin-left: 20px; color: #4a5568;">
+        <li>Never share your password with anyone</li>
+        <li>Enable two-factor authentication (coming soon)</li>
+        <li>Verify all withdrawal requests carefully</li>
+    </ul>
+</div>
+
+<div class="divider"></div>
+
+<p>Your unique referral code: <strong style="color: #12325a; font-size: 18px;">{{ user.referral_code }}</strong></p>
+<p style="font-size: 14px; color: #718096;">Share this code with friends and family to earn referral bonuses!</p>
+
+<div class="divider"></div>
+
+<p>Thank you for choosing {{ site_name }}. We're here to support your investment journey every step of the way.</p>
+
+<p>Happy investing!</p>
+
+<p>Best regards,<br>The {{ site_name }} Team</p>
+{% endblock %}

@@ -1,0 +1,122 @@
+<!-- NAVIGATION SIDEBAR -->
+<nav id="mainNavbar" class="navbar navbar-vertical navbar-expand-lg scrollbar bg-white navbar-light">
+    <!-- Theme configuration (navbar) -->
+    <script>
+        let navigationColor = localStorage.getItem('navigationColor'),
+            navbar = document.getElementById('mainNavbar');
+
+        if (navigationColor != null && navbar != null) {
+            if (navigationColor == 'inverted') {
+                navbar.classList.add('bg-dark', 'navbar-dark');
+                navbar.classList.remove('bg-white', 'navbar-light');
+            } else {
+                navbar.classList.add('bg-white', 'navbar-light');
+                navbar.classList.remove('bg-dark', 'navbar-dark');
+            }
+        }
+    </script>
+    <div class="container-fluid">
+        <!-- Brand -->
+        <a class="navbar-brand" href="{% url 'dashboard:index' %}">
+            {% load static %}
+            <img src="{% static 'images/logo.png' %}"
+                class="navbar-brand-img logo-light logo-small" alt="{{ site_name }}" style="width: auto; height: 40px;">
+            <img src="{% static 'images/logo.png' %}"
+                class="navbar-brand-img logo-light logo-large" alt="{{ site_name }}" style="width: auto; height: 50px; max-width: 200px;">
+            <img src="{% static 'images/logo-dark.png' %}"
+                class="navbar-brand-img logo-dark logo-small" alt="{{ site_name }}" style="width: auto; height: 40px;">
+            <img src="{% static 'images/logo-dark.png' %}"
+                class="navbar-brand-img logo-dark logo-large" alt="{{ site_name }}" style="width: auto; height: 50px; max-width: 200px;">
+        </a>
+
+        <!-- Navbar toggler -->
+        <a href="javascript: void(0);" class="navbar-toggler" data-bs-toggle="collapse"
+            data-bs-target="#sidenavCollapse" aria-controls="sidenavCollapse" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </a>
+
+        <!-- Collapse -->
+        <div class="collapse navbar-collapse" id="sidenavCollapse">
+            <!-- Navigation -->
+            <ul class="navbar-nav mb-lg-7">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+                       href="{% url 'dashboard:index' %}">
+                        <i class="bi bi-house nav-link-icon fs-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'deposits' %}active{% endif %}"
+                       href="{% url 'dashboard:deposits' %}">
+                        <i class="bi bi-wallet-fill nav-link-icon fs-3"></i>
+                        <span>Deposit</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'swap' %}active{% endif %}"
+                       href="{% url 'dashboard:swap' %}">
+                        <i class="bi bi-arrow-left-right nav-link-icon fs-3"></i>
+                        <span>Swap</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name in 'transfers,local_transfer,international_transfer' %}active{% endif %}"
+                       href="{% url 'dashboard:transfers' %}">
+                        <i class="bi bi-send nav-link-icon fs-3"></i>
+                        <span>Transfers</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'loans' %}active{% endif %}"
+                       href="{% url 'dashboard:loans' %}">
+                        <i class="bi bi-cash-coin nav-link-icon fs-3"></i>
+                        <span>Loans</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'grants' %}active{% endif %}"
+                       href="{% url 'dashboard:grants' %}">
+                        <i class="bi bi-gift nav-link-icon fs-3"></i>
+                        <span>Grants</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'cards' %}active{% endif %}"
+                       href="{% url 'dashboard:cards' %}">
+                        <i class="bi bi-credit-card-2-front nav-link-icon fs-3"></i>
+                        <span>Cards</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'account_history' %}active{% endif %}"
+                       href="{% url 'dashboard:account_history' %}">
+                        <i class="bi bi-clock-history nav-link-icon fs-3"></i>
+                        <span>Transaction History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'refer_user' %}active{% endif %}"
+                       href="{% url 'dashboard:refer_user' %}">
+                        <i class="bi bi-sign-intersection-y nav-link-icon fs-3"></i>
+                        <span>Referral</span>
+                    </a>
+                </li>
+
+                <li class="nav-item w-100">
+                    <hr>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'dashboard:support' %}"
+                       class="nav-link {% if request.resolver_match.url_name == 'support' %}active{% endif %}">
+                        <i class="bi bi-info-circle-fill nav-link-icon fs-3"></i>
+                        <span>Help & Support</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- End of Navigation -->
+        </div>
+        <!-- End of Collapse -->
+    </div>
+</nav>

@@ -1,0 +1,90 @@
+/* ============================================================
+   Grenville Capitals brand override — loaded AFTER the Dashly bundle.
+   Brand (matches the new EnvyTheme marketing site):
+     - RED #12325a   = primary action colour
+     - NAVY #0a1526  = headings / text / sidebar default
+     - light, clean background
+   ============================================================ */
+
+:root, [data-theme="light"], [data-theme="dark"] {
+  --bs-primary: #12325a;
+  --bs-primary-rgb: 242,19,43;
+  --bs-link-color: #12325a;
+  --bs-link-hover-color: #0e2a4c;
+  --bs-body-bg: #f7f8fa;
+}
+
+/* ---------- Red primary buttons / CTAs ---------- */
+.btn-primary {
+  --bs-btn-bg:#12325a; --bs-btn-border-color:#12325a;
+  --bs-btn-hover-bg:#0e2a4c; --bs-btn-hover-border-color:#0e2a4c;
+  --bs-btn-active-bg:#0a2038; --bs-btn-active-border-color:#0a2038;
+  --bs-btn-color:#fff; --bs-btn-hover-color:#fff; --bs-btn-active-color:#fff;
+  --bs-btn-disabled-bg:#12325a; --bs-btn-disabled-border-color:#12325a;
+}
+.btn-outline-primary {
+  --bs-btn-color:#12325a; --bs-btn-border-color:#12325a;
+  --bs-btn-hover-bg:#12325a; --bs-btn-hover-border-color:#12325a; --bs-btn-hover-color:#fff;
+  --bs-btn-active-bg:#12325a; --bs-btn-active-border-color:#12325a; --bs-btn-active-color:#fff;
+}
+/* opacity-aware so bg-opacity-10 / text-opacity tints still render (stat icons) */
+.bg-primary       { background-color:rgba(var(--bs-primary-rgb), var(--bs-bg-opacity,1)) !important; }
+.text-primary     { color:rgba(var(--bs-primary-rgb), var(--bs-text-opacity,1)) !important; }
+.link-primary     { color:#12325a !important; }
+.badge.bg-primary { --bs-bg-opacity:1; background-color:#12325a !important; }
+.progress-bar     { background-color:#12325a; }
+.btn-link         { color:#12325a; }
+
+/* ---------- Brand accent helpers ---------- */
+.text-red  { color:#12325a !important; }
+.bg-red    { background-color:#12325a !important; }
+.text-navy { color:#0a1526 !important; }
+a:not(.btn):not(.nav-link):not(.navbar-brand) { color:#12325a; }
+a:not(.btn):not(.nav-link):not(.navbar-brand):hover { color:#0e2a4c; }
+
+/* ---------- Clean, light sidebar ---------- */
+#mainNavbar.bg-white,
+.navbar-vertical.bg-white {
+  background-color:#ffffff !important;
+  border-right:1px solid #ececf1;
+  box-shadow:0 0 24px rgba(10, 21, 38, 0.04);
+}
+#mainNavbar .navbar-nav .nav-link {
+  color:#0a1526 !important;
+  border-radius:10px;
+  margin:2px 8px;
+  transition:background-color .15s ease,color .15s ease;
+}
+#mainNavbar .navbar-nav .nav-link i,
+#mainNavbar .navbar-nav .nav-link .fe {
+  color:#6e727f !important;
+}
+#mainNavbar .navbar-nav .nav-link:hover {
+  background-color:#f7f8fa !important;
+  color:#0a1526 !important;
+}
+/* active item -> soft red pill with red text/icon */
+#mainNavbar .navbar-nav .nav-link.active,
+.navbar-vertical .navbar-nav .nav-link.active {
+  background-color:rgba(18, 50, 90, 0.10) !important;
+  color:#12325a !important;
+  font-weight:600;
+}
+#mainNavbar .navbar-nav .nav-link.active i,
+#mainNavbar .navbar-nav .nav-link.active .fe,
+#mainNavbar .navbar-nav .nav-link.active svg {
+  color:#12325a !important;
+}
+#mainNavbar .navbar-heading { color:#9aa0ad !important; }
+
+/* ---------- Logo: preserve aspect ratio ---------- */
+#mainNavbar .navbar-brand-img,
+.navbar-brand .navbar-brand-img {
+  height:36px !important;
+  width:auto !important;
+  max-width:none !important;
+  object-fit:contain !important;
+}
+
+/* ---------- Body ---------- */
+body { background-color:#f7f8fa; }

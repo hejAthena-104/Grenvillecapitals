@@ -1,0 +1,35 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<h2>Deposit Confirmation</h2>
+
+<p>Hi {{ first_name }},</p>
+
+<p>Your deposit has been received and is being processed.</p>
+
+<div class="info-box">
+    <p><strong>Transaction Details:</strong></p>
+    <ul style="margin-top: 10px; margin-left: 20px; color: #4a5568;">
+        <li><strong>Amount:</strong> ${{ amount }}</li>
+        <li><strong>Payment Method:</strong> {{ payment_method }}</li>
+        <li><strong>Status:</strong> <span style="color: #d29a52;">Processing</span></li>
+        <li><strong>Reference:</strong> {{ reference }}</li>
+    </ul>
+</div>
+
+<p>Your funds will be credited to your account shortly. This typically takes a few minutes to a few hours depending on the payment method.</p>
+
+<div style="text-align: center;">
+    <a href="{{ dashboard_url }}" class="btn" style="display:inline-block;padding:14px 34px;background-color:#12325a;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;margin:18px 0;">View Dashboard</a>
+</div>
+
+<div class="divider"></div>
+
+<p style="font-size: 14px; color: #718096;">
+    You will receive another email once your deposit is confirmed and credited to your account.
+</p>
+
+<p>If you have any questions, feel free to contact our support team.</p>
+
+<p>Best regards,<br>The {{ site_name }} Team</p>
+{% endblock %}
