@@ -22,9 +22,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     # The admin holds every customer's KYC documents and balances, and this host
-    # is public. Keeping it off the /admin/ path that credential scanners hammer
-    # is worth more than the tidiness of the default URL.
-    path(config('ADMIN_URL', default='gc-console-7f3a/'), admin.site.urls),
+    # is public, so it is not served at /admin/. The real path comes from
+    # ADMIN_URL in .env.prod and is deliberately NOT in this repo — the default
+    # below is only for local development.
+    path(config('ADMIN_URL', default='admin-local-only/'), admin.site.urls),
 
     # Authentication URLs
     path('auth/', include('accounts.urls')),

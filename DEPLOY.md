@@ -76,7 +76,9 @@ done
 
 The Django admin is **not** at `/admin/`. It holds every customer's KYC documents,
 balances and transactions, and this host is public, so it lives at an unguessable
-path set by `ADMIN_URL` in `.env.prod` (currently `gc-console-7f3a/`).
+path set by `ADMIN_URL` in `.env.prod`. The value is deliberately not recorded
+in this repo — read it from the server if you need it:
+`ssh root@156.67.28.100 'grep ADMIN_URL /opt/grenville/repo/backend/.env.prod'`.
 `/admin/` returns 404 by design — that is the path credential scanners hammer.
 
 Rotate the path by changing `ADMIN_URL` and rebuilding; no code change needed.
