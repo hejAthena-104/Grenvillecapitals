@@ -4,7 +4,7 @@ Two hosts, one box, one shared Caddy:
 
 | | |
 |---|---|
-| Marketing site | `https://grenvillecapitals.com` (+ `www` → 301 apex) — static, served by Caddy `file_server` |
+| Marketing site | `https://grenvillecapitals.com` (+ `www`) — static. Two possible homes: **Netlify** (`netlify.toml`, deployed from the repo owner's account) or the **VPS Caddy** `file_server`. DNS decides which is live; the other is the rollback. |
 | App | `https://dashboard.grenvillecapitals.com` — Django, `grenville-backend` container |
 | Host | Contabo VPS #1, `156.67.28.100` (`ssh root@…`) |
 | Repo on host | `/opt/grenville/repo` |
@@ -28,7 +28,10 @@ rsync -az --delete \
   --exclude '.env' --exclude '.env.*' --exclude db.sqlite3 --exclude media \
   ./ root@156.67.28.100:/opt/grenville/repo/
 
-# frontend only: nothing else to do, Caddy serves it straight off the bind mount.
+# frontend, if the VPS is serving it: nothing else to do, Caddy serves it
+# straight off the bind mount. If Netlify is serving it, deploy there instead
+# (netlify.toml is the routing contract) — the rsync above still keeps the VPS
+# copy warm as a rollback.
 # backend:
 ssh root@156.67.28.100 'cd /opt/swifteagle && docker compose up -d --build grenville'
 ```
