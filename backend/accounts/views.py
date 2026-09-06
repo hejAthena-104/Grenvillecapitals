@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils import timezone
 from .forms import UserRegistrationForm, UserLoginForm
 from .models import User, EmailOTP, PasswordResetToken, LoginHistory
@@ -63,9 +64,16 @@ def login_view(request):
 
                 messages.success(request, f'Welcome back, {user.get_full_name()}!')
 
-                # Redirect to next page or dashboard
-                next_url = request.GET.get('next', 'dashboard:index')
-                return redirect(next_url)
+                # Honour ?next=, but only for targets on this host: an unchecked
+                # value lets an attacker bounce a freshly-authenticated user to a
+                # lookalike "session expired" page.
+                next_url = request.GET.get('next')
+                if next_url and url_has_allowed_host_and_scheme(
+                        next_url,
+                        allowed_hosts={request.get_host()},
+                        require_https=request.is_secure()):
+                    return redirect(next_url)
+                return redirect('dashboard:index')
             else:
                 messages.error(request, 'Invalid username or password.')
         else:
