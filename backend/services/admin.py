@@ -62,3 +62,7 @@ class CardAdmin(admin.ModelAdmin):
     list_editable = ('status', 'balance')
     search_fields = ('user__username', 'user__email', 'card_holder')
     readonly_fields = ('card_number', 'cvv', 'expiry', 'created_at')
+
+
+# Cards are issued by approving a CardApplication, never created by hand.
+CardAdmin.has_add_permission = lambda self, request: False

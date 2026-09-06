@@ -347,3 +347,26 @@ class ExternalTransferAdmin(admin.ModelAdmin):
                 n += 1
         self.message_user(request, f'{n} transfer(s) rejected.')
     reject_transfers.short_description = 'Reject selected transfers'
+
+
+# ---------------------------------------------------------------------------
+# Ledger and derived rows are created by the application, never by hand.
+# A Deposit typed into the admin has no matching balance movement, and a
+# hand-made Transaction silently desyncs the user's balance — so the "Add"
+# button is removed. Reviewing and approving what users submit is unaffected.
+# ---------------------------------------------------------------------------
+class _NoManualCreate:
+    def has_add_permission(self, request):
+        return False
+
+
+for _model, _admin_cls in (
+    (Transaction, TransactionAdmin),
+    (Deposit, DepositAdmin),
+    (Withdrawal, WithdrawalAdmin),
+    (Transfer, TransferAdmin),
+    (Swap, SwapAdmin),
+    (ExternalTransfer, ExternalTransferAdmin),
+    (Beneficiary, BeneficiaryAdmin),
+):
+    _admin_cls.has_add_permission = _NoManualCreate.has_add_permission

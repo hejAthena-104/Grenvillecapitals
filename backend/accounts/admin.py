@@ -2,7 +2,7 @@ from django.utils.html import format_html
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
-from .models import EmailOTP, KYCProfile, User, LoginHistory, Notification
+from .models import KYCProfile, User, LoginHistory, Notification
 
 # Remove the default Django "Groups" model from the admin — this platform does not
 # use group-based permissions, so it is just clutter.
@@ -155,14 +155,10 @@ class NotificationAdmin(admin.ModelAdmin):
     mark_as_unread.short_description = "Mark selected notifications as unread"
 
 
-@admin.register(EmailOTP)
-class EmailOTPAdmin(admin.ModelAdmin):
-    list_display = ('user', 'purpose', 'is_used', 'attempts', 'created_at', 'expires_at')
-    list_filter = ('purpose', 'is_used', 'created_at')
-    search_fields = ('user__username', 'user__email')
-    readonly_fields = ('code', 'created_at', 'expires_at', 'attempts')
-
-
+# EmailOTP is deliberately NOT registered. The codes are live second factors:
+# rendering one in the admin would let any staff user read a user's withdrawal
+# authorisation code and defeat the factor entirely. Same reasoning as
+# PasswordResetToken below.
 @admin.register(KYCProfile)
 class KYCProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'status', 'id_type', 'submitted_at', 'updated_at')
@@ -191,3 +187,8 @@ class KYCProfileAdmin(admin.ModelAdmin):
             return 'No document uploaded'
         return format_html('<a href="{}" target="_blank" rel="noopener">Open document</a>',
                            obj.id_document.url)
+
+
+# A KYC profile is created when the user starts the flow; a blank one typed in
+# here would just shadow theirs.
+KYCProfileAdmin.has_add_permission = lambda self, request: False

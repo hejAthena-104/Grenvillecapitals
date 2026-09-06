@@ -8,7 +8,7 @@
 
 :root, [data-theme="light"], [data-theme="dark"] {
   --bs-primary: #12325a;
-  --bs-primary-rgb: 242,19,43;
+  --bs-primary-rgb: 18,50,90;
   --bs-link-color: #12325a;
   --bs-link-hover-color: #0e2a4c;
   --bs-body-bg: #f7f8fa;

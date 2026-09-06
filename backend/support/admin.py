@@ -59,3 +59,7 @@ class SupportTicketAdmin(admin.ModelAdmin):
             ticket.close()
         self.message_user(request, f"{queryset.count()} ticket(s) closed.")
     mark_as_closed.short_description = "Close selected tickets"
+
+
+# EmailLog is a record of what was sent; it is written by the app, not typed in.
+EmailLogAdmin.has_add_permission = lambda self, request: False
