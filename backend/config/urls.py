@@ -15,12 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from decouple import config
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # The admin holds every customer's KYC documents and balances, and this host
+    # is public. Keeping it off the /admin/ path that credential scanners hammer
+    # is worth more than the tidiness of the default URL.
+    path(config('ADMIN_URL', default='gc-console-7f3a/'), admin.site.urls),
 
     # Authentication URLs
     path('auth/', include('accounts.urls')),
