@@ -11,7 +11,7 @@ Two hosts, one box, one shared Caddy:
 | Shared compose | `/opt/swifteagle/docker-compose.yml` (service `grenville`) |
 | Shared Caddyfile | `/opt/swifteagle/Caddyfile` |
 | Docker network | `swifteagle-net` — `expose: 8000`, **no published host port** |
-| Database | Railway Postgres, project `summitteachable-db`, service `Postgres-bC0j`, public proxy `junction.proxy.rlwy.net:25592` |
+| Database | Railway Postgres (project `summitteachable-db`). Connection string lives only in `.env.prod` on the host — the public proxy endpoint is deliberately not recorded in this public repo. |
 | Uploads | named volume `swifteagle_grenville_media` → `/app/media` |
 | Mail | Resend, sending domain `noreply.grenvillecapitals.com` |
 
