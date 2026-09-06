@@ -111,6 +111,52 @@
 		.pwa-banner-close { position: absolute; top: 8px; right: 8px; order: 3; }
 	}
 	</style>
+	<style>
+		.service-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 30px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid #f0f0f0;
+    height: 100%;
+  }
+		.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(18, 50, 90, 0.12);
+    border-color: #12325a;
+  }
+		.service-card-icon {
+    width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, #12325a 0%, #1d4d85 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 22px;
+    font-size: 1.8em;
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(18, 50, 90, 0.2);
+    transition: all 0.3s ease;
+  }
+		.service-card:hover .service-card-icon {
+    background: linear-gradient(135deg, #b0762e 0%, #d29a52 100%);
+    box-shadow: 0 8px 20px rgba(176, 118, 46, 0.3);
+  }
+		.service-card h3 {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #0a1526;
+    margin-bottom: 14px;
+  }
+		.service-card p {
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-size: 0.98em;
+  }
+	</style>
 </head>
 <body style="margin:0 !important; padding:0 !important;">
 
