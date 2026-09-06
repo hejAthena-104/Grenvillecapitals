@@ -1,0 +1,76 @@
+# Grenville Capitals — marketing site.
+#
+# The same routing contract is implemented twice, deliberately:
+#   - here, for Netlify
+#   - in the grenvillecapitals.com block of /opt/swifteagle/Caddyfile on the VPS
+# Whichever one DNS points at is the live one. Keep the two in sync: every rule
+# below has a matching `redir` line in the Caddyfile.
+#
+# The app itself (auth + dashboard) is always the Django host, never Netlify.
+
+[build]
+  publish = "frontend"
+  command  = ""
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# --- auth + app live on the Django host -------------------------------------
+
+[[redirects]]
+  from = "/login"
+  to = "https://dashboard.grenvillecapitals.com/auth/login/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/register"
+  to = "https://dashboard.grenvillecapitals.com/auth/register/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/forgot-password"
+  to = "https://dashboard.grenvillecapitals.com/auth/forgot-password/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/auth/*"
+  to = "https://dashboard.grenvillecapitals.com/auth/:splat"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/dashboard/*"
+  to = "https://dashboard.grenvillecapitals.com/dashboard/:splat"
+  status = 302
+  force = true
+
+# the scrape's old logged-in area; send anyone following a stale link to the app
+[[redirects]]
+  from = "/users/*"
+  to = "https://dashboard.grenvillecapitals.com/dashboard/"
+  status = 302
+  force = true
+
+# --- headers ----------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options    = "nosniff"
+    X-Frame-Options           = "SAMEORIGIN"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000"
+
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# the service worker must never be cached, or clients pin an old app shell
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
