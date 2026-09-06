@@ -1,3 +1,16 @@
+# ============================================================================
+# NOT IN USE — Grenville is served entirely from the Contabo VPS (156.67.28.100)
+# by the shared Caddy, exactly like bloomvest, provena and summitteachable:
+#
+#   grenvillecapitals.com            -> Caddy file_server, /srv/grenville
+#   dashboard.grenvillecapitals.com  -> reverse_proxy to the Django container
+#
+# Every rule below is already implemented in the grenvillecapitals.com block of
+# /opt/swifteagle/Caddyfile. This file is kept only as the rollback path: point
+# the apex A record at Netlify and it becomes authoritative again.
+# See DEPLOY.md.
+# ============================================================================
+
 # Grenville Capitals — marketing site.
 #
 # The same routing contract is implemented twice, deliberately:
