@@ -1,0 +1,1128 @@
+
+<!doctype html>
+<html lang="en">
+
+<!-- Mirrored from stonebridgecapitals.com/news/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 06 Sep 2026 08:31:46 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="StoneBridge Capitals">
+
+	<!-- PWA Meta Tags -->
+	<meta name="theme-color" content="#1a3c34">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="StoneBridge Capitals">
+	<meta name="application-name" content="StoneBridge Capitals">
+	<meta name="msapplication-TileColor" content="#1a3c34">
+	<meta name="msapplication-TileImage" content="../static/images/pwa/icon-144x144.png">
+
+	<!-- PWA Manifest -->
+	<link rel="manifest" href="/manifest.json">
+
+	<!-- Favicons -->
+	<link rel="shortcut icon" href="/static/images/pwa/favicon.ico">
+	<link rel="icon" type="image/png" sizes="32x32" href="/static/images/pwa/icon-72x72.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/static/images/pwa/icon-72x72.png">
+	<link rel="apple-touch-icon" href="/static/images/pwa/apple-touch-icon.png">
+
+	<meta name="description" content="Secure online banking with StoneBridge Capitals. Manage accounts, transfer funds, pay bills and more." />
+	<meta name="keywords" content="online banking, StoneBridge Capitals, secure banking, money transfer, bill pay" />
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
+
+
+	<link rel="stylesheet" href="/static/fonts/icomoon/style.css">
+	<link rel="stylesheet" href="/static/fonts/flaticon/font/flaticon.css">
+
+	<link rel="stylesheet" href="/static/vendor/bootstrap-icons/bootstrap-icons.css">
+
+	<link rel="stylesheet" href="/static/css/tiny-slider.css">
+	<link rel="stylesheet" href="/static/css/aos.css">
+	<link rel="stylesheet" href="/static/css/glightbox.min.css">
+	<link rel="stylesheet" href="/static/css/style.css">
+
+	<link rel="stylesheet" href="/static/css/flatpickr.min.css">
+
+
+	<title>StoneBridge Capitals</title>
+
+	<!-- PWA Install Banner Styles -->
+	<style>
+	.pwa-banner {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: linear-gradient(135deg, #1a3c34 0%, #2a5c4e 100%);
+		color: white;
+		padding: 16px 20px;
+		z-index: 99999;
+		box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.2);
+		display: none;
+		align-items: center;
+		gap: 15px;
+	}
+	.pwa-banner.show { display: flex; }
+	.pwa-banner-icon {
+		width: 48px;
+		height: 48px;
+		background: white;
+		border-radius: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+	.pwa-banner-icon img { width: 32px; height: 32px; }
+	.pwa-banner-text { flex: 1; }
+	.pwa-banner-text strong { display: block; font-size: 15px; margin-bottom: 2px; }
+	.pwa-banner-text span { font-size: 13px; opacity: 0.9; }
+	.pwa-banner-btn {
+		background: white;
+		color: #1a3c34;
+		border: none;
+		padding: 10px 24px;
+		border-radius: 20px;
+		font-weight: 600;
+		font-size: 14px;
+		cursor: pointer;
+		white-space: nowrap;
+	}
+	.pwa-banner-btn:hover { background: #f5f5f5; }
+	.pwa-banner-close {
+		background: none;
+		border: none;
+		color: white;
+		font-size: 24px;
+		cursor: pointer;
+		padding: 0 5px;
+		opacity: 0.8;
+	}
+	.pwa-banner-close:hover { opacity: 1; }
+	@media (max-width: 600px) {
+		.pwa-banner { flex-wrap: wrap; justify-content: center; text-align: center; padding: 15px; }
+		.pwa-banner-text { width: 100%; order: 1; margin-bottom: 10px; }
+		.pwa-banner-icon { order: 0; }
+		.pwa-banner-btn { order: 2; }
+		.pwa-banner-close { position: absolute; top: 8px; right: 8px; order: 3; }
+	}
+	</style>
+</head>
+<body style="margin:0 !important; padding:0 !important;">
+
+	<!-- PWA Install Banner -->
+	<div id="pwa-banner" class="pwa-banner">
+		<div class="pwa-banner-icon">
+			<img src="/static/images/pwa/icon-72x72.png" alt="StoneBridge Capitals">
+		</div>
+		<div class="pwa-banner-text">
+			<strong>Install StoneBridge Capitals</strong>
+			<span id="pwa-banner-msg">Add to home screen for quick access</span>
+		</div>
+		<button id="pwa-install-btn" class="pwa-banner-btn">Install</button>
+		<button id="pwa-close-btn" class="pwa-banner-close">&times;</button>
+	</div>
+	<!-- Mobile Sidebar - Dashboard Style -->
+	<aside class="sidebar" id="mobileSidebar" style="position: fixed; top: 59px; left: -300px; bottom: 0; width: 300px; z-index: 996; transition: all 0.3s; padding: 20px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #aab7cf transparent; box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1); background-color: #fff;">
+		<ul class="sidebar-nav" id="sidebar-nav" style="padding: 0; margin: 0; list-style: none;">
+
+			<!-- Personal Banking -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" data-bs-target="#personal-nav" data-bs-toggle="collapse" href="#" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-person-circle" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Personal Banking</span><i class="bi bi-chevron-down ms-auto" style="margin-right: 0; transition: transform 0.2s ease-in-out;"></i>
+				</a>
+				<ul id="personal-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="padding: 5px 0 0 0; margin: 0; list-style: none;">
+					<li><a href="/checking/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Checking</span></a></li>
+					<li><a href="/savings/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Savings</span></a></li>
+					<li><a href="/health-savings/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Health Savings</span></a></li>
+					<li><a href="/cd-ira/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>CDs & IRAs</span></a></li>
+					<li><a href="/atm-debit-cards/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>ATM & Debit Cards</span></a></li>
+				</ul>
+			</li>
+
+			<!-- Business Banking -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" data-bs-target="#business-nav" data-bs-toggle="collapse" href="#" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-briefcase" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Business Banking</span><i class="bi bi-chevron-down ms-auto" style="margin-right: 0; transition: transform 0.2s ease-in-out;"></i>
+				</a>
+				<ul id="business-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="padding: 5px 0 0 0; margin: 0; list-style: none;">
+					<li><a href="/business-checking/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Business Checking</span></a></li>
+					<li><a href="/business-savings/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Business Savings</span></a></li>
+					<li><a href="/business-cds/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Certificates of Deposit</span></a></li>
+				</ul>
+			</li>
+
+			<!-- Loans -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" data-bs-target="#loans-nav" data-bs-toggle="collapse" href="#" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-cash-stack" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Loans</span><i class="bi bi-chevron-down ms-auto" style="margin-right: 0; transition: transform 0.2s ease-in-out;"></i>
+				</a>
+				<ul id="loans-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="padding: 5px 0 0 0; margin: 0; list-style: none;">
+					<li><a href="/personal-loan/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Home Equity Loans</span></a></li>
+					<li><a href="/business-loans/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Business Loans</span></a></li>
+				</ul>
+			</li>
+
+		
+
+			<!-- Land Trust -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" href="/land-trust/" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-tree" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Land Trust</span>
+				</a>
+			</li>
+
+			<!-- Rates -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" href="/rates/" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-percent" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Rates</span>
+				</a>
+			</li>
+
+			<!-- About Us -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" href="/about-us/" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-info-circle" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>About Us</span>
+				</a>
+			</li>
+
+			<!-- Our Team -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" href="/team/" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-people" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Our Team</span>
+				</a>
+			</li>
+
+			<!-- News & Updates -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" href="/news/" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-newspaper" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>News & Updates</span>
+				</a>
+			</li>
+
+			<!-- Location & Hours -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" href="/location-hours/" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-geo-alt" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Location & Hours</span>
+				</a>
+			</li>
+
+			<!-- Get the App -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" href="/get-app/" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-download" style="font-size: 16px; margin-right: 10px; color: #1a3c34;"></i><span>Get the App</span>
+				</a>
+			</li>
+
+			<!-- Support -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" data-bs-target="#support-nav" data-bs-toggle="collapse" href="#" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-headset" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Support</span><i class="bi bi-chevron-down ms-auto" style="margin-right: 0; transition: transform 0.2s ease-in-out;"></i>
+				</a>
+				<ul id="support-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="padding: 5px 0 0 0; margin: 0; list-style: none;">
+					<li><a href="/contact/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Contact Us</span></a></li>
+					<li><a href="/faqs/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>FAQs</span></a></li>
+					<li><a href="/online-security/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Online Security</span></a></li>
+					<li><a href="/privacy-policy/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Privacy Policy</span></a></li>
+					<li><a href="/disclosure/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Disclosure</span></a></li>
+					<li><a href="/accessibility/" style="display: flex; align-items: center; font-size: 14px; font-weight: 600; color: #0d1f1a; padding: 10px 0 10px 40px; transition: 0.3s; text-decoration: none;"><i class="bi bi-circle" style="font-size: 6px; margin-right: 8px; line-height: 0; border-radius: 50%;"></i><span>Accessibility</span></a></li>
+				</ul>
+			</li>
+
+			<!-- Login -->
+			<li class="nav-item" style="margin-bottom: 5px;">
+				<a class="nav-link collapsed" href="/login" style="display: flex; align-items: center; font-size: 15px; font-weight: 600; color: #0d1f1a; transition: 0.3s; background: #fff; padding: 10px 15px; border-radius: 4px;">
+					<i class="bi bi-box-arrow-in-right" style="font-size: 16px; margin-right: 10px; color: #899bbd;"></i><span>Login</span>
+				</a>
+			</li>
+
+		</ul>
+	</aside>
+
+	<nav class="site-nav" style="background:#fff;">
+	<div class="container-fluid" style="padding:0;">
+			<div class="menu-bg-wrap">
+				<div class="site-navigation">
+					<!-- Mobile Layout - Matches Dashboard -->
+					<div class="header-flex w-100">
+						<div class="mobile-hamburger">
+							<i class="bi bi-list toggle-sidebar-btn" onclick="toggleMobileSidebar()" style="font-size:1.3rem;cursor:pointer;"></i>
+						</div>
+						<div class="mobile-logo">
+							<a href="/" class="logo d-flex align-items-center justify-content-center">
+								<img src="/static/images/logo.png" alt="">
+							</a>
+						</div>
+						<div class="mobile-login-btn">
+							<a href="/login" class="btn btn-primary btn-sm" style="padding: 6px 12px; font-size: 0.85em; color: #fff !important; border-radius: 4px;">
+								<i class="bi bi-box-arrow-in-right" style="color: #fff !important;"></i>
+							</a>
+						</div>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="desktop-menu">
+						<div class="container">
+							<div class="row g-0 align-items-center">
+								<div class="col-3 d-flex align-items-center">
+									<a href="/" class="logo">
+										<img src="/static/images/logo.png" class="logo-img">
+									</a>
+								</div>
+								<div class="col-7 text-center">
+									<ul class="js-clone-nav d-inline-block text-start site-menu mx-auto">
+			
+								<li class="has-children">
+									<a>Personal Banking</a>
+									<ul class="dropdown">
+										<li class="has-children">
+											<a>Deposit Products</a>
+											<ul class="dropdown">
+												<li><a href="/checking/">Personal Checking</a></li>
+												<li><a href="/savings/">Personal Saving</a></li>
+												<li><a href="/health-savings/">Health Savings Account</a></li>
+												<li><a href="/cd-ira/">CDs & IRAs</a></li>
+											</ul>
+											</li>
+											<li class="has-children">
+												<a>Loans</a>
+												<ul class="dropdown">
+													<li><a href="/personal-loan/">Home Equity Loans</a></li>
+												</ul>	
+												
+										
+										</li>	
+												
+										
+										<li class="has-children">
+											<a>Additional Services</a>
+											<ul class="dropdown">
+												<li><a href="/additional-services/">Additional Services</a></li>
+												<li><a href="/online-education/">Online Education</a></li>
+												<li><a href="/atm-debit-cards/">ATM & Debit Cards</a></li>
+												<li><a href="#">Zelle®</a></li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								
+								<li class="has-children">
+									<a>Business Banking</a>
+									<ul class="dropdown">
+										<li class="has-children">
+											<a>Deposit Products</a>
+											<ul class="dropdown">
+												<li><a href="/business-checking/">Business Checking</a></li>
+												<li><a href="/business-savings/">Business Saving</a></li>
+												<li><a href="/business-cds/">CDs</a></li>
+											</ul>
+											</li>
+											<li class="has-children">
+												<a>Loans</a>
+												<ul class="dropdown">
+													<li><a href="/business-loans/">Business and Real Estate Loans</a></li>
+												</ul>	
+												
+										
+										</li>	
+												
+										
+										<li class="has-children">
+											<a>Additional Services</a>
+											<ul class="dropdown">
+												<li><a href="/additional-services/">Additional Services</a></li>
+												<li><a href="/online-education/">Online Education</a></li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+
+								<li class="has-children">
+									<a>Land Trust</a>
+									<ul class="dropdown">
+										<li class="has-children">
+											<a>Services</a>
+											<ul class="dropdown">
+												<li><a href="/land-trust/">Land Trust Services</a></li>
+											</ul>
+											</li>
+											<li class="has-children">
+												<a>Forms</a>
+												<ul class="dropdown">
+													<li><a href="#landtrust">Land Trust Forms</a></li>
+												</ul>
+											</li>
+											</ul>
+								</li>
+
+									<li class="has-children">
+									<a>About Us</a>
+									<ul class="dropdown">
+										<li class="has-children">
+											<a>About StoneBridge Capitals</a>
+											<ul class="dropdown">
+												<li><a href="/about-us/">About Us</a></li>
+												<li><a href="/team/">Team</a></li>
+												<li><a href="/news/">News</a></li>
+												<li><a href="/terms-and-conditions/">Statement of Conditions</a></li>
+												<li><a href="/location-hours/">Location & Hours</a></li>
+												<li><a href="/contact/">Contact Us</a></li>
+											</ul>
+											
+									</li>
+											
+									</ul>
+								</li>
+
+								
+									</ul>
+								</div>
+								<div class="col-2 d-flex align-items-center justify-content-end">
+									<a href="/login" class="btn btn-primary btn-sm login-btn-desktop" style="color: #fff !important;">
+										<i class="bi bi-box-arrow-in-right me-1" style="color: #fff !important;"></i> <span style="color: #fff !important;">Login</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container" style="font-size:0.95em; color:#222; padding-bottom:4px;">
+			
+		</div>
+		</div>
+	</nav>
+	
+
+
+<div class="hero overlay inner-page">
+	<div class="hero-bg-img">
+		<img src="/static/images/ContentImageHandler.ashx-31.jpg" alt="News">
+	</div>
+	<div class="container" style="position:absolute; top:50%; left:50%; transform: translate(-50%, -50%);">
+		<div class="row align-items-center justify-content-center pt-5">
+			<div class="col-lg-6 text-center pe-lg-5">
+				<h1 class="heading text-white mb-3" data-aos="fade-up">News</h1>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+    <div style="padding:20px;"></div>
+    <div class="container">
+        <div style="text-align:center;">
+          <h2 class="heading text-primary">A Message to our Customers</h2>
+        </div>
+
+        <p style="font-weight:bold;">February  22, 2022 update</p>
+        <p style="font-weight:bold;">All of our locations are open regular business hours to service all your banking needs:</p>
+        <span style="font-weight:bold;">Chicago - Main Bank</span> <span>Phone <a href="tel:+13025927182">+1 (302) 592-7182</a> </span> <br>
+        <span>3400 W. Lawrence Ave</span> <br>
+        <span>Chicago, IL 60625</span>
+
+        <br>
+        <br>
+
+        <span style="font-weight:bold;">North Mayfair Branch</span> <span>Phone <a href="tel:+13025927182">+1 (302) 592-7182</a> </span> <br>
+        <span>4100 W Lawrence Ave</span> <br>
+        <span>Chicago, IL 60625</span>
+
+        <br>
+        <br>
+
+        <span style="font-weight:bold;">Skokie Branch</span> <span>Phone <a href="tel:8476772522">(847) 677-2522</a> </span> <br>
+        <span>7515 Skokie Boulevard</span> <br>
+        <span>Skokie, IL 60077</span>
+
+        <br>
+        <br>
+
+        <span style="font-weight:bold;">Lincoln Square Branch</span> <span>Phone <a href="tel:+13025927182">+1 (302) 592-7182</a> </span> <br>
+        <span>4400 N Western Ave</span> <br>
+        <span>Chicago, IL 60625</span>
+
+        <br>
+        <br>
+
+        <span style="font-weight:bold;">Lincoln Square Branch</span> <span>Phone <a href="tel:+13025927182">+1 (302) 592-7182</a> </span> <br>
+        <span>4400 N Western Ave</span> <br>
+        <span>Chicago, IL 60625</span>
+
+        <br>
+        <br>
+
+        <p style="font-weight:bold;">24-hour Banking is available for your convenience:</p>
+        <span>* Online Banking <a href="/login">Access your account anytime</a></span> <br>
+        <span>* Mobile Banking App</span> <br>
+        <span>* Telephone Banking 1(800) 252-2656 Telephone Banking Information</span> <br>
+        <span>Our commitment is to assist you and adapt to your needs. Your business and patience are greatly appreciated.</span>
+
+
+        <hr style="border: 4px solid gold;">
+
+
+        <p>
+            StoneBridge Capitals President, Robert Gecht, reflects on the financial crisis of 2008 with the Chicago Tribune in "Ten Years After The Fall".  "'The hardest part of that was to see the suffering of my clients and customers -- people who had done everything right and nothing wrong -- and just see their businesses and their worlds collapse,' said Gecht, 67, a fixture at the Northwest Side bank since 1981. Founded in 1953, StoneBridge Capitals has assets of about $600 million and $91 million in equity. While dozens of Chicago-area banks failed amid the recession and its aftermath, StoneBridge Capitals never lost money, Gecht said." <a href="#">Read more...</a></p>
+
+
+            <div style="padding-bottom:20px;">
+                <img src="/static/images/ContentImageHandler.ashx-5.jpg">
+            </div>
+
+
+            <hr style="border: 4px solid gold;">
+
+            <div style="text-align:center;">
+                <h2 class="heading text-primary">Careers</h2>
+              </div>
+
+        <p>StoneBridge Capitals is always interested in hard-working, team players who embody our "customer focused" mindset to join the StoneBridge Capitals Team.  Our goal is to attain and retain employees who embrace our values and who are committed to providing our customers with exceptional service.</p>
+
+        <p>To apply for a position, please send us your resume:</p>
+        <span style="font-weight:bold;">StoneBridge Capitals</span> <br>
+        <span>3400 W. Lawrence Ave.</span> <br>
+        <span>Chicago, IL 60625</span> <br>
+        <p>Fax: (773) 267-7337 Attn: Human Resources</p>
+
+        <p><a href="mailto:HR@stonebridgecapitals.com">  <span class="bi bi-envelope"></span> Email HR@stonebridgecapitals.com</a></p>
+        <p>You can also stop by any of our branches to fill out an application. Thank you for your interest in StoneBridge Capitals!</p>
+
+        <p>StoneBridge Capitals is an equal opportunity employer and affords equal opportunity to all applicants without regard to race, color, religion, gender, national origin, age, disability, veterans status or any other status protected under local, state, or federal laws.</p>
+
+        <div style="padding:10px;"></div>
+  </div>
+
+
+
+
+<div class="quick-links-section">
+	<div class="quick-links-bar">
+		<a href="/location-hours/" class="quick-link-item" data-aos="fade-up" data-aos-delay="0">
+			<i class="bi bi-bank"></i>
+			<span>Location & Hours</span>
+		</a>
+		<a href="/rates/" class="quick-link-item" data-aos="fade-up" data-aos-delay="100">
+			<i class="bi bi-percent"></i>
+			<span>Rates</span>
+		</a>
+		<a href="/online-education/" class="quick-link-item" data-aos="fade-up" data-aos-delay="200">
+			<i class="bi bi-globe"></i>
+			<span>Online Education</span>
+		</a>
+		<a href="/faqs/" class="quick-link-item" data-aos="fade-up" data-aos-delay="300">
+			<i class="bi bi-question-diamond-fill"></i>
+			<span>FAQs</span>
+		</a>
+	</div>
+</div>
+</div>
+
+<style>
+.quick-links-bar {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	background: linear-gradient(140deg, #1a3c34 0%, #2a5c4e 100%);
+}
+.quick-link-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 35px 15px;
+	text-decoration: none !important;
+	color: #fff !important;
+	transition: all 0.3s ease;
+	position: relative;
+	text-align: center;
+}
+.quick-link-item:hover {
+	background: rgba(176, 141, 87, 0.15);
+}
+.quick-link-item:not(:last-child)::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 25%;
+	height: 50%;
+	width: 1px;
+	background: rgba(255, 255, 255, 0.15);
+}
+.quick-link-item i {
+	font-size: 36px;
+	margin-bottom: 10px;
+	opacity: 0.9;
+}
+.quick-link-item:hover i {
+	opacity: 1;
+	color: #c9a96e;
+}
+.quick-link-item span {
+	font-size: 14px;
+	font-weight: 500;
+	letter-spacing: 0.5px;
+}
+@media (max-width: 767px) {
+	.quick-links-bar {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	.quick-link-item {
+		padding: 25px 10px;
+	}
+	.quick-link-item i {
+		font-size: 28px;
+		margin-bottom: 8px;
+	}
+	.quick-link-item span {
+		font-size: 13px;
+	}
+	.quick-link-item:nth-child(2)::after,
+	.quick-link-item:nth-child(4)::after {
+		display: none;
+	}
+	.quick-link-item:nth-child(1),
+	.quick-link-item:nth-child(2) {
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	}
+}
+</style>
+
+<div class="section sec-cta overlay" style="background-image: url('/static/images/img-3.jpg')">
+	<div class="container">
+		<div class="row justify-content-between align-items-center">
+			<div class="col-lg-5" data-aos="fade-up" data-aos-delay="0">
+				<h2 class="heading">External Transfers</h2>
+				<p>Securely transfer money between your StoneBridge Capitals account and your accounts at other financial institutions. </p>
+			</div>
+			<div class="col-lg-5 text-end" data-aos="fade-up" data-aos-delay="100">
+				<a href="/additional-services/" class="btn btn-outline-white-reverse">Learn More</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="site-footer">
+	<div class="container">
+		<div class="row">
+			
+			<div class="col-lg-6">
+				<div class="" style=" text-align:center;">
+						<ul class="list-unstyled float-start links" >
+						<li style="padding-bottom:10px"><a href="/privacy-policy/">Privacy Policy</a></li>
+						<li style="padding-bottom:10px"><a href="/accessibility/">Online Accessibility</a></li>
+						<li style="padding-bottom:10px"><a href="/online-security/">Security</a></li>
+						</ul>
+						
+					<ul class="list-unstyled float-start links" style="padding-left:70px; ">
+						<li style="padding-bottom:10px"><a href="/disclosure/">Disclosures</a></li>
+						<li style="padding-bottom:10px"><a href="/terms-and-conditions/">Terms of Service</a></li>
+						<li style="padding-bottom:10px"><a href="/resources/">Resources</a></li>
+						<li style="padding-bottom:10px"><a href="/get-app/"><i class="bi bi-download me-1"></i>Get the App</a></li>
+					</ul>
+				</div> <!-- /.widget -->
+			</div> <!-- /.col-lg-4 -->
+			<div class="col-lg-4">
+				<div class="widget">
+						
+						<img src="/static/images/lender.png" width="90px" height="80px">
+						<div style="position:absolute; bottom:4.7%; right:5%">
+							<ul class="list-unstyled social" >
+						<li float="right"><a href="#"><span class="icon-linkedin"></span></a></li>
+					</ul>
+						</div>
+					
+				</div> <!-- /.widget -->
+			</div> <!-- /.col-lg-4 -->
+		</div> <!-- /.row -->
+
+		<div class="row mt-5">
+			<div class="col-12 text-center">
+<p>Copyright &copy; <script>document.write(new Date().getFullYear());</script> All Rights Reserved.
+			</p>
+		  </div>
+		</div>
+	  </div> <!-- /.container -->
+	</div> <!-- /.site-footer -->
+
+	<!-- Preloader -->
+	<div id="overlayer"></div>
+	<div class="loader">
+		<div class="spinner-border text-primary" role="status">
+			<span class="visually-hidden">Loading...</span>
+		</div>
+	</div>
+
+
+	<script src="/static/js/bootstrap.bundle.min.js"></script>
+	<script src="/static/js/tiny-slider.js"></script>
+
+	<script src="/static/js/flatpickr.min.js"></script>
+
+
+	<script src="/static/js/aos.js"></script>
+	<script src="/static/js/glightbox.min.js"></script>
+	<script src="/static/js/navbar.js"></script>
+	<script src="/static/js/counter.js"></script>
+	<script src="/static/js/custom.js"></script>
+<style>
+/* Reset */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Header Navigation */
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: #fff !important;
+  padding-bottom: 15px;
+}
+
+.site-nav .container {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.menu-bg-wrap {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.site-navigation {
+	padding: 0px 0 !important;
+	position: relative;
+}
+
+.site-navigation .row {
+  align-items: center;
+}
+
+/* First container after header - push down */
+body > div:not(.mobile-sidebar):not(.mobile-sidebar-overlay):not(.site-nav):first-of-type,
+.hero-section,
+.hero.overlay.inner-page {
+	margin-top: 32px !important;
+}
+
+/* Logo - left aligned on desktop */
+.logo {
+	position: relative;
+	margin: 0 0 0 15px !important;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.logo-img {
+	width: 220px !important;
+	height: auto !important;
+	display: block;
+}
+
+/* Hamburger icon - using Bootstrap icon from dashboard */
+.toggle-sidebar-btn {
+	margin-right: 10px;
+	margin-left: 10px;
+	transition: color 0.2s ease;
+	display: flex;
+	align-items: center;
+}
+
+.toggle-sidebar-btn:hover {
+	color: #2a5c4e !important;
+}
+
+/* Navigation menu */
+.site-menu {
+  font-size: 0.9em !important;
+}
+
+.site-menu > li > a {
+  padding: 10px 14px !important;
+  color: #333 !important;
+}
+
+.site-menu > li > a:hover {
+  color: #1a3c34 !important;
+}
+
+.site-menu .dropdown {
+  background: #fff !important;
+}
+
+.site-menu .dropdown a {
+  color: #222 !important;
+}
+
+/* Login button */
+.login-btn-header,
+.login-btn-mobile {
+  background: #1a3c34 !important;
+  color: #fff !important;
+  border: 2px solid #1a3c34 !important;
+  padding: 6px 16px !important;
+  font-size: 0.85em !important;
+  border-radius: 5px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease;
+  position: relative;
+  top: 0px;
+}
+
+.login-btn-header:hover,
+.login-btn-mobile:hover {
+  background: #2a5c4e !important;
+  border-color: #2a5c4e !important;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+.login-btn-header i,
+.login-btn-mobile i {
+  color: #fff !important;
+}
+
+/* Sidebar Hover Effects - Matching Dashboard */
+.sidebar .nav-link:hover {
+  color: #b08d57 !important;
+  background: #f7f5f0 !important;
+}
+
+.sidebar .nav-link:hover i {
+  color: #b08d57 !important;
+}
+
+.sidebar .nav-link:not(.collapsed) {
+  color: #b08d57 !important;
+  background: #f7f5f0 !important;
+}
+
+.sidebar .nav-link:not(.collapsed) i {
+  color: #b08d57 !important;
+}
+
+.sidebar .nav-link:not(.collapsed) .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
+.sidebar .nav-content a:hover {
+  color: #b08d57 !important;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background-color: #fff;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #aab7cf;
+}
+
+/* Mobile - Match Dashboard Exactly */
+@media (max-width: 991.98px) {
+	/* Navigation bar - 70px height like dashboard */
+	.site-nav {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 997;
+		box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
+	}
+
+	.site-navigation {
+		height: 52px !important;
+		padding: 8px 0 0 0 !important;
+	}
+
+	/* Flexbox layout - exactly like dashboard */
+	.site-navigation .header-flex {
+		display: flex !important;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		height: 100%;
+		padding: 0 10px;
+	}
+
+	.site-navigation .header-flex .mobile-hamburger {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		min-width: 40px;
+	}
+
+	.site-navigation .header-flex .mobile-logo {
+		flex: 2;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		position: absolute;
+		left: 44%;  /* Moved more to the left */
+		transform: translateX(-50%);
+		padding-top: 10px;
+	}
+
+	.site-navigation .header-flex .mobile-logo img {
+		height: 48px !important;
+		max-width: 220px;
+		width: auto;
+		display: block;  /* Ensure proper block display */
+		margin-top: 0;   /* Reset any margin */
+	}
+
+	.site-navigation .header-flex .mobile-logo a {
+		margin: 0;
+		display: block;
+		line-height: 1;  /* Prevent any line-height spacing */
+	}
+
+	.site-navigation .header-flex .mobile-login-btn {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		min-width: 40px;
+		margin-right: 10px;
+	}
+
+	.mobile-login-btn .btn {
+		background: #1a3c34 !important;
+		border: 2px solid #1a3c34 !important;
+		border-radius: 4px !important;
+		padding: 6px 12px !important;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+	}
+
+	.mobile-login-btn .btn i {
+		font-size: 1.1em !important;
+		margin: 0 !important;
+	}
+
+	/* Hide desktop menu */
+	.desktop-menu {
+		display: none !important;
+	}
+
+		.toggle-sidebar-btn {
+			font-size: 1.3rem !important;
+			cursor: pointer;
+			color: #0d1f1a;
+			margin-left: 16px !important;
+			margin-top: 12px !important;    /* Increased top margin more */
+			display: inline-flex !important;
+			align-items: center !important;
+			height: calc(100% - 12px) !important;
+		}
+
+	/* Adjust content below fixed nav */
+	body > div:not(.mobile-sidebar):not(.mobile-sidebar-overlay):not(.site-nav):first-of-type,
+	.hero-section,
+	.hero.overlay.inner-page {
+		margin-top: 52px !important;
+	}
+}
+
+@media (min-width: 992px) {
+	/* Desktop styles */
+	.mobile-center-logo {
+		display: none !important;
+	}
+
+	/* Hide all mobile elements on desktop */
+	.sidebar {
+		display: none !important;
+	}
+
+	.header-flex {
+		display: none !important;
+	}
+
+	.mobile-hamburger,
+	.mobile-logo,
+	.mobile-login-btn {
+		display: none !important;
+	}
+
+	.toggle-sidebar-btn {
+		display: none !important;
+	}
+
+	/* Show desktop menu */
+	.desktop-menu {
+		display: block !important;
+	}
+
+	.js-clone-nav {
+		display: inline-block !important;
+	}
+
+	.site-navigation {
+		padding: 15px 0 !important;
+	}
+
+	.logo {
+		margin: 0 0 0 15px !important;
+	}
+
+	.logo-img {
+		height: auto !important;
+		max-width: 250px !important;
+		width: 220px !important;
+	}
+
+	.login-btn-desktop {
+		padding: 6px 14px !important;
+		font-size: 0.9em !important;
+		border-radius: 4px !important;
+	}
+
+	.login-btn-desktop i {
+		font-size: 0.9em !important;
+	}
+
+	.login-btn-header {
+		padding: 6px 14px !important;
+		font-size: 0.9em !important;
+	}
+
+	.login-btn-header i {
+		margin-right: 6px;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .logo {
+    margin-left: 18px !important;
+  }
+
+  .logo-img {
+    width: 180px !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .mobile-sidebar,
+  .mobile-sidebar-overlay {
+    display: none;
+  }
+}
+</style>
+
+<script>
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('mobileSidebar');
+
+  // Check if sidebar is currently open
+  if (sidebar.style.left === '0px') {
+    // Close it
+    sidebar.style.left = '-300px';
+  } else {
+    // Open it
+    sidebar.style.left = '0';
+  }
+}
+
+function closeMobileSidebar() {
+  const sidebar = document.getElementById('mobileSidebar');
+  sidebar.style.left = '-300px';
+}
+
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('../sw.js').catch(() => {});
+}
+
+// PWA Install Banner
+(function() {
+  let deferredPrompt = null;
+  const banner = document.getElementById('pwa-banner');
+  const installBtn = document.getElementById('pwa-install-btn');
+  const closeBtn = document.getElementById('pwa-close-btn');
+  const msgEl = document.getElementById('pwa-banner-msg');
+
+  // Check if iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  // Check if already installed
+  const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
+                      window.navigator.standalone === true ||
+                      localStorage.getItem('pwa-installed');
+
+  // Check if dismissed recently (24h)
+  const dismissedTime = localStorage.getItem('pwa-dismissed');
+  const isDismissed = dismissedTime && (Date.now() - parseInt(dismissedTime)) < 86400000;
+
+  if (isInstalled || isDismissed || !banner) return;
+
+  // Show banner function
+  function showBanner() {
+    if (isIOS) {
+      // iOS: Change button text and message
+      msgEl.textContent = 'Tap Share then "Add to Home Screen"';
+      installBtn.textContent = 'How to Install';
+      installBtn.onclick = function() {
+        alert('To install:\n\n1. Tap the Share button (square with arrow)\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"');
+      };
+    }
+    banner.classList.add('show');
+  }
+
+  // Android/Desktop: Wait for beforeinstallprompt
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    setTimeout(showBanner, 2000);
+  });
+
+  // iOS: Show after delay (no beforeinstallprompt on iOS)
+  if (isIOS) {
+    setTimeout(showBanner, 2000);
+  }
+
+  // Install button click
+  if (installBtn) {
+    installBtn.addEventListener('click', function() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(result) {
+          if (result.outcome === 'accepted') {
+            localStorage.setItem('pwa-installed', '1');
+          }
+          deferredPrompt = null;
+          banner.classList.remove('show');
+        });
+      }
+    });
+  }
+
+  // Close button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      banner.classList.remove('show');
+      localStorage.setItem('pwa-dismissed', Date.now().toString());
+    });
+  }
+
+  // On install
+  window.addEventListener('appinstalled', function() {
+    localStorage.setItem('pwa-installed', '1');
+    banner.classList.remove('show');
+  });
+})();
+  </body>
+  </html>
