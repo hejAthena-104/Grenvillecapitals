@@ -1,147 +1,10 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="light" data-sidebar-behaviour="fixed" data-is-fluid="true">
+{% extends 'base_dashboard.html' %}
+{% load static %}
+{% load humanize %}
 
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+{% block title %}Send Email | {{ site_name }}{% endblock %}
 
-<head>
-    {% load static %}
-    
-    <meta charset="utf-8">
-    <meta name="csrf-token" content="TuDsCdKJ03MPusFP2GKqzoWGwF8PuVfDi0T5H9qW">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta content="{{ site_name }}" name="author">
-    <!-- Theme CSS -->
-    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.bundle.css' %}" id="stylesheetLTR">
-    <link rel="stylesheet" href="{% static 'themes/dashly/assets/css/theme.rtl.bundle.css' %}" id="stylesheetRTL">
-    <link rel="stylesheet" href="{% static 'css/grenville-theme.css' %}">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link rel="preload" as="style"
-        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
-    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');"
-        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.min.css" rel="stylesheet">
-    <!-- Quill Editor CSS -->
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-
-    <script>
-        // Theme switcher
-        let themeSwitcher = document.getElementById('themeSwitcher');
-
-        const getPreferredTheme = () => {
-            if (localStorage.getItem('theme') != null) {
-                return localStorage.getItem('theme');
-            }
-
-            return document.documentElement.dataset.theme;
-        };
-
-        const setTheme = function(theme) {
-            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ?
-                    'dark' : 'light';
-            } else {
-                document.documentElement.dataset.theme = theme;
-            }
-
-            localStorage.setItem('theme', theme);
-        };
-
-        const showActiveTheme = theme => {
-            const activeBtn = document.querySelector(`[data-theme-value="${theme}"]`);
-
-            document.querySelectorAll('[data-theme-value]').forEach(element => {
-                element.classList.remove('active');
-            });
-
-            activeBtn && activeBtn.classList.add('active');
-
-            document.querySelectorAll('[data-theme-control="theme"]').forEach(element => {
-                if (element.value == theme) {
-                    element.checked = true;
-                }
-            });
-        };
-
-        function reloadPage() {
-            window.location = window.location.pathname;
-        }
-
-        setTheme(getPreferredTheme());
-
-        if (typeof themeSwitcher != 'undefined') {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                if (localStorage.getItem('theme') != null) {
-                    if (localStorage.getItem('theme') == 'auto') {
-                        reloadPage();
-                    }
-                }
-            });
-
-            window.addEventListener('load', () => {
-                showActiveTheme(getPreferredTheme());
-
-                document.querySelectorAll('[data-theme-value]').forEach(element => {
-                    element.addEventListener('click', () => {
-                        const theme = element.getAttribute('data-theme-value');
-
-                        localStorage.setItem('theme', theme);
-                        reloadPage();
-                    })
-                })
-            });
-        }
-    </script>
-    <!-- Favicon -->
-    <link rel="icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
-    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?v=3" type="image/png">
-
-    <!-- Page Title -->
-    <title>Send Email | {{ site_name }}</title>
-</head>
-
-<body>
-    <!-- NAVIGATION -->
-    {% include 'includes/sidebar.html' %}
-
-    <!-- MAIN CONTENT -->
-    <main>
-        <div class="h-screen overflow-y-lg-auto">
-            <!-- HEADER -->
-            <header class="container-fluid d-flex py-6 mb-4">
-                <!-- Top buttons -->
-                <div class="d-flex align-items-center ms-auto me-n1 me-lg-n2">
-                    <!-- User Dropdown -->
-                    <div class="dropdown">
-                        <a href="javascript: void(0);" class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px link-secondary"
-                        role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" title="Account">
-                        <i class="bi bi-person-fill" style="font-size: 20px;"></i>
-                    </a>
-
-                        <div class="dropdown-menu">
-                            <div class="dropdown-item-text">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1 ms-3">
-                                        <h4 class="mb-0">{{ user.get_full_name }}</h4>
-                                        <p class="card-text">{{ user.email }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item" href="{% url 'dashboard:index' %}">Dashboard</a>
-                            <a class="dropdown-item" href="{% url 'dashboard:account_settings' %}">Profile & account</a>
-                            <hr class="dropdown-divider">
-                            <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}"
-                                onclick="event.preventDefault();
-                        document.getElementById('logout-form').submit();">Sign out</a>
-                            <form id="logout-form" action="{% url 'accounts:logout' %}" method="POST" style="display: none;">
-                                {% csrf_token %}
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
+{% block content %}
             <!-- Content -->
             <div class="container-fluid">
                 <div class="vstack gap-4">
@@ -293,25 +156,14 @@
             </div>
 
             <!-- Footer -->
-            <footer class="mt-auto">
-                <div class="container-fluid mt-4 mb-6 text-muted">
-                    <div class="row justify-content-between">
-                        <div class="col">
-                            All Rights Reserved &copy; {{ site_name }} {% now "Y" %}
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    </main>
+            
+{% endblock %}
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-
-    <script>
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.10/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
         // Initialize Quill Editor
         var quill = new Quill('#editor', {
             theme: 'snow',
@@ -429,6 +281,4 @@
             }
         });
     </script>
-
-</body>
-</html>
+{% endblock %}

@@ -1,81 +1,74 @@
 /* ============================================================
-   Grenville Capitals brand override — loaded AFTER the Dashly bundle.
-   Brand (matches the new EnvyTheme marketing site):
-     - RED #12325a   = primary action colour
-     - NAVY #0a1526  = headings / text / sidebar default
-     - light, clean background
+   Grenville Capitals — component overrides.
+   Loaded AFTER grenville-tokens.css, which defines every colour.
+   Values here read from the tokens; do not add raw hexes.
    ============================================================ */
 
-:root, [data-theme="light"], [data-theme="dark"] {
-  --bs-primary: #12325a;
-  --bs-primary-rgb: 18,50,90;
-  --bs-link-color: #12325a;
-  --bs-link-hover-color: #0e2a4c;
-  --bs-body-bg: #f7f8fa;
-}
 
 /* ---------- Red primary buttons / CTAs ---------- */
 .btn-primary {
-  --bs-btn-bg:#12325a; --bs-btn-border-color:#12325a;
-  --bs-btn-hover-bg:#0e2a4c; --bs-btn-hover-border-color:#0e2a4c;
-  --bs-btn-active-bg:#0a2038; --bs-btn-active-border-color:#0a2038;
+  --bs-btn-bg:var(--gc-navy); --bs-btn-border-color:var(--gc-navy);
+  --bs-btn-hover-bg:var(--gc-navy-deep); --bs-btn-hover-border-color:var(--gc-navy-deep);
+  --bs-btn-active-bg:var(--gc-navy-deep); --bs-btn-active-border-color:var(--gc-navy-deep);
   --bs-btn-color:#fff; --bs-btn-hover-color:#fff; --bs-btn-active-color:#fff;
-  --bs-btn-disabled-bg:#12325a; --bs-btn-disabled-border-color:#12325a;
+  --bs-btn-disabled-bg:var(--gc-navy); --bs-btn-disabled-border-color:var(--gc-navy);
 }
 .btn-outline-primary {
-  --bs-btn-color:#12325a; --bs-btn-border-color:#12325a;
-  --bs-btn-hover-bg:#12325a; --bs-btn-hover-border-color:#12325a; --bs-btn-hover-color:#fff;
-  --bs-btn-active-bg:#12325a; --bs-btn-active-border-color:#12325a; --bs-btn-active-color:#fff;
+  --bs-btn-color:var(--gc-navy); --bs-btn-border-color:var(--gc-navy);
+  --bs-btn-hover-bg:var(--gc-navy); --bs-btn-hover-border-color:var(--gc-navy); --bs-btn-hover-color:#fff;
+  --bs-btn-active-bg:var(--gc-navy); --bs-btn-active-border-color:var(--gc-navy); --bs-btn-active-color:#fff;
 }
 /* opacity-aware so bg-opacity-10 / text-opacity tints still render (stat icons) */
 .bg-primary       { background-color:rgba(var(--bs-primary-rgb), var(--bs-bg-opacity,1)) !important; }
 .text-primary     { color:rgba(var(--bs-primary-rgb), var(--bs-text-opacity,1)) !important; }
-.link-primary     { color:#12325a !important; }
-.badge.bg-primary { --bs-bg-opacity:1; background-color:#12325a !important; }
-.progress-bar     { background-color:#12325a; }
-.btn-link         { color:#12325a; }
+.link-primary     { color:var(--gc-navy) !important; }
+.badge.bg-primary { --bs-bg-opacity:1; background-color:var(--gc-navy) !important; }
+.progress-bar     { background-color:var(--gc-navy); }
+.btn-link         { color:var(--gc-navy); }
 
 /* ---------- Brand accent helpers ---------- */
-.text-red  { color:#12325a !important; }
-.bg-red    { background-color:#12325a !important; }
-.text-navy { color:#0a1526 !important; }
-a:not(.btn):not(.nav-link):not(.navbar-brand) { color:#12325a; }
-a:not(.btn):not(.nav-link):not(.navbar-brand):hover { color:#0e2a4c; }
+.text-red  { color:var(--gc-navy) !important; }
+.bg-red    { background-color:var(--gc-navy) !important; }
+.text-navy { color:var(--gc-ink) !important; }
+/* Content links only. App components (.gc-*) set their own colour — without
+   this exclusion the rule repaints them, e.g. navy text on a navy avatar. */
+a:not(.btn):not(.nav-link):not(.navbar-brand):not([class*="gc-"]) { color:var(--gc-navy); }
+a:not(.btn):not(.nav-link):not(.navbar-brand):not([class*="gc-"]):hover { color:var(--gc-navy-deep); }
 
 /* ---------- Clean, light sidebar ---------- */
 #mainNavbar.bg-white,
 .navbar-vertical.bg-white {
-  background-color:#ffffff !important;
-  border-right:1px solid #ececf1;
+  background-color:var(--gc-surface) !important;
+  border-right:1px solid var(--gc-line);
   box-shadow:0 0 24px rgba(10, 21, 38, 0.04);
 }
 #mainNavbar .navbar-nav .nav-link {
-  color:#0a1526 !important;
+  color:var(--gc-ink) !important;
   border-radius:10px;
   margin:2px 8px;
   transition:background-color .15s ease,color .15s ease;
 }
 #mainNavbar .navbar-nav .nav-link i,
 #mainNavbar .navbar-nav .nav-link .fe {
-  color:#6e727f !important;
+  color:var(--gc-ink-2) !important;
 }
 #mainNavbar .navbar-nav .nav-link:hover {
-  background-color:#f7f8fa !important;
-  color:#0a1526 !important;
+  background-color:var(--gc-bg) !important;
+  color:var(--gc-ink) !important;
 }
 /* active item -> soft red pill with red text/icon */
 #mainNavbar .navbar-nav .nav-link.active,
 .navbar-vertical .navbar-nav .nav-link.active {
-  background-color:rgba(18, 50, 90, 0.10) !important;
-  color:#12325a !important;
+  background-color:rgba(var(--bs-primary-rgb), .10) !important;
+  color:var(--gc-navy) !important;
   font-weight:600;
 }
 #mainNavbar .navbar-nav .nav-link.active i,
 #mainNavbar .navbar-nav .nav-link.active .fe,
 #mainNavbar .navbar-nav .nav-link.active svg {
-  color:#12325a !important;
+  color:var(--gc-navy) !important;
 }
-#mainNavbar .navbar-heading { color:#9aa0ad !important; }
+#mainNavbar .navbar-heading { color:var(--gc-ink-3) !important; }
 
 /* ---------- Logo: preserve aspect ratio ---------- */
 #mainNavbar .navbar-brand-img,
@@ -87,4 +80,266 @@ a:not(.btn):not(.nav-link):not(.navbar-brand):hover { color:#0e2a4c; }
 }
 
 /* ---------- Body ---------- */
-body { background-color:#f7f8fa; }
+body { background-color:var(--gc-bg); }
+
+/* ==========================================================================
+   MOBILE — everything below 992px, the breakpoint at which the Dashly
+   sidebar stops being a fixed rail. Above it nothing here applies, so the
+   desktop layout is untouched.
+   ========================================================================== */
+@media (max-width: 991.98px) {
+
+  /* The sidebar's accordion is replaced by the bottom tab bar. Keep the
+     brand row, drop the hamburger and the list it opens. */
+  #mainNavbar .navbar-toggler,
+  #mainNavbar #sidenavCollapse { display: none !important; }
+  #mainNavbar {
+    position: sticky; top: 0; z-index: 1030;
+    padding: .5rem .25rem;
+    border-bottom: 1px solid var(--gc-line);
+    box-shadow: none;
+  }
+  #mainNavbar .navbar-brand { margin: 0 !important; }
+
+  /* Clear the tab bar, including the iPhone home indicator. */
+  main { padding-bottom: calc(var(--gc-tabbar-h) + env(safe-area-inset-bottom, 0px) + 12px) !important; }
+
+  /* The desktop topbar's icon cluster is folded into the app header. */
+  main > header.container-fluid { display: none !important; }
+
+  body   { background: var(--gc-bg); }
+  main > .container-fluid { padding-left: 16px; padding-right: 16px; }
+  h1.h2  { font-size: 1.35rem; }
+  .card  { border-radius: var(--gc-radius); border-color: var(--gc-line); }
+
+  /* Tables are the single worst offender on a phone — they force sideways
+     scrolling. Pages that still use one get it scrolled in its own box
+     rather than pushing the whole document wide. */
+  .table-responsive { -webkit-overflow-scrolling: touch; }
+
+  /* Comfortable targets. */
+  .btn { min-height: 44px; }
+  .btn-sm { min-height: 36px; }
+  .form-control, .form-select { min-height: 46px; font-size: 16px; } /* 16px stops iOS zooming on focus */
+}
+
+/* ==========================================================================
+   BOTTOM TAB BAR
+   ========================================================================== */
+.gc-tabbar { display: none; }
+
+@media (max-width: 991.98px) {
+  .gc-tabbar {
+    display: flex;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 1040;
+    height: calc(var(--gc-tabbar-h) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--gc-surface);
+    border-top: 1px solid var(--gc-line);
+    box-shadow: 0 -2px 16px rgba(10,21,38,.06);
+  }
+  .gc-tab {
+    flex: 1 1 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px;
+    text-decoration: none;
+    color: var(--gc-ink-3);
+    font-size: 11px; font-weight: 500; letter-spacing: .01em;
+    padding-top: 6px;
+    transition: color .15s ease;
+  }
+  .gc-tab i { font-size: 20px; line-height: 1; }
+  .gc-tab.active { color: var(--gc-navy); font-weight: 600; }
+  .gc-tab:active { color: var(--gc-navy-2); }
+
+  /* Send is the primary action, so it is raised out of the bar. */
+  .gc-tab--send { position: relative; }
+  .gc-tab--send .gc-tab-fab {
+    position: absolute; top: -20px;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--gc-navy); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 18px rgba(18,50,90,.34);
+    border: 3px solid var(--gc-surface);
+  }
+  .gc-tab--send .gc-tab-fab i { font-size: 21px; }
+  .gc-tab--send span { margin-top: 34px; }
+  .gc-tab--send.active .gc-tab-fab { background: var(--gc-brass); box-shadow: 0 6px 18px rgba(176,118,46,.36); }
+}
+
+/* ==========================================================================
+   APP CHROME — mobile header, list rows, pills. Mobile-first components that
+   replace the desktop table/card patterns on small screens.
+   ========================================================================== */
+.gc-appbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px 6px;
+}
+.gc-appbar-avatar {
+  width: 40px; height: 40px; border-radius: 50%; flex: 0 0 40px;
+  background: var(--gc-navy); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; text-decoration: none; overflow: hidden;
+}
+.gc-appbar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.gc-appbar-text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.gc-appbar-greeting { font-size: 12px; color: var(--gc-ink-2); }
+.gc-appbar-text strong { color: var(--gc-ink); font-size: 15px; }
+.gc-appbar-bell {
+  margin-left: auto; width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--gc-line); background: var(--gc-surface);
+  color: var(--gc-ink-2); display: flex; align-items: center; justify-content: center;
+}
+
+/* ---- grouped list rows (Profile, and anywhere a settings list is needed) ---- */
+.gc-group-label {
+  font-size: 12px; font-weight: 600; letter-spacing: .04em;
+  color: var(--gc-ink-3); margin: 0 4px 8px;
+}
+.gc-list {
+  background: var(--gc-surface); border: 1px solid var(--gc-line);
+  border-radius: var(--gc-radius); overflow: hidden;
+}
+.gc-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; min-height: 52px;
+  color: var(--gc-ink); text-decoration: none;
+  border-bottom: 1px solid var(--gc-line);
+}
+.gc-row:last-child { border-bottom: 0; }
+.gc-row:hover  { background: var(--gc-surface-2); color: var(--gc-ink); }
+.gc-row > i:first-child { font-size: 18px; color: var(--gc-ink-2); width: 22px; text-align: center; }
+.gc-row > span:first-of-type { flex: 1 1 auto; }
+.gc-row > i:last-child { font-size: 14px; color: var(--gc-ink-3); }
+
+.gc-pill {
+  font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px;
+  background: var(--gc-info-soft); color: var(--gc-navy-2);
+}
+.gc-pill--ok   { background: var(--gc-in-soft);      color: var(--gc-in); }
+.gc-pill--wait { background: var(--gc-pending-soft); color: var(--gc-pending); }
+.gc-pill--todo { background: var(--gc-out-soft);     color: var(--gc-out); }
+
+.gc-profile-head { display: flex; align-items: center; gap: 14px; }
+.gc-profile-head .gc-avatar {
+  width: 60px; height: 60px; border-radius: 50%; flex: 0 0 60px;
+  background: var(--gc-navy); color: #fff; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 600;
+}
+.gc-profile-head .gc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.gc-callout {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-radius: var(--gc-radius);
+  background: var(--gc-info-soft); border: 1px solid var(--gc-line);
+  color: var(--gc-ink); text-decoration: none;
+}
+.gc-callout > i:first-child { font-size: 20px; color: var(--gc-navy); }
+
+/* ==========================================================================
+   HOME — balance, KPIs, quick send, actions, activity list
+   ========================================================================== */
+.gc-balance {
+  background: linear-gradient(135deg, var(--gc-navy) 0%, var(--gc-navy-deep) 55%, var(--gc-ink) 100%);
+  border-radius: var(--gc-radius-lg);
+  padding: 22px 20px;
+  color: #fff;
+}
+.gc-balance-label { font-size: 13px; opacity: .72; margin: 0 0 2px; }
+.gc-balance-value { font-size: 34px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 16px; line-height: 1.1; }
+.gc-balance-actions { display: flex; gap: 10px; }
+.gc-balance-actions .btn { border-radius: 999px; padding-inline: 16px; }
+.gc-balance-actions .btn-outline-light { border-color: rgba(255,255,255,.45); color: #fff; }
+.gc-balance-actions .btn-outline-light:hover { background: rgba(255,255,255,.14); border-color: #fff; }
+
+/* KPI pair */
+.gc-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.gc-kpi {
+  background: var(--gc-surface); border: 1px solid var(--gc-line);
+  border-radius: var(--gc-radius); padding: 14px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.gc-kpi-icon {
+  width: 30px; height: 30px; border-radius: 9px; margin-bottom: 6px;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.gc-kpi-icon--in  { background: var(--gc-in-soft);  color: var(--gc-in); }
+.gc-kpi-icon--out { background: var(--gc-out-soft); color: var(--gc-out); }
+.gc-kpi-label { font-size: 12px; color: var(--gc-ink-2); }
+.gc-kpi-value { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+
+/* section heads */
+.gc-section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.gc-section-link { font-size: 13px; font-weight: 500; color: var(--gc-navy); text-decoration: none; }
+
+/* quick send */
+.gc-quicksend {
+  display: flex; gap: 14px; overflow-x: auto; padding: 2px 2px 6px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.gc-quicksend::-webkit-scrollbar { display: none; }
+.gc-quicksend > p { flex: 1 1 auto; align-self: center; max-width: 230px; }
+.gc-qs { flex: 0 0 auto; width: 62px; text-align: center; text-decoration: none; }
+.gc-qs-avatar {
+  width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--gc-navy); color: #fff; font-weight: 600; font-size: 17px;
+}
+.gc-qs-avatar--new {
+  background: var(--gc-surface); color: var(--gc-navy);
+  border: 1.5px dashed var(--gc-ink-3);
+}
+.gc-qs-name { display: block; font-size: 11.5px; color: var(--gc-ink-2); line-height: 1.25; }
+
+/* quick actions */
+.gc-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.gc-action {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 14px 6px; text-decoration: none;
+  background: var(--gc-surface); border: 1px solid var(--gc-line);
+  border-radius: var(--gc-radius); color: var(--gc-ink);
+  font-size: 12px; font-weight: 500;
+}
+.gc-action:hover { background: var(--gc-surface-2); color: var(--gc-ink); }
+.gc-action-icon {
+  width: 38px; height: 38px; border-radius: 11px;
+  background: rgba(var(--bs-primary-rgb), .09); color: var(--gc-navy);
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+
+/* cards strip */
+.gc-cardstrip { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+.gc-cardstrip::-webkit-scrollbar { display: none; }
+.gc-bankcard {
+  flex: 0 0 260px; min-height: 150px; border-radius: var(--gc-radius);
+  padding: 16px; color: #fff;
+  background: linear-gradient(135deg, var(--gc-navy) 0%, var(--gc-ink) 100%);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.gc-bankcard-number { font-size: 16px; letter-spacing: 2px; margin: 14px 0 0; }
+
+/* activity rows */
+.gc-txn { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--gc-line); }
+.gc-txn:last-child { border-bottom: 0; }
+.gc-txn-icon {
+  width: 36px; height: 36px; border-radius: 11px; flex: 0 0 36px;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.gc-txn-icon--in  { background: var(--gc-in-soft);  color: var(--gc-in); }
+.gc-txn-icon--out { background: var(--gc-out-soft); color: var(--gc-out); }
+.gc-txn-main { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
+.gc-txn-main strong { font-size: 14px; font-weight: 600; color: var(--gc-ink); }
+.gc-txn-meta { font-size: 12px; color: var(--gc-ink-2); }
+.gc-txn-amount { font-size: 14px; font-weight: 600; white-space: nowrap; }
+
+.gc-empty { text-align: center; padding: 34px 20px; }
+.gc-empty i { font-size: 30px; color: var(--gc-ink-3); display: block; margin-bottom: 10px; }
+
+/* Desktop: the app-shaped blocks get room rather than being phone-width. */
+@media (min-width: 992px) {
+  .gc-kpis   { grid-template-columns: repeat(4, 1fr); max-width: 900px; }
+  .gc-actions{ grid-template-columns: repeat(4, 1fr); max-width: 620px; }
+  .gc-balance{ max-width: 560px; }
+  .gc-balance-value { font-size: 40px; }
+}

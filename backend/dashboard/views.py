@@ -14,7 +14,7 @@ import string
 from accounts.models import User, Notification, EmailOTP, KYCProfile
 from transactions.models import (
     Transaction, Deposit, Withdrawal, Transfer, PaymentMethod,
-    SwapRate, Swap, Beneficiary, ExternalTransfer,
+    SwapRate, Swap, Beneficiary, ExternalTransfer, FeatureFlags,
 )
 from services.models import LoanApplication, GrantApplication, CardApplication, Card
 from support.models import SupportTicket, EmailLog
@@ -40,6 +40,8 @@ def dashboard_index(request):
 
     context = {
         'user': user,
+        'beneficiaries': Beneficiary.objects.filter(user=user)[:6],
+        'month_label': timezone.now().strftime('%B'),
         'total_earnings': total_earnings,
         'current_balance': user.balance,
         'btc_balance': user.btc_balance,
@@ -509,6 +511,7 @@ def manage_account_security(request):
     context = {
         'user': request.user,
         'login_history': login_history,
+        'has_pin': request.user.has_transaction_pin,
     }
 
     return render(request, 'dashboard/manage-account-security.html', context)
@@ -752,6 +755,12 @@ def _to_decimal(value):
 @login_required
 def swap(request):
     """Instant USD <-> BTC swap at the admin-set rate."""
+    # Swap is optional and switched from the admin. Closing the view as well as
+    # hiding the link means a stale bookmark cannot reach it.
+    if not FeatureFlags.get().swap_enabled:
+        messages.info(request, 'Currency swap is not available on your account.')
+        return redirect('dashboard:index')
+
     user = request.user
     rate = SwapRate.current()
     price = rate.btc_usd_price
@@ -1093,4 +1102,21 @@ def kyc(request):
     return render(request, 'dashboard/kyc.html', {
         'user': request.user,
         'kyc': profile,
+    })
+
+
+@login_required
+def profile(request):
+    """The account hub.
+
+    The bottom tab bar has five slots and the app has fourteen destinations,
+    so everything that is not Home / Activity / Send / Cards lives here.
+    """
+    user = request.user
+    kyc = KYCProfile.objects.filter(user=user).first()
+    return render(request, 'dashboard/profile.html', {
+        'user': user,
+        'kyc': kyc,
+        'referral_count': user.referral_count,
+        'open_tickets': SupportTicket.objects.filter(user=user).exclude(status='resolved').count(),
     })

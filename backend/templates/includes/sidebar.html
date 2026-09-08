@@ -54,6 +54,7 @@
                         <span>Deposit</span>
                     </a>
                 </li>
+                {% if flags.swap_enabled %}
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'swap' %}active{% endif %}"
                        href="{% url 'dashboard:swap' %}">
@@ -61,6 +62,7 @@
                         <span>Swap</span>
                     </a>
                 </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name in 'transfers,local_transfer,international_transfer' %}active{% endif %}"
                        href="{% url 'dashboard:transfers' %}">

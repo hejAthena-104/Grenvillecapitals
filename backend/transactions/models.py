@@ -384,3 +384,37 @@ class ExternalTransfer(models.Model):
 
     def __str__(self):
         return f"{self.get_transfer_type_display()} - {self.transaction}"
+
+
+class FeatureFlags(models.Model):
+    """Singleton switchboard for optional features.
+
+    Swap is the reason this exists: it is a real capability, but not every
+    deployment wants a currency-exchange surface on a banking product. The
+    flag hides it from the navigation and the dashboard and closes the view,
+    so turning it off leaves no dangling links.
+    """
+
+    swap_enabled = models.BooleanField(
+        default=False,
+        help_text='Show currency swap in the app. Off by default.',
+    )
+    loans_enabled = models.BooleanField(default=True, help_text='Show loan applications.')
+    grants_enabled = models.BooleanField(default=True, help_text='Show grant applications.')
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Feature Flags'
+        verbose_name_plural = 'Feature Flags'
+
+    def __str__(self):
+        return 'Feature flags'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1          # singleton
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj

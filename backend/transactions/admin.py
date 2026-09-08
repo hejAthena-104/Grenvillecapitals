@@ -275,7 +275,7 @@ def _status_badge(status):
         color, str(status).upper())
 
 
-from .models import PaymentMethod, SwapRate, Swap, Beneficiary, ExternalTransfer
+from .models import PaymentMethod, SwapRate, Swap, Beneficiary, ExternalTransfer, FeatureFlags
 
 
 @admin.register(PaymentMethod)
@@ -370,3 +370,16 @@ for _model, _admin_cls in (
     (Beneficiary, BeneficiaryAdmin),
 ):
     _admin_cls.has_add_permission = _NoManualCreate.has_add_permission
+
+
+@admin.register(FeatureFlags)
+class FeatureFlagsAdmin(admin.ModelAdmin):
+    """Singleton — one row, edited in place."""
+    list_display = ('__str__', 'swap_enabled', 'loans_enabled', 'grants_enabled', 'updated_at')
+    list_editable = ('swap_enabled', 'loans_enabled', 'grants_enabled')
+
+    def has_add_permission(self, request):
+        return not FeatureFlags.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False

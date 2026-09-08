@@ -1,0 +1,117 @@
+/* ==========================================================================
+   Grenville Capitals — design tokens.
+   Loaded BEFORE grenville-theme.css and AFTER the Dashly bundle.
+
+   One source of truth for colour, elevation and radius. Nothing below this
+   file should contain a raw hex: if a value is needed twice, it belongs here.
+
+   The money pair (--gc-in / --gc-out) was chosen with the palette validator,
+   not by eye. It passes lightness, chroma, normal-vision separation and
+   contrast on both the light and dark surface. Its colour-blind separation
+   sits in the 6-8 band, which is only legal alongside a second cue — so
+   direction is ALWAYS also carried by a +/- sign and a directional icon,
+   never by colour on its own.
+   ========================================================================== */
+
+:root {
+  /* ---- brand ---- */
+  --gc-navy:      #12325a;
+  --gc-navy-2:    #1d4d85;
+  --gc-navy-deep: #0e2a4c;
+  --gc-brass:     #b0762e;
+  --gc-brass-2:   #d29a52;
+  --gc-cream:     #f6f4ef;
+
+  /* ---- ink ---- */
+  --gc-ink:       #0a1526;
+  --gc-ink-2:     #4a5a6a;
+  --gc-ink-3:     #8fa2bd;
+
+  /* ---- surfaces ---- */
+  --gc-bg:        #f4f6f9;
+  --gc-surface:   #ffffff;
+  --gc-surface-2: #f7f9fc;
+  --gc-line:      #e4e9f0;
+
+  /* ---- money direction (validated pair) ---- */
+  --gc-in:        #0d9668;
+  --gc-in-soft:   rgba(13, 150, 104, .10);
+  --gc-out:       #c0392b;
+  --gc-out-soft:  rgba(192, 57, 43, .10);
+
+  /* ---- state ---- */
+  --gc-pending:   #b0762e;
+  --gc-pending-soft: rgba(176, 118, 46, .12);
+  --gc-info:      #1d4d85;
+  --gc-info-soft: rgba(29, 77, 133, .10);
+
+  /* ---- form ---- */
+  --gc-radius:    14px;
+  --gc-radius-sm: 10px;
+  --gc-radius-lg: 20px;
+  --gc-shadow:    0 1px 2px rgba(10,21,38,.04), 0 8px 24px rgba(10,21,38,.06);
+  --gc-shadow-sm: 0 1px 2px rgba(10,21,38,.06);
+  --gc-tabbar-h:  68px;
+}
+
+[data-theme="dark"] {
+  --gc-ink:       #e8eef6;
+  --gc-ink-2:     #a9b8c9;
+  --gc-ink-3:     #7f91a6;
+  --gc-bg:        #0b1420;
+  --gc-surface:   #121e2d;
+  --gc-surface-2: #18263a;
+  --gc-line:      #23344a;
+  --gc-shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --gc-shadow-sm: 0 1px 2px rgba(0,0,0,.35);
+}
+
+/* ==========================================================================
+   Bootstrap semantics -> brand tokens.
+
+   The Dashly bundle ships its own primary (#00bac7 teal), info (#2dadcf cyan),
+   danger (#d82c5b pink) and warning (#ebcf4f yellow). Those are what made the
+   dashboard look like three different products. Remapping them here fixes
+   every utility class at once instead of editing twenty templates.
+   ========================================================================== */
+
+:root, [data-theme="light"], [data-theme="dark"] {
+  --bs-primary:      #12325a;   --bs-primary-rgb:   18,50,90;
+  --bs-secondary:    #1d4d85;   --bs-secondary-rgb: 29,77,133;
+  --bs-success:      #0d9668;   --bs-success-rgb:   13,150,104;
+  --bs-danger:       #c0392b;   --bs-danger-rgb:    192,57,43;
+  --bs-warning:      #b0762e;   --bs-warning-rgb:   176,118,46;
+  --bs-info:         #1d4d85;   --bs-info-rgb:      29,77,133;
+  --bs-link-color:   #12325a;
+  --bs-link-hover-color: #0e2a4c;
+  --bs-body-bg:      var(--gc-bg);
+  --bs-body-color:   var(--gc-ink);
+  --bs-border-color: var(--gc-line);
+}
+
+/* Opacity-aware, so the bg-opacity-10 tints used by stat icons keep working. */
+.bg-primary   { background-color:rgba(var(--bs-primary-rgb),  var(--bs-bg-opacity,1)) !important; }
+.bg-secondary { background-color:rgba(var(--bs-secondary-rgb),var(--bs-bg-opacity,1)) !important; }
+.bg-success   { background-color:rgba(var(--bs-success-rgb),  var(--bs-bg-opacity,1)) !important; }
+.bg-danger    { background-color:rgba(var(--bs-danger-rgb),   var(--bs-bg-opacity,1)) !important; }
+.bg-warning   { background-color:rgba(var(--bs-warning-rgb),  var(--bs-bg-opacity,1)) !important; }
+.bg-info      { background-color:rgba(var(--bs-info-rgb),     var(--bs-bg-opacity,1)) !important; }
+
+.text-primary   { color:rgba(var(--bs-primary-rgb),  var(--bs-text-opacity,1)) !important; }
+.text-secondary { color:rgba(var(--bs-secondary-rgb),var(--bs-text-opacity,1)) !important; }
+.text-success   { color:rgba(var(--bs-success-rgb),  var(--bs-text-opacity,1)) !important; }
+.text-danger    { color:rgba(var(--bs-danger-rgb),   var(--bs-text-opacity,1)) !important; }
+.text-warning   { color:rgba(var(--bs-warning-rgb),  var(--bs-text-opacity,1)) !important; }
+.text-info      { color:rgba(var(--bs-info-rgb),     var(--bs-text-opacity,1)) !important; }
+.text-muted     { color:var(--gc-ink-2) !important; }
+
+.badge.bg-primary { background-color:var(--gc-navy)   !important; }
+.badge.bg-success { background-color:var(--gc-in)     !important; }
+.badge.bg-danger  { background-color:var(--gc-out)    !important; }
+.badge.bg-warning { background-color:var(--gc-brass)  !important; color:#fff !important; }
+.badge.bg-info    { background-color:var(--gc-navy-2) !important; }
+
+/* ---- money ---- */
+.gc-amount     { font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1; }
+.gc-in         { color:var(--gc-in)  !important; }
+.gc-out        { color:var(--gc-out) !important; }

@@ -1,0 +1,80 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block title %}Profile | {{ site_name }}{% endblock %}
+
+{% block appbar %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mb-5">
+
+    <div class="gc-profile-head mb-4">
+        <div class="gc-avatar">
+            {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="">
+            {% else %}{{ user.first_name|first|default:user.username|first|upper }}{% endif %}
+        </div>
+        <div class="min-w-0">
+            <h1 class="h4 mb-1 text-truncate">{{ user.get_full_name|default:user.username }}</h1>
+            <p class="text-muted mb-0 small text-truncate">{{ user.email }}</p>
+        </div>
+    </div>
+
+    {% if not kyc or kyc.status != 'approved' %}
+    <a href="{% url 'dashboard:kyc' %}" class="gc-callout mb-4">
+        <i class="bi bi-person-vcard"></i>
+        <div>
+            <strong>
+                {% if kyc.status == 'pending' %}Verification in review{% else %}Verify your identity{% endif %}
+            </strong>
+            <div class="small text-muted">
+                {% if kyc.status == 'pending' %}We'll email you when it's done.
+                {% elif kyc.status == 'rejected' %}Something needs correcting.
+                {% else %}A few details unlock your full account.{% endif %}
+            </div>
+        </div>
+        <i class="bi bi-chevron-right ms-auto text-muted"></i>
+    </a>
+    {% endif %}
+
+    <h6 class="gc-group-label">Money</h6>
+    <div class="gc-list mb-4">
+        <a href="{% url 'dashboard:deposits' %}" class="gc-row"><i class="bi bi-wallet2"></i><span>Add money</span><i class="bi bi-chevron-right"></i></a>
+        <a href="{% url 'dashboard:withdrawals' %}" class="gc-row"><i class="bi bi-box-arrow-up"></i><span>Withdraw</span><i class="bi bi-chevron-right"></i></a>
+        <a href="{% url 'dashboard:loans' %}" class="gc-row"><i class="bi bi-cash-coin"></i><span>Loans</span><i class="bi bi-chevron-right"></i></a>
+        <a href="{% url 'dashboard:grants' %}" class="gc-row"><i class="bi bi-gift"></i><span>Grants</span><i class="bi bi-chevron-right"></i></a>
+    </div>
+
+    <h6 class="gc-group-label">Account</h6>
+    <div class="gc-list mb-4">
+        <a href="{% url 'dashboard:account_settings' %}" class="gc-row"><i class="bi bi-gear"></i><span>Settings</span><i class="bi bi-chevron-right"></i></a>
+        <a href="{% url 'dashboard:manage_account_security' %}" class="gc-row"><i class="bi bi-shield-lock"></i><span>Security</span><i class="bi bi-chevron-right"></i></a>
+        <a href="{% url 'dashboard:kyc' %}" class="gc-row">
+            <i class="bi bi-person-vcard"></i><span>Identity</span>
+            <span class="gc-pill {% if kyc.status == 'approved' %}gc-pill--ok{% elif kyc.status == 'pending' %}gc-pill--wait{% else %}gc-pill--todo{% endif %}">
+                {% if kyc.status == 'approved' %}Verified{% elif kyc.status == 'pending' %}In review{% else %}To do{% endif %}
+            </span>
+            <i class="bi bi-chevron-right"></i>
+        </a>
+        <a href="{% url 'dashboard:refer_user' %}" class="gc-row">
+            <i class="bi bi-people"></i><span>Refer a friend</span>
+            {% if referral_count %}<span class="gc-pill">{{ referral_count }}</span>{% endif %}
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+
+    <h6 class="gc-group-label">Help</h6>
+    <div class="gc-list mb-4">
+        <a href="{% url 'dashboard:support' %}" class="gc-row">
+            <i class="bi bi-life-preserver"></i><span>Support</span>
+            {% if open_tickets %}<span class="gc-pill">{{ open_tickets }}</span>{% endif %}
+            <i class="bi bi-chevron-right"></i>
+        </a>
+        <a href="mailto:{{ support_email }}" class="gc-row"><i class="bi bi-envelope"></i><span>Email us</span><i class="bi bi-chevron-right"></i></a>
+    </div>
+
+    <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger w-100">Sign out</button>
+    </form>
+</div>
+{% endblock %}

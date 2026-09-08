@@ -142,6 +142,38 @@ class User(AbstractUser):
             status='approved'
         ).aggregate(models.Sum('amount'))['amount__sum'] or 0
 
+    # Money in / out for the current calendar month.
+    #
+    # The type split mirrors Transaction.approve() exactly, which is the
+    # ledger's own definition of what moves a balance. 'swap' is excluded
+    # from both sides because it is balance-neutral (USD out, BTC in).
+    INCOME_TYPES = ('deposit', 'bonus', 'referral', 'profit', 'loan', 'grant')
+    EXPENSE_TYPES = ('withdrawal',)
+
+    def _month_total(self, types):
+        from django.utils import timezone
+        from transactions.models import Transaction
+        now = timezone.now()
+        return Transaction.objects.filter(
+            user=self, type__in=types, status='approved',
+            created_at__year=now.year, created_at__month=now.month,
+        ).aggregate(models.Sum('amount'))['amount__sum'] or 0
+
+    @property
+    def income_this_month(self):
+        """Approved money in this calendar month.
+
+        Note: user-to-user Transfers write no Transaction row, so internal
+        transfers received are not counted here. The dashboard labels this
+        as deposits and credits rather than claiming to be a full statement.
+        """
+        return self._month_total(self.INCOME_TYPES)
+
+    @property
+    def expense_this_month(self):
+        """Approved money out this calendar month (withdrawals and transfers out)."""
+        return self._month_total(self.EXPENSE_TYPES)
+
     @property
     def referral_count(self):
         """Count number of users referred by this user"""
