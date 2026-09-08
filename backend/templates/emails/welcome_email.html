@@ -1,51 +1,41 @@
 {% extends 'emails/base_email.html' %}
 
 {% block content %}
-<h2>Welcome to {{ site_name }}, {{ first_name }}! 🎉</h2>
+<h2>Welcome to {{ site_name }}, {{ first_name }}</h2>
 
-<p>Congratulations! Your account has been successfully created and verified.</p>
-
-<p>You're now part of a growing community of investors who trust {{ site_name }} for their digital asset investments.</p>
+<p>Your account is created and verified. You can sign in and start using it now.</p>
 
 <div style="text-align: center;">
-    <a href="{{ dashboard_url }}" class="btn" style="display:inline-block;padding:14px 34px;background-color:#12325a;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;margin:18px 0;">Go to Dashboard</a>
-</div>
-
-<div class="info-box">
-    <p><strong>Getting Started</strong></p>
-    <p style="margin-top: 10px;">Your account is ready to use. Log in to explore our investment plans and start building your portfolio.</p>
+    <a href="{{ dashboard_url }}" class="btn" style="display:inline-block;padding:14px 34px;background-color:#12325a;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:16px;margin:18px 0;">Go to your account</a>
 </div>
 
 <div class="divider"></div>
 
-<p style="font-size: 16px;"><strong>What's Next?</strong></p>
+<p style="font-size: 16px;"><strong>Three things worth doing first</strong></p>
 
 <ol style="color: #4a5568; margin-left: 20px; margin-bottom: 20px; line-height: 1.8;">
-    <li><strong>Fund Your Account:</strong> Make your first deposit to start investing</li>
-    <li><strong>Choose a Plan:</strong> Select from our diverse investment plans tailored to your goals</li>
-    <li><strong>Monitor Performance:</strong> Track your investments in real-time from your dashboard</li>
-    <li><strong>Refer & Earn:</strong> Share your unique referral code and earn bonuses</li>
+    <li><strong>Verify your identity.</strong> A few details unlock transfers and cards.</li>
+    <li><strong>Set a transaction PIN.</strong> You'll need one before you can send money.</li>
+    <li><strong>Add money.</strong> Fund your account and your balance updates once it clears.</li>
 </ol>
 
 <div class="info-box" style="background-color: #f4f7fb; border-left-color: #8fa2bd;">
-    <p><strong>🔐 Security Tips</strong></p>
+    <p><strong>Keeping your account safe</strong></p>
     <ul style="margin-top: 10px; margin-left: 20px; color: #4a5568;">
-        <li>Never share your password with anyone</li>
-        <li>Enable two-factor authentication (coming soon)</li>
-        <li>Verify all withdrawal requests carefully</li>
+        <li>We will never ask for your password or a verification code &mdash; not by email, phone or text.</li>
+        <li>Check every transfer's details before you confirm it.</li>
+        <li>If a message looks wrong, don't reply to it. Forward it to {{ support_email }}.</li>
     </ul>
 </div>
 
 <div class="divider"></div>
 
-<p>Your unique referral code: <strong style="color: #12325a; font-size: 18px;">{{ user.referral_code }}</strong></p>
-<p style="font-size: 14px; color: #718096;">Share this code with friends and family to earn referral bonuses!</p>
+<p>Your referral code: <strong style="color: #12325a; font-size: 18px;">{{ user.referral_code }}</strong></p>
+<p style="font-size: 14px; color: #718096;">Share it and you both get a bonus when they join.</p>
 
 <div class="divider"></div>
 
-<p>Thank you for choosing {{ site_name }}. We're here to support your investment journey every step of the way.</p>
+<p>Thanks for choosing {{ site_name }}.</p>
 
-<p>Happy investing!</p>
-
-<p>Best regards,<br>The {{ site_name }} Team</p>
+<p>The {{ site_name }} team</p>
 {% endblock %}

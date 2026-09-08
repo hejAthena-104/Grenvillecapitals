@@ -2,141 +2,22 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}Account Transactions History | {{ site_name }}{% endblock %}
+{% block title %}Activity | {{ site_name }}{% endblock %}
+{% block appbar_greeting %}Account{% endblock %}
+{% block appbar_title %}Activity{% endblock %}
 
 {% block content %}
-        <div class="container-fluid mb-5">
-                <div>
-    <div>
-        <div>
-    <!-- Title -->
-    <h1 class="h2 m-0">
-        Account transactions history
-    </h1>
-    <p class="m-0">All your transaction history in one place.</p>
+<div class="container-fluid mb-5">
+    <h1 class="h2 mb-1 d-none d-lg-block">Activity</h1>
+    <p class="text-muted mb-3">Everything that has moved through your account.</p>
+
+    <div class="gc-filters mb-3">
+        <a href="{% url 'dashboard:account_history' %}" class="gc-chip gc-chip--on">All</a>
+        <a href="{% url 'dashboard:deposits' %}" class="gc-chip">Deposits</a>
+        <a href="{% url 'dashboard:withdrawal_history' %}" class="gc-chip">Withdrawals</a>
+        <a href="{% url 'dashboard:other_history' %}" class="gc-chip">Other</a>
+    </div>
+
+    {% include 'includes/txn-list.html' with items=transactions empty_text="Your deposits, withdrawals and transfers will appear here." %}
 </div>
-
-<div class="row mt-5">
-    <div class="col-6 col-lg-3">
-        <!-- Card -->
-        <a href="{% url 'dashboard:accounthistory' %}">
-            <div class="card border-0 bg-primary text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex flex-column">
-                            <h3 class="card-title h4 mb-0">Deposits</h3>
-                                                            <span class="fs-6 text-dark">0 records</span>
-                                                    </div>
-
-                        <div class="avatar avatar-circle avatar-xs me-2">
-                            <i class="bi bi-wallet-fill fs-3"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-    </div>
-    <div class="col-6 col-lg-3">
-        <!-- Card -->
-        <a href="{% url 'dashboard:withdrawal_history' %}">
-            <div class="card border-0">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex flex-column">
-                            <h3 class="card-title h4 mb-0">Withdrawals</h3>
-                                                    </div>
-
-                        <div class="avatar avatar-circle avatar-xs me-2">
-                            <i class="bi bi-graph-down fs-3"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-    </div>
-            
-        <div class="col-6 col-lg-3">
-        <!-- Card -->
-        <a href="{% url 'dashboard:other_history' %}">
-            <div class="card border-0">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex flex-column">
-                            <h3 class="card-title h4 mb-0">Others</h3>
-                                                    </div>
-
-                        <div class="avatar avatar-circle avatar-xs me-2">
-                            <i class="bi bi-hourglass fs-3"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-    </div>
-
-</div>
-    </div>
-    <div>
-    </div>
-    <div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Deposit history</h5>
-                    <div class="table-responsive">
-                        <table class="table text-center">
-                            <thead>
-                                <tr>
-                                    <th>Amount</th>
-                                    <th>Payment mode</th>
-                                    <th>Status</th>
-                                    <th>Date created</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for txn in transactions %}
-                                    {% if txn.type == 'deposit' %}
-                                    <tr>
-                                        <td>${{ txn.amount }}</td>
-                                        <td>{{ txn.payment_method|default:"N/A" }}</td>
-                                        <td>
-                                            <span class="badge
-                                                {% if txn.status == 'approved' %}bg-success
-                                                {% elif txn.status == 'pending' %}bg-warning
-                                                {% elif txn.status == 'rejected' %}bg-danger
-                                                {% else %}bg-secondary{% endif %}">
-                                                {{ txn.status|title }}
-                                            </span>
-                                        </td>
-                                        <td>{{ txn.created_at|date:"M d, Y H:i" }}</td>
-                                    </tr>
-                                    {% endif %}
-                                {% empty %}
-                                    <tr>
-                                        <td class="py-5" colspan="4">
-                                            <i class="bi bi-database-fill-exclamation" style="font-size: 50px"></i>
-                                            <h5>No deposit history</h5>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        <div>
-                            <div>
-    </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-        </div>
-
-        <!-- Footer -->
-        
 {% endblock %}

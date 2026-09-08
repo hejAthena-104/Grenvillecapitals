@@ -112,7 +112,7 @@
                                         <!-- Available Balance -->
                                         <div class="balance-pill p-4 mb-4">
                                             <p class="mb-1 text-white-50 small text-uppercase">Available Balance</p>
-                                            <h2 class="text-white mb-0 fw-bold">${{ usd_balance }}</h2>
+                                            <h2 class="text-white mb-0 fw-bold gc-amount">${{ usd_balance|floatformat:2|intcomma }}</h2>
                                         </div>
 
                                         <!-- Quick Transfer -->
@@ -120,18 +120,19 @@
                                             <label class="form-label fw-semibold">Quick Transfer</label>
                                             <div class="d-flex flex-wrap gap-2 align-items-center">
                                                 {% for beneficiary in beneficiaries %}
-                                                    {% if beneficiary.type == 'bank' %}
                                                     <span class="beneficiary-chip d-inline-flex align-items-center"
+                                                        data-beneficiary-id="{{ beneficiary.pk }}"
                                                         data-account-holder-name="{{ beneficiary.account_holder_name }}"
                                                         data-account-number="{{ beneficiary.account_number }}"
                                                         data-bank-name="{{ beneficiary.bank_name }}"
+                                                        data-routing-number="{{ beneficiary.routing_number }}"
+                                                        data-swift-code="{{ beneficiary.swift_code }}"
                                                         onclick="fillBeneficiary(this)">
                                                         <i class="bi bi-person-circle me-2"></i>
                                                         {{ beneficiary.nickname|default:beneficiary.account_holder_name }}
                                                     </span>
-                                                    {% endif %}
                                                 {% empty %}
-                                                    <span class="text-muted">No saved beneficiaries yet</span>
+                                                    <span class="text-muted">No saved recipients yet</span>
                                                 {% endfor %}
                                                 <span class="beneficiary-chip d-inline-flex align-items-center text-primary"
                                                     onclick="document.getElementById('account_holder_name').focus();">
@@ -254,7 +255,7 @@
 
                             <div class="balance-pill p-4 mb-4">
                                 <p class="mb-1 text-white-50 small text-uppercase">Available Balance</p>
-                                <h2 class="text-white mb-0 fw-bold">${{ usd_balance }}</h2>
+                                <h2 class="text-white mb-0 fw-bold gc-amount">${{ usd_balance|floatformat:2|intcomma }}</h2>
                             </div>
 
                             <h5 class="fw-semibold mb-3">Select Transfer Method</h5>
@@ -647,6 +648,24 @@
             if (holder) holder.value = chip.dataset.accountHolderName || '';
             if (number) number.value = chip.dataset.accountNumber || '';
             if (bank) bank.value = chip.dataset.bankName || '';
+
+            var routing = document.getElementById('routing_number');
+            var swift = document.getElementById('swift_code');
+            if (routing && chip.dataset.routingNumber) routing.value = chip.dataset.routingNumber;
+            if (swift && chip.dataset.swiftCode) swift.value = chip.dataset.swiftCode;
+
+            // Record which saved recipient this was, so the transfer is linked
+            // to the Beneficiary row rather than only snapshotting its details.
+            var form = chip.closest('form') || document.querySelector('form');
+            if (form) {
+                var f = form.querySelector('input[name="beneficiary_id"]');
+                if (!f) {
+                    f = document.createElement('input');
+                    f.type = 'hidden'; f.name = 'beneficiary_id';
+                    form.appendChild(f);
+                }
+                f.value = chip.dataset.beneficiaryId || '';
+            }
         }
 
         // Show the selected international transfer method form

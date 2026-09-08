@@ -400,10 +400,13 @@ def withdrawal_history(request):
 @login_required
 def other_history(request):
     """View other transactions (bonuses, referrals, transfers)"""
-    others = Transaction.objects.filter(
-        user=request.user,
-        type__in=['bonus', 'referral', 'transfer']
-    ).order_by('-created_at')
+    # 'transfer' is in TYPE_CHOICES but nothing ever writes it, and the old
+    # filter listed only it plus bonus/referral — so loan and grant credits
+    # never showed anywhere. "Other" means everything that is not a plain
+    # deposit or withdrawal.
+    others = Transaction.objects.exclude(
+        type__in=['deposit', 'withdrawal']
+    ).filter(user=request.user).order_by('-created_at')
 
     context = {
         'user': request.user,
@@ -853,6 +856,16 @@ def _create_external_transfer(request, transfer_type, method, data):
     bid = data.get('beneficiary_id')
     if bid:
         bene = Beneficiary.objects.filter(user=user, pk=bid).first()
+
+        # The snapshot fields below come from POST. When a saved recipient is
+        # chosen we backfill from the Beneficiary so a quick-send that posts
+        # only the id still records complete bank details.
+        if bene:
+            data = dict(data)
+            for field in ('account_holder_name', 'account_number', 'bank_name',
+                          'account_type', 'routing_number', 'swift_code', 'country'):
+                if not (data.get(field) or '').strip():
+                    data[field] = getattr(bene, field, '') or ''
     ExternalTransfer.objects.create(
         transaction=txn, beneficiary=bene, transfer_type=transfer_type, method=method,
         account_holder_name=data.get('account_holder_name', ''),

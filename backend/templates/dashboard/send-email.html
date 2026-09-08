@@ -54,7 +54,6 @@
                                                     <option value="custom_message">Custom Message</option>
                                                     <option value="deposit_confirmation">Deposit Confirmation</option>
                                                     <option value="withdrawal_approved">Withdrawal Approved</option>
-                                                    <option value="investment_notification">Investment Update</option>
                                                     <option value="welcome_email">Welcome Message</option>
                                                 </select>
                                                 <small class="text-muted">Choose a pre-designed template</small>
@@ -264,10 +263,6 @@
                 'withdrawal_approved': {
                     subject: 'Withdrawal Approved - {{ site_name }}',
                     content: '<p>Great news! Your withdrawal request has been approved.</p><p><strong>Amount:</strong> $[AMOUNT]</p>'
-                },
-                'investment_notification': {
-                    subject: 'Investment Update - {{ site_name }}',
-                    content: '<p>We have an update regarding your investment.</p><p><strong>Plan:</strong> [PLAN NAME]</p>'
                 },
                 'welcome_email': {
                     subject: 'Welcome to {{ site_name }}',

@@ -343,3 +343,33 @@ body { background-color:var(--gc-bg); }
   .gc-balance{ max-width: 560px; }
   .gc-balance-value { font-size: 40px; }
 }
+
+/* filter chips + status pills */
+.gc-filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.gc-filters::-webkit-scrollbar { display: none; }
+.gc-chip {
+  flex: 0 0 auto; padding: 7px 15px; border-radius: 999px;
+  border: 1px solid var(--gc-line); background: var(--gc-surface);
+  color: var(--gc-ink-2); font-size: 13px; font-weight: 500; text-decoration: none;
+}
+.gc-chip:hover { background: var(--gc-surface-2); color: var(--gc-ink); }
+.gc-chip--on { background: var(--gc-navy); border-color: var(--gc-navy); color: #fff; }
+.gc-chip--on:hover { background: var(--gc-navy-deep); color: #fff; }
+
+.gc-status { font-size: 11px; font-weight: 600; }
+.gc-status--approved  { color: var(--gc-in); }
+.gc-status--pending,
+.gc-status--processing { color: var(--gc-pending); }
+.gc-status--rejected,
+.gc-status--cancelled  { color: var(--gc-out); }
+
+/* Toasts. The old inline style pinned them to right:20px with a 400px width,
+   which overflows a 375px screen. Inset from both edges on mobile instead. */
+.gc-toasts {
+  position: fixed; z-index: 9999;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 12px; right: 12px;
+}
+@media (min-width: 576px) {
+  .gc-toasts { left: auto; right: 20px; top: 20px; max-width: 400px; }
+}

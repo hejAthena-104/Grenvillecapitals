@@ -36,7 +36,7 @@
                                     <input type="number" min="1" step="0.01" name="amount"
                                         placeholder="Enter amount to transfer"
                                         class="form-control mt-2" required>
-                                    <small class="text-muted">Your current balance: ${{ user.balance }}</small>
+                                    <small class="text-muted">Your current balance: ${{ user.balance|floatformat:2|intcomma }}</small>
                                 </div>
                                 <div class="mb-3">
                                     <label>Description (Optional)</label>

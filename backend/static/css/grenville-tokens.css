@@ -41,6 +41,7 @@
 
   /* ---- state ---- */
   --gc-pending:   #b0762e;
+  --gc-pending-ink: #8a5c22;   /* emphasis on a brass tint — 5.1:1, passes AA */
   --gc-pending-soft: rgba(176, 118, 46, .12);
   --gc-info:      #1d4d85;
   --gc-info-soft: rgba(29, 77, 133, .10);
@@ -115,3 +116,15 @@
 .gc-amount     { font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1; }
 .gc-in         { color:var(--gc-in)  !important; }
 .gc-out        { color:var(--gc-out) !important; }
+
+/* Bootstrap's alert-* derive their text from the theme's own colour maths,
+   which after the semantic remap left white-on-brass at ~1.9:1. Set the alert
+   surfaces explicitly: tinted background, dark ink, coloured left edge. */
+.alert-warning { background-color: var(--gc-pending-soft); border-color: rgba(176,118,46,.35); color: var(--gc-ink); }
+.alert-success { background-color: var(--gc-in-soft);      border-color: rgba(13,150,104,.35);  color: var(--gc-ink); }
+.alert-danger  { background-color: var(--gc-out-soft);     border-color: rgba(192,57,43,.35);   color: var(--gc-ink); }
+.alert-info    { background-color: var(--gc-info-soft);    border-color: rgba(29,77,133,.30);   color: var(--gc-ink); }
+.alert-warning .alert-link, .alert-warning strong { color: var(--gc-pending-ink); }
+.alert-success .alert-link, .alert-success strong { color: var(--gc-in); }
+.alert-danger  .alert-link, .alert-danger strong  { color: var(--gc-out); }
+.alert-info    .alert-link, .alert-info strong    { color: var(--gc-navy-2); }

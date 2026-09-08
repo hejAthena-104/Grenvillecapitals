@@ -1,0 +1,43 @@
+{% load humanize %}
+{% comment %}
+Shared transaction list. Expects `items` (a Transaction queryset) and
+optionally `empty_text`. Direction is carried by the sign and the arrow as
+well as by colour, so it survives greyscale and colour-blindness.
+
+Note: {# #} is single-line only in Django — a multi-line one renders as text.
+{% endcomment %}
+{% regroup items by created_at|date:"j F Y" as days %}
+{% for day in days %}
+<h6 class="gc-group-label mt-3">{{ day.grouper }}</h6>
+<div class="gc-list mb-2">
+    {% for t in day.list %}
+    <div class="gc-txn">
+        {% if t.type == 'withdrawal' %}
+        <span class="gc-txn-icon gc-txn-icon--out"><i class="bi bi-arrow-up-right"></i></span>
+        {% else %}
+        <span class="gc-txn-icon gc-txn-icon--in"><i class="bi bi-arrow-down-left"></i></span>
+        {% endif %}
+        <span class="gc-txn-main">
+            <strong>{{ t.get_type_display }}</strong>
+            <span class="gc-txn-meta">
+                {{ t.created_at|date:"H:i" }}{% if t.payment_method %} · {{ t.payment_method }}{% endif %}
+            </span>
+        </span>
+        <span class="text-end">
+            <span class="gc-txn-amount gc-amount d-block {% if t.type == 'withdrawal' %}gc-out{% else %}gc-in{% endif %}">
+                {% if t.type == 'withdrawal' %}&minus;{% else %}+{% endif %}${{ t.amount|floatformat:2|intcomma }}
+            </span>
+            <span class="gc-status gc-status--{{ t.status }}">{{ t.get_status_display }}</span>
+        </span>
+    </div>
+    {% endfor %}
+</div>
+{% empty %}
+<div class="gc-list">
+    <div class="gc-empty">
+        <i class="bi bi-inbox"></i>
+        <p class="mb-1"><strong>Nothing here yet</strong></p>
+        <p class="text-muted small mb-0">{{ empty_text|default:"Transactions will appear here." }}</p>
+    </div>
+</div>
+{% endfor %}
