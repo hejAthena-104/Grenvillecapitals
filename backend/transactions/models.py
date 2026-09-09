@@ -53,6 +53,10 @@ class Transaction(models.Model):
     admin_note = models.TextField(blank=True, help_text="Internal notes for administrators")
 
     # For transfers
+    funds_held = models.BooleanField(
+        default=False,
+        help_text='Money already debited when the request was submitted, so approving must not debit again.',
+    )
     recipient = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='received_transfers')
 
     # Timestamps
@@ -80,10 +84,13 @@ class Transaction(models.Model):
         if self.type == 'deposit':
             self.user.balance += self.amount
         elif self.type == 'withdrawal':
-            if self.user.balance >= self.amount:
-                self.user.balance -= self.amount
-            else:
-                return False  # Insufficient balance
+            # Money out is debited when the customer submits, so the balance
+            # they see already reflects it. Approving must not debit twice.
+            if not self.funds_held:
+                if self.user.balance >= self.amount:
+                    self.user.balance -= self.amount
+                else:
+                    return False  # Insufficient balance
         elif self.type in ['bonus', 'referral', 'profit', 'loan', 'grant']:
             self.user.balance += self.amount
 
@@ -92,11 +99,18 @@ class Transaction(models.Model):
         return True
 
     def reject(self, reason=''):
-        """Reject transaction"""
+        """Reject the transaction, returning any money that was held for it."""
+        if self.status != 'pending':
+            return False
+        if self.funds_held:
+            self.user.balance += self.amount
+            self.user.save(update_fields=['balance'])
+            self.funds_held = False
         self.status = 'rejected'
         self.admin_note = reason
         self.processed_at = timezone.now()
         self.save()
+        return True
 
 
 class Deposit(models.Model):

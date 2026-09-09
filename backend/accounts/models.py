@@ -68,6 +68,11 @@ class User(AbstractUser):
     )
 
     # Account Status
+    transfers_blocked = models.BooleanField(
+        default=False,
+        help_text="Block this customer from sending money. They keep full read access "
+                  "and are told to contact support.",
+    )
     is_verified = models.BooleanField(
         default=False,
         help_text="Email verification status"

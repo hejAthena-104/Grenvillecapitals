@@ -60,6 +60,11 @@
 {% endblock %}
 
 {% block content %}
+{% if transfers_blocked %}
+<div class="container-fluid mb-5">
+    {% include 'includes/blocked-notice.html' %}
+</div>
+{% else %}
         <div class="container-fluid mb-5">
             <!-- Title -->
             <h1 class="h2 mb-1">Transfers</h1>
@@ -631,6 +636,7 @@
 
         <!-- Footer -->
         
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}

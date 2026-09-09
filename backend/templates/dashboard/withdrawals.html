@@ -5,6 +5,11 @@
 {% block title %}Withdraw Your funds | {{ site_name }}{% endblock %}
 
 {% block content %}
+{% if transfers_blocked %}
+<div class="container-fluid mb-5">
+    {% include 'includes/blocked-notice.html' %}
+</div>
+{% else %}
         <div class="container-fluid mb-5">
                 <!-- Title -->
     <div class="mb-5">
@@ -107,4 +112,5 @@
 
         <!-- Footer -->
         
+{% endif %}
 {% endblock %}

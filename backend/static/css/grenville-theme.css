@@ -392,3 +392,14 @@ body { background-color:var(--gc-bg); }
   font-size: 13px; color: var(--gc-ink-2); line-height: 1.35; text-align: center;
 }
 .gc-pager-count { font-size: 11px; color: var(--gc-ink-3); }
+
+/* blocked-account notice */
+.gc-blocked {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 20px; border-radius: var(--gc-radius);
+  background: var(--gc-out-soft); border: 1px solid rgba(192,57,43,.28);
+  color: var(--gc-ink);
+}
+.gc-blocked > i:first-child { font-size: 24px; color: var(--gc-out); line-height: 1.2; }
+.gc-blocked strong { display: block; margin-bottom: 4px; }
+.gc-blocked p { color: var(--gc-ink-2); font-size: 14px; }

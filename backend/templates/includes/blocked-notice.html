@@ -1,0 +1,9 @@
+{% comment %}Shown in place of the send form when an admin has blocked transfers.{% endcomment %}
+<div class="gc-blocked" role="alert">
+    <i class="bi bi-slash-circle"></i>
+    <div>
+        <strong>Transfers are blocked on your account</strong>
+        <p class="mb-2">{{ blocked_message }}</p>
+        <a href="{% url 'dashboard:support' %}" class="btn btn-primary btn-sm">Contact support</a>
+    </div>
+</div>

@@ -723,73 +723,44 @@
     }
   })();
 
-  // Remember username functionality and loading indicator
-  document.addEventListener('DOMContentLoaded', function() {
+  // Remember-me and the submit spinner.
+  //
+  // The scraped page shipped duplicate desktop/mobile input pairs and JS that
+  // disabled whichever pair was hidden. Those duplicates are gone, but the JS
+  // outlived them and went on disabling the only inputs left on any viewport
+  // >= 768px — and a disabled field is never submitted, so every desktop login
+  // failed with "Invalid username or password". Rewritten for a single pair.
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
     const rememberCheckbox = document.getElementById('rememberUser');
-    const loginForm = document.getElementById('loginForm');
     const loginBtn = document.getElementById('loginBtn');
-    const btnText = loginBtn.querySelector('.btn-text');
-    const btnLoading = loginBtn.querySelector('.btn-loading');
 
-    // Get both mobile and desktop inputs
-    const mobileUsername = document.getElementById('username');
-    const mobilePassword = document.getElementById('password');
-    const desktopUsername = document.getElementById('usernameDesktop');
-    const desktopPassword = document.getElementById('passwordDesktop');
-
-    // Function to check if mobile view is active
-    function isMobileView() {
-      return window.innerWidth < 768;
+    const saved = localStorage.getItem('rememberedUsername');
+    if (saved && usernameInput && !usernameInput.value) {
+      usernameInput.value = saved;
+      if (rememberCheckbox) rememberCheckbox.checked = true;
     }
 
-    // Function to disable hidden inputs (prevents required validation on hidden fields)
-    function updateInputStates() {
-      const mobile = isMobileView();
-      // Disable the hidden set of inputs so they don't block form submission
-      if (mobileUsername) mobileUsername.disabled = !mobile;
-      if (mobilePassword) mobilePassword.disabled = !mobile;
-      if (desktopUsername) desktopUsername.disabled = mobile;
-      if (desktopPassword) desktopPassword.disabled = mobile;
+    if (form) {
+      form.addEventListener('submit', function () {
+        if (rememberCheckbox && usernameInput) {
+          if (rememberCheckbox.checked) {
+            localStorage.setItem('rememberedUsername', usernameInput.value);
+          } else {
+            localStorage.removeItem('rememberedUsername');
+          }
+        }
+        if (loginBtn) {
+          const btnText = loginBtn.querySelector('.btn-text');
+          const btnLoading = loginBtn.querySelector('.btn-loading');
+          if (btnText) btnText.classList.add('d-none');
+          if (btnLoading) btnLoading.classList.remove('d-none');
+          // NB: never disable the button before submit — in some browsers that
+          // cancels the submission that is already in flight.
+        }
+      });
     }
-
-    // Run on page load and window resize
-    updateInputStates();
-    window.addEventListener('resize', updateInputStates);
-
-    // Load saved username on page load
-    const savedUsername = localStorage.getItem('rememberedUsername');
-    if (savedUsername) {
-      // Set on both mobile and desktop inputs
-      if (mobileUsername) mobileUsername.value = savedUsername;
-      if (desktopUsername) desktopUsername.value = savedUsername;
-      rememberCheckbox.checked = true;
-    }
-
-    // Save username and show loading when form is submitted
-    loginForm.addEventListener('submit', function() {
-      // Get the visible username input value
-      const currentUsername = isMobileView()
-        ? (mobileUsername ? mobileUsername.value : '')
-        : (desktopUsername ? desktopUsername.value : '');
-
-      if (rememberCheckbox.checked) {
-        localStorage.setItem('rememberedUsername', currentUsername);
-      } else {
-        localStorage.removeItem('rememberedUsername');
-      }
-
-      // Show loading indicator
-      btnText.classList.add('d-none');
-      btnLoading.classList.remove('d-none');
-      loginBtn.disabled = true;
-    });
-
-    // Clear saved username when unchecked
-    rememberCheckbox.addEventListener('change', function() {
-      if (!this.checked) {
-        localStorage.removeItem('rememberedUsername');
-      }
-    });
   });
 </script>
 

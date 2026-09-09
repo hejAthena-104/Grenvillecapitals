@@ -32,7 +32,7 @@ class UserAdmin(BaseUserAdmin):
     )
 
     # Fields to filter by
-    list_filter = (
+    list_filter = ('transfers_blocked', 
         'is_staff',
         'is_active',
         'is_verified',
@@ -77,6 +77,11 @@ class UserAdmin(BaseUserAdmin):
         }),
         ('Referral Information', {
             'fields': ('referral_code', 'referred_by')
+        }),
+        ('Restrictions', {
+            'fields': ('transfers_blocked',),
+            'description': 'Blocking stops this customer sending money. They keep '
+                           'full read access to their account and are told to contact support.',
         }),
         ('Permissions', {
             'fields': (

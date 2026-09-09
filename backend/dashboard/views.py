@@ -23,6 +23,10 @@ from accounts.email_utils import EmailService
 
 logger = logging.getLogger(__name__)
 
+TRANSFERS_BLOCKED_MESSAGE = (
+    'Transfers are blocked on your account. Please contact support to restore them.'
+)
+
 
 
 def _paginate(request, queryset, per_page=25):
@@ -193,6 +197,7 @@ def payment(request, transaction_id):
 @login_required
 def withdrawals(request):
     """View withdrawal methods selection page"""
+
     # Get active withdrawal payment methods
     payment_methods = PaymentMethod.objects.filter(
         is_active=True,
@@ -208,6 +213,8 @@ def withdrawals(request):
     context = {
         'user': request.user,
         'payment_methods': payment_methods,
+        'transfers_blocked': request.user.transfers_blocked,
+        'blocked_message': TRANSFERS_BLOCKED_MESSAGE,
         'withdrawals': user_withdrawals,
     }
 
@@ -242,6 +249,10 @@ def select_withdrawal_method(request):
 @login_required
 def withdraw_funds(request):
     """Withdraw funds form"""
+    if request.user.transfers_blocked:
+        messages.error(request, TRANSFERS_BLOCKED_MESSAGE)
+        return redirect('dashboard:withdrawals')
+
     # Get selected withdrawal method from session
     withdrawal_method_name = request.session.get('withdrawal_method')
 
@@ -314,15 +325,26 @@ def withdraw_funds(request):
             messages.error(request, f'Please add your {withdrawal_method.name} address in account settings first')
             return redirect('dashboard:account_settings')
 
-        # Create withdrawal transaction
-        transaction = Transaction.objects.create(
-            user=request.user,
-            type='withdrawal',
-            amount=amount,
-            payment_method=withdrawal_method.name,
-            status='pending',
-            description=f'Withdrawal request via {withdrawal_method.name}'
-        )
+        # Hold the money now, exactly as a transfer does, so a customer cannot
+        # commit the same balance to several pending withdrawals.
+        with db_transaction.atomic():
+            locked = User.objects.select_for_update().get(pk=request.user.pk)
+            if locked.balance < amount:
+                messages.error(request, 'Insufficient balance')
+                return redirect('dashboard:withdraw_funds')
+            locked.balance -= amount
+            locked.save(update_fields=['balance'])
+
+            transaction = Transaction.objects.create(
+                user=request.user,
+                type='withdrawal',
+                amount=amount,
+                funds_held=True,
+                payment_method=withdrawal_method.name,
+                status='pending',
+                description=f'Withdrawal request via {withdrawal_method.name}'
+            )
+        request.user.refresh_from_db(fields=['balance'])
 
         # Create withdrawal details
         Withdrawal.objects.create(
@@ -576,6 +598,10 @@ def support(request):
 @login_required
 def transfer_funds(request):
     """Transfer funds to another user"""
+    if request.user.transfers_blocked:
+        messages.error(request, TRANSFERS_BLOCKED_MESSAGE)
+        return redirect('dashboard:index')
+
     if request.method == 'POST':
         try:
             recipient_username = request.POST.get('recipient_username', '').strip()
@@ -831,12 +857,18 @@ def swap(request):
 
 @login_required
 def transfers(request):
-    """Transfers hub: tabbed Local / International + saved beneficiaries."""
+    """Transfers hub: tabbed Local / International + saved beneficiaries.
+
+    A blocked customer still reaches this page — the template shows them why
+    and where to go, which is clearer than bouncing them to the dashboard.
+    """
     user = request.user
     context = {
         'user': user,
         'usd_balance': user.balance,
         'beneficiaries': Beneficiary.objects.filter(user=user),
+        'transfers_blocked': user.transfers_blocked,
+        'blocked_message': TRANSFERS_BLOCKED_MESSAGE,
         'has_pin': user.has_transaction_pin,
         'recent_transfers': Transaction.objects.filter(user=user, type='withdrawal').order_by('-created_at')[:10],
     }
@@ -846,6 +878,11 @@ def transfers(request):
 def _create_external_transfer(request, transfer_type, method, data):
     """Shared: validate PIN + balance, create pending Transaction + ExternalTransfer."""
     user = request.user
+
+    if user.transfers_blocked:
+        messages.error(request, TRANSFERS_BLOCKED_MESSAGE)
+        return False
+
     amount = _to_decimal(data.get('amount'))
     if amount is None or amount <= 0:
         messages.error(request, 'Enter a valid amount.')
@@ -856,29 +893,42 @@ def _create_external_transfer(request, transfer_type, method, data):
     if not user.check_transaction_pin(data.get('transaction_pin', '')):
         messages.error(request, 'Invalid Transaction PIN.')
         return False
-    if user.balance < amount:
-        messages.error(request, 'Insufficient balance for this transfer.')
-        return False
 
-    txn = Transaction.objects.create(
-        user=user, type='withdrawal', amount=amount, status='pending',
-        payment_method='bank_transfer' if method in ('local_bank', 'wire') else method,
-        description=data.get('description', '') or f'{transfer_type.title()} transfer',
-    )
+    # A QueryDict yields a list per key when copied with dict(); .dict() keeps
+    # the last value, which is what every field here expects.
+    data = data.dict() if hasattr(data, 'dict') else dict(data)
+
     bene = None
     bid = data.get('beneficiary_id')
     if bid:
         bene = Beneficiary.objects.filter(user=user, pk=bid).first()
-
-        # The snapshot fields below come from POST. When a saved recipient is
-        # chosen we backfill from the Beneficiary so a quick-send that posts
-        # only the id still records complete bank details.
+        # Snapshot fields come from POST. When a saved recipient is chosen we
+        # backfill so a quick-send posting only the id still records details.
         if bene:
-            data = dict(data)
             for field in ('account_holder_name', 'account_number', 'bank_name',
                           'account_type', 'routing_number', 'swift_code', 'country'):
                 if not (data.get(field) or '').strip():
                     data[field] = getattr(bene, field, '') or ''
+
+    # Hold the money now. Locking the row and debiting on submission is what
+    # stops a customer committing the same balance to several transfers while
+    # they all sit pending, and it is why the balance they see drops straight
+    # away. A rejection returns it (Transaction.reject).
+    with db_transaction.atomic():
+        locked = User.objects.select_for_update().get(pk=user.pk)
+        if locked.balance < amount:
+            messages.error(request, 'Insufficient balance for this transfer.')
+            return False
+        locked.balance -= amount
+        locked.save(update_fields=['balance'])
+
+        txn = Transaction.objects.create(
+            user=user, type='withdrawal', amount=amount, status='pending',
+            funds_held=True,
+            payment_method='bank_transfer' if method in ('local_bank', 'wire') else method,
+            description=data.get('description', '') or f'{transfer_type.title()} transfer',
+        )
+    user.refresh_from_db(fields=['balance'])
     ExternalTransfer.objects.create(
         transaction=txn, beneficiary=bene, transfer_type=transfer_type, method=method,
         account_holder_name=data.get('account_holder_name', ''),
