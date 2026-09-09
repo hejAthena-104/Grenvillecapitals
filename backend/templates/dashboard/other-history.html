@@ -18,5 +18,7 @@
     </div>
 
     {% include 'includes/txn-list.html' with items=transactions empty_text="Bonuses, loans and grants will show up here." %}
+
+    {% include 'includes/pagination.html' with page=transactions %}
 </div>
 {% endblock %}

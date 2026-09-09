@@ -19,5 +19,7 @@
     </div>
 
     {% include 'includes/txn-list.html' with items=transactions empty_text="Your deposits, withdrawals and transfers will appear here." %}
+
+    {% include 'includes/pagination.html' with page=transactions %}
 </div>
 {% endblock %}

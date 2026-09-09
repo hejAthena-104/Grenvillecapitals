@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models import Sum, Q, Count
+from django.core.paginator import Paginator
 from django.db import transaction, transaction as db_transaction
 from django.utils import timezone
 from datetime import timedelta, datetime
@@ -22,6 +23,18 @@ from accounts.email_utils import EmailService
 
 logger = logging.getLogger(__name__)
 
+
+
+def _paginate(request, queryset, per_page=25):
+    """Page a transaction list.
+
+    The history views returned every row a user had ever produced. That is
+    fine for a new account and unusable for an established one, so each list
+    is paged and the template renders a control only when there is more than
+    one page.
+    """
+    paginator = Paginator(queryset, per_page)
+    return paginator.get_page(request.GET.get('page'))
 
 @login_required
 def dashboard_index(request):
@@ -375,7 +388,7 @@ def account_history(request):
 
     context = {
         'user': request.user,
-        'transactions': transactions,
+        'transactions': _paginate(request, transactions),
     }
 
     return render(request, 'dashboard/accounthistory.html', context)
@@ -391,7 +404,7 @@ def withdrawal_history(request):
 
     context = {
         'user': request.user,
-        'withdrawals': withdrawals,
+        'withdrawals': _paginate(request, withdrawals),
     }
 
     return render(request, 'dashboard/withdrawal-history.html', context)
@@ -410,7 +423,7 @@ def other_history(request):
 
     context = {
         'user': request.user,
-        'transactions': others,
+        'transactions': _paginate(request, others),
     }
 
     return render(request, 'dashboard/other-history.html', context)

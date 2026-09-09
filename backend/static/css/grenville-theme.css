@@ -373,3 +373,22 @@ body { background-color:var(--gc-bg); }
 @media (min-width: 576px) {
   .gc-toasts { left: auto; right: 20px; top: 20px; max-width: 400px; }
 }
+
+/* ---- pagination ---- */
+.gc-pager {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-top: 18px;
+}
+.gc-pager-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 0 16px; border-radius: 999px;
+  background: var(--gc-surface); border: 1px solid var(--gc-line);
+  color: var(--gc-navy); text-decoration: none; font-size: 14px; font-weight: 500;
+}
+.gc-pager-btn:hover { background: var(--gc-surface-2); color: var(--gc-navy-deep); }
+.gc-pager-btn--off { color: var(--gc-ink-3); opacity: .55; }
+.gc-pager-pos {
+  display: flex; flex-direction: column; align-items: center;
+  font-size: 13px; color: var(--gc-ink-2); line-height: 1.35; text-align: center;
+}
+.gc-pager-count { font-size: 11px; color: var(--gc-ink-3); }

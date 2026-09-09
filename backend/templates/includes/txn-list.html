@@ -20,7 +20,7 @@ Note: {# #} is single-line only in Django — a multi-line one renders as text.
         <span class="gc-txn-main">
             <strong>{{ t.get_type_display }}</strong>
             <span class="gc-txn-meta">
-                {{ t.created_at|date:"H:i" }}{% if t.payment_method %} · {{ t.payment_method }}{% endif %}
+                {{ t.created_at|date:"H:i" }}{% if t.payment_method %} · {{ t.get_payment_method_display }}{% endif %}
             </span>
         </span>
         <span class="text-end">
