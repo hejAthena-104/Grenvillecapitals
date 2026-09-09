@@ -29,6 +29,21 @@ TRANSFERS_BLOCKED_MESSAGE = (
 
 
 
+
+def _clean_routing(value):
+    """Keep stored routing numbers consistent with what the form accepts.
+
+    The send form requires exactly nine digits (an ABA number), but nothing
+    validated the value when a recipient was SAVED. A payee stored with a bad
+    routing number then failed client-side validation on every later transfer,
+    with no explanation and no way to fix it from the UI. Digits only; anything
+    that is not a valid nine-digit number is stored empty rather than stored
+    broken, since the field is optional server-side.
+    """
+    digits = ''.join(ch for ch in (value or '') if ch.isdigit())
+    return digits if len(digits) == 9 else ''
+
+
 def _paginate(request, queryset, per_page=25):
     """Page a transaction list.
 
@@ -949,7 +964,8 @@ def _create_external_transfer(request, transfer_type, method, data):
             type='local_bank' if transfer_type == 'local' else method,
             account_holder_name=data.get('account_holder_name', ''),
             account_number=data.get('account_number', ''), bank_name=data.get('bank_name', ''),
-            account_type=data.get('account_type', ''), routing_number=data.get('routing_number', ''),
+            account_type=data.get('account_type', ''),
+            routing_number=_clean_routing(data.get('routing_number')),
             swift_code=data.get('swift_code', ''), country=data.get('country', ''),
         )
     messages.success(request, f'{transfer_type.title()} transfer of ${amount} submitted for review.')
@@ -982,7 +998,7 @@ def save_beneficiary(request):
             account_number=request.POST.get('account_number', ''),
             bank_name=request.POST.get('bank_name', ''),
             account_type=request.POST.get('account_type', ''),
-            routing_number=request.POST.get('routing_number', ''),
+            routing_number=_clean_routing(request.POST.get('routing_number')),
             swift_code=request.POST.get('swift_code', ''),
             country=request.POST.get('country', ''),
         )

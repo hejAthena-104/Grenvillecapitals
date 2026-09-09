@@ -113,7 +113,7 @@ class Command(BaseCommand):
         benes = [Beneficiary.objects.create(
             user=user, nickname=nick, account_holder_name=holder, bank_name=bank,
             account_number='00' + last4 * 2, type=kind, country='United States',
-            routing_number='0710' + last4, swift_code='GRNVUS33' if kind == 'wire' else '',
+            routing_number='07100' + last4,   # ABA numbers are 9 digits swift_code='GRNVUS33' if kind == 'wire' else '',
         ) for holder, nick, bank, last4, kind in RECIPIENTS]
 
         # --- cards ---
