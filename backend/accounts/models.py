@@ -155,18 +155,31 @@ class User(AbstractUser):
     INCOME_TYPES = ('deposit', 'bonus', 'referral', 'profit', 'loan', 'grant')
     EXPENSE_TYPES = ('withdrawal',)
 
-    def _month_total(self, types):
+    def _month_total(self, types, include_held=False):
+        from django.db.models import Q
         from django.utils import timezone
         from transactions.models import Transaction
         now = timezone.now()
+
+        # Money that has actually moved against the balance this month.
+        # Approved always counts. Pending money OUT counts too when the funds
+        # were held at submission, because the balance already reflects it —
+        # without this the customer sees their balance drop while "Out" stays
+        # put, and the two figures cannot be reconciled.
+        settled = Q(status='approved')
+        if include_held:
+            settled |= Q(status='pending', funds_held=True)
+
         return Transaction.objects.filter(
-            user=self, type__in=types, status='approved',
+            settled, user=self, type__in=types,
             created_at__year=now.year, created_at__month=now.month,
         ).aggregate(models.Sum('amount'))['amount__sum'] or 0
 
     @property
     def income_this_month(self):
         """Approved money in this calendar month.
+
+        Pending deposits are excluded: nothing has been credited yet.
 
         Note: user-to-user Transfers write no Transaction row, so internal
         transfers received are not counted here. The dashboard labels this
@@ -176,8 +189,12 @@ class User(AbstractUser):
 
     @property
     def expense_this_month(self):
-        """Approved money out this calendar month (withdrawals and transfers out)."""
-        return self._month_total(self.EXPENSE_TYPES)
+        """Money out this calendar month, including transfers still in review.
+
+        A pending transfer has already been debited, so it belongs here — this
+        is what makes Out agree with the balance on screen.
+        """
+        return self._month_total(self.EXPENSE_TYPES, include_held=True)
 
     @property
     def referral_count(self):
