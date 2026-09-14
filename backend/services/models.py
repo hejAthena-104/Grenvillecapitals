@@ -206,7 +206,7 @@ class Card(models.Model):
     card_type = models.CharField(max_length=20, default='virtual_debit')
     card_brand = models.CharField(max_length=20, default='Visa')
     card_holder = models.CharField(max_length=150, blank=True)
-    card_number = models.CharField(max_length=19, blank=True, help_text="Demo card number (display only)")
+    card_number = models.CharField(max_length=19, blank=True, help_text="Card number (display only)")
     expiry = models.CharField(max_length=7, blank=True, help_text="MM/YY")
     cvv = models.CharField(max_length=4, blank=True)
 

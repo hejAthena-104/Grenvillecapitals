@@ -2,20 +2,20 @@
 # NOT IN USE — Grenville is served entirely from the Contabo VPS (156.67.28.100)
 # by the shared Caddy, exactly like bloomvest, provena and summitteachable:
 #
-#   grenvillecapitals.com            -> Caddy file_server, /srv/grenville
-#   dashboard.grenvillecapitals.com  -> reverse_proxy to the Django container
+#   grenvillecrest.com            -> Caddy file_server, /srv/grenville
+#   dashboard.grenvillecrest.com  -> reverse_proxy to the Django container
 #
-# Every rule below is already implemented in the grenvillecapitals.com block of
+# Every rule below is already implemented in the grenvillecrest.com block of
 # /opt/swifteagle/Caddyfile. This file is kept only as the rollback path: point
 # the apex A record at Netlify and it becomes authoritative again.
 # See DEPLOY.md.
 # ============================================================================
 
-# Grenville Capitals — marketing site.
+# Grenville Crest — marketing site.
 #
 # The same routing contract is implemented twice, deliberately:
 #   - here, for Netlify
-#   - in the grenvillecapitals.com block of /opt/swifteagle/Caddyfile on the VPS
+#   - in the grenvillecrest.com block of /opt/swifteagle/Caddyfile on the VPS
 # Whichever one DNS points at is the live one. Keep the two in sync: every rule
 # below has a matching `redir` line in the Caddyfile.
 #
@@ -32,38 +32,38 @@
 
 [[redirects]]
   from = "/login"
-  to = "https://dashboard.grenvillecapitals.com/auth/login/"
+  to = "https://dashboard.grenvillecrest.com/auth/login/"
   status = 302
   force = true
 
 [[redirects]]
   from = "/register"
-  to = "https://dashboard.grenvillecapitals.com/auth/register/"
+  to = "https://dashboard.grenvillecrest.com/auth/register/"
   status = 302
   force = true
 
 [[redirects]]
   from = "/forgot-password"
-  to = "https://dashboard.grenvillecapitals.com/auth/forgot-password/"
+  to = "https://dashboard.grenvillecrest.com/auth/forgot-password/"
   status = 302
   force = true
 
 [[redirects]]
   from = "/auth/*"
-  to = "https://dashboard.grenvillecapitals.com/auth/:splat"
+  to = "https://dashboard.grenvillecrest.com/auth/:splat"
   status = 302
   force = true
 
 [[redirects]]
   from = "/dashboard/*"
-  to = "https://dashboard.grenvillecapitals.com/dashboard/:splat"
+  to = "https://dashboard.grenvillecrest.com/dashboard/:splat"
   status = 302
   force = true
 
 # the scrape's old logged-in area; send anyone following a stale link to the app
 [[redirects]]
   from = "/users/*"
-  to = "https://dashboard.grenvillecapitals.com/dashboard/"
+  to = "https://dashboard.grenvillecrest.com/dashboard/"
   status = 302
   force = true
 

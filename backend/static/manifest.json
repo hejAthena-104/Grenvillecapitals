@@ -1,7 +1,7 @@
 {
-  "name": "Grenville Capitals",
+  "name": "Grenville Crest",
   "short_name": "Grenville",
-  "description": "Grenville Capitals online banking.",
+  "description": "Grenville Crest online banking.",
   "start_url": "/dashboard/",
   "scope": "/",
   "display": "standalone",

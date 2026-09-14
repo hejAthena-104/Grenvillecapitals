@@ -24,7 +24,6 @@ class SupportTicket(models.Model):
         ('account', 'Account Issue'),
         ('deposit', 'Deposit Issue'),
         ('withdrawal', 'Withdrawal Issue'),
-        ('investment', 'Investment Issue'),
         ('technical', 'Technical Issue'),
         ('general', 'General Inquiry'),
         ('other', 'Other'),

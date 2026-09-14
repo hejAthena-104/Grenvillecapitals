@@ -186,8 +186,10 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="bank_name" class="form-label">Bank Name</label>
-                                                <input type="text" class="form-control" id="bank_name"
-                                                    name="bank_name" placeholder="Bank of America" required>
+                                                <input type="text" class="form-control bank-search-input" id="bank_name"
+                                                    name="bank_name" placeholder="Start typing a bank name" required
+                                                    data-endpoint="{% url 'dashboard:bank_search' %}"
+                                                    data-fill-bank="bank_name" data-fill-routing="routing_number">
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="account_type" class="form-label">Account Type</label>
@@ -199,9 +201,11 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="routing_number" class="form-label">Routing Number</label>
-                                                <input type="text" class="form-control" id="routing_number"
-                                                    name="routing_number" placeholder="9-digit routing number"
-                                                    pattern="\d{9}" maxlength="9" inputmode="numeric">
+                                                <input type="text" class="form-control bank-search-input" id="routing_number"
+                                                    name="routing_number" placeholder="Type routing number to find a bank"
+                                                    pattern="\d{9}" maxlength="9" inputmode="numeric"
+                                                    data-endpoint="{% url 'dashboard:bank_search' %}"
+                                                    data-fill-bank="bank_name" data-fill-routing="routing_number">
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="swift_code" class="form-label">SWIFT Code</label>
@@ -243,10 +247,6 @@
                                             </a>
                                         </div>
 
-                                        <div class="text-center mt-4 text-muted small">
-                                            <i class="bi bi-shield-lock me-1"></i> Bank-Level Security
-                                            <div class="mt-1">SSL Encrypted &middot; 24/7 Monitoring</div>
-                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -271,15 +271,6 @@
                                             <i class="bi bi-bank2 fs-2 method-icon"></i>
                                             <h6 class="mt-2 mb-1">Wire Transfer</h6>
                                             <small class="text-muted">Bank-to-bank wire</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-4 col-xl-2">
-                                    <div class="card method-card" onclick="showMethod('crypto', this)">
-                                        <div class="card-body text-center">
-                                            <i class="bi bi-currency-bitcoin fs-2 method-icon"></i>
-                                            <h6 class="mt-2 mb-1">Cryptocurrency</h6>
-                                            <small class="text-muted">BTC, ETH, USDT</small>
                                         </div>
                                     </div>
                                 </div>
@@ -321,6 +312,7 @@
                                 </div>
                             </div>
 
+
                             <!-- Method forms -->
                             <!-- Wire Transfer -->
                             <div class="intl-method-form d-none" id="form-wire">
@@ -361,52 +353,6 @@
                                                 <div class="col-12">
                                                     <label class="form-label">Description / Note</label>
                                                     <textarea class="form-control" name="description" rows="2"></textarea>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Transaction PIN</label>
-                                                    <input type="password" class="form-control" name="transaction_pin"
-                                                        minlength="4" maxlength="6" pattern="\d{4,6}" inputmode="numeric" required>
-                                                    <small class="text-muted">Your transaction PIN, not your login password.</small>
-                                                </div>
-                                            </div>
-                                            <div class="mt-4">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i class="bi bi-send me-1"></i> Send Transfer
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Cryptocurrency -->
-                            <div class="intl-method-form d-none" id="form-crypto">
-                                <div class="card border">
-                                    <div class="card-body">
-                                        <h5 class="fw-semibold mb-3"><i class="bi bi-currency-bitcoin me-2 method-icon"></i>Cryptocurrency</h5>
-                                        <form method="post" action="{% url 'dashboard:international_transfer' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="method" value="crypto">
-                                            <div class="row g-3">
-                                                <div class="col-12">
-                                                    <label class="form-label">Wallet Address</label>
-                                                    <input type="text" class="form-control" name="wallet_address" placeholder="Recipient wallet address" required>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Coin</label>
-                                                    <select class="form-select" name="coin">
-                                                        <option value="BTC">Bitcoin (BTC)</option>
-                                                        <option value="ETH">Ethereum (ETH)</option>
-                                                        <option value="USDT">Tether (USDT)</option>
-                                                        <option value="LTC">Litecoin (LTC)</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Amount</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">$</span>
-                                                        <input type="number" step="any" min="1" class="form-control" name="amount" required>
-                                                    </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="form-label">Transaction PIN</label>
@@ -640,6 +586,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'js/bank-search.js' %}"></script>
 <script>
         // Fill the local transfer beneficiary fields from a saved beneficiary chip
         function fillBeneficiary(chip) {

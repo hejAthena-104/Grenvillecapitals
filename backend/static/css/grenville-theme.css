@@ -1,5 +1,5 @@
 /* ============================================================
-   Grenville Capitals — component overrides.
+   Grenville Crest — component overrides.
    Loaded AFTER grenville-tokens.css, which defines every colour.
    Values here read from the tokens; do not add raw hexes.
    ============================================================ */
@@ -403,3 +403,113 @@ body { background-color:var(--gc-bg); }
 .gc-blocked > i:first-child { font-size: 24px; color: var(--gc-out); line-height: 1.2; }
 .gc-blocked strong { display: block; margin-bottom: 4px; }
 .gc-blocked p { color: var(--gc-ink-2); font-size: 14px; }
+
+/* ---- demo labels ------------------------------------------------------- */
+/* Prominent banner (deposit screen only). */
+.gc-demo-banner {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 18px; margin-bottom: 22px;
+  border-radius: var(--gc-radius);
+  background: var(--gc-brass-soft, #f4e9d6);
+  border: 1px solid rgba(176,118,46,.35);
+  color: var(--gc-ink);
+}
+.gc-demo-banner > i:first-child { font-size: 22px; color: var(--gc-brass); line-height: 1.2; }
+.gc-demo-banner strong { display: block; margin-bottom: 2px; }
+.gc-demo-banner p { margin: 0; color: var(--gc-ink-2); font-size: 13.5px; }
+
+/* Small inline label (withdraw / transfer, next to submit). */
+.gc-demo-note {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--gc-surface-2, #eef1f6); color: var(--gc-ink-2);
+  font-size: 12px; font-weight: 500;
+}
+.gc-demo-note i { color: var(--gc-brass); }
+
+/* Footer demo line (dashboard). */
+.gc-demo-footer { color: var(--gc-ink-3); font-size: 12px; margin-top: 2px; }
+
+/* ---- balance card (deposit / withdraw / transfer) ---------------------- */
+/* Its text is white, so it needs the navy fill on every page that uses it,
+   not only on transfer.html where it was defined inline. */
+.balance-pill {
+  background: linear-gradient(135deg, var(--gc-navy) 0%, var(--gc-navy-deep) 100%);
+  color: #fff;
+  border-radius: var(--gc-radius);
+}
+
+/* ---- deposit confirmation popup ---------------------------------------- */
+/* A fixed overlay above the app bar and tab bar, centred on every screen. */
+.gc-funding-modal { display: none; }
+.gc-funding-modal.is-open {
+  display: flex; align-items: center; justify-content: center;
+  position: fixed; inset: 0; z-index: 1090;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+}
+.gc-funding-backdrop {
+  position: absolute; inset: 0; border: 0; padding: 0;
+  background: rgba(10,21,38,.55); cursor: pointer;
+}
+.gc-funding-sheet {
+  position: relative; display: flex; flex-direction: column;
+  width: 100%; max-width: 460px; max-height: calc(100dvh - 32px);
+  background: var(--gc-surface); color: var(--gc-ink);
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(10,21,38,.28);
+  animation: gc-modal-in .2s ease-out;
+  outline: none;
+}
+.gc-funding-header {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: 18px 18px 12px; border-bottom: 1px solid var(--gc-line);
+}
+.gc-funding-body { padding: 16px 18px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.gc-funding-actions {
+  display: flex; gap: 10px; padding: 12px 18px 16px;
+  border-top: 1px solid var(--gc-line);
+}
+.gc-funding-actions .btn { flex: 1 1 0; }
+body.gc-modal-open { overflow: hidden; }
+/* Keep the toast behind the popup while it is open. */
+body.gc-modal-open .gc-toasts { z-index: 1080; }
+
+@keyframes gc-modal-in { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+
+@media (min-width: 576px) {
+  .gc-funding-actions { justify-content: flex-end; }
+  .gc-funding-actions .btn { flex: 0 0 auto; min-width: 120px; }
+}
+@media (prefers-reduced-motion: reduce) { .gc-funding-sheet { animation: none; } }
+
+.gc-funding-details {
+  border: 1px solid var(--gc-line);
+  border-radius: var(--gc-radius);
+  background: var(--gc-surface-2);
+  overflow: hidden;
+}
+.gc-funding-row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--gc-line);
+}
+.gc-funding-row:last-of-type { border-bottom: 0; }
+.gc-funding-row > span { color: var(--gc-ink-2); font-size: 13px; font-weight: 600; flex-shrink: 0; }
+.gc-funding-row > strong { text-align: right; overflow-wrap: anywhere; min-width: 0; }
+
+/* ---- bank-search typeahead -------------------------------------------- */
+.bank-search-menu {
+  position: absolute; z-index: 40; top: 100%; left: 0; right: 0;
+  margin-top: 4px; max-height: 260px; overflow-y: auto;
+  background: var(--gc-surface, #fff); border: 1px solid var(--gc-line, #e4e9f0);
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(10,21,38,.12);
+}
+.bank-search-item {
+  display: flex; flex-direction: column; gap: 2px; width: 100%;
+  text-align: left; padding: 9px 14px; border: 0; background: transparent;
+  cursor: pointer; border-bottom: 1px solid var(--gc-line, #eef1f6);
+}
+.bank-search-item:last-child { border-bottom: 0; }
+.bank-search-item:hover { background: var(--gc-surface-2, #f4f6f9); }
+.bank-search-name { font-size: 14px; font-weight: 600; color: var(--gc-ink); }
+.bank-search-meta { font-size: 12px; color: var(--gc-ink-3); font-variant-numeric: tabular-nums; }

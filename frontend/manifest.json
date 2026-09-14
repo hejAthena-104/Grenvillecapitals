@@ -1,7 +1,7 @@
 {
-  "name": "Grenville Capitals",
-  "short_name": "Grenville Capitals",
-  "description": "Grenville Capitals online banking — view balances, move money, pay bills and manage cards from one secure account.",
+  "name": "Grenville Crest",
+  "short_name": "Grenville Crest",
+  "description": "Grenville Crest online banking — view balances, move money, and manage cards from one secure account.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -64,34 +64,10 @@
   ],
   "shortcuts": [
     {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "Go to your account dashboard",
-      "url": "/users/dashboard/",
-      "icons": [
-        {
-          "src": "/static/images/pwa/icon-96x96.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Transfer Funds",
-      "short_name": "Transfer",
-      "description": "Transfer money between accounts",
-      "url": "/users/transfer/",
-      "icons": [
-        {
-          "src": "/static/images/pwa/icon-96x96.png",
-          "sizes": "96x96"
-        }
-      ]
-    },
-    {
-      "name": "Pay Bills",
-      "short_name": "Bill Pay",
-      "description": "Pay your bills online",
-      "url": "/users/bill-pay/",
+      "name": "Sign in",
+      "short_name": "Sign in",
+      "description": "Open your account",
+      "url": "/login",
       "icons": [
         {
           "src": "/static/images/pwa/icon-96x96.png",

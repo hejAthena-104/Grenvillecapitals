@@ -33,7 +33,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lamb
 # --- Brand ------------------------------------------------------------------
 # Single source of truth for every user-visible name/URL. Templates read these
 # via accounts.context_processors.brand; email_utils reads them from settings.
-SITE_NAME = config('SITE_NAME', default='Grenville Capitals')
+SITE_NAME = config('SITE_NAME', default='Grenville Crest')
 SITE_URL = config('SITE_URL', default='http://localhost:8000')
 SUPPORT_EMAIL = config('SUPPORT_EMAIL', default='support@grenvillecapitals.com')
 EMAIL_FROM = config('EMAIL_FROM', default='onboarding@resend.dev')

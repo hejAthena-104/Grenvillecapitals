@@ -5,9 +5,15 @@ from django.contrib import messages
 from django.db.models import Sum, Q, Count
 from django.core.paginator import Paginator
 from django.db import transaction, transaction as db_transaction
+from django.http import JsonResponse
+from django.conf import settings
+from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta, datetime
 from decimal import Decimal, InvalidOperation
+from functools import lru_cache
+from pathlib import Path
+import json
 import logging
 import random
 import string
@@ -15,7 +21,7 @@ import string
 from accounts.models import User, Notification, EmailOTP, KYCProfile
 from transactions.models import (
     Transaction, Deposit, Withdrawal, Transfer, PaymentMethod,
-    SwapRate, Swap, Beneficiary, ExternalTransfer, FeatureFlags,
+    Beneficiary, ExternalTransfer, FeatureFlags,
 )
 from services.models import LoanApplication, GrantApplication, CardApplication, Card
 from support.models import SupportTicket, EmailLog
@@ -55,6 +61,51 @@ def _paginate(request, queryset, per_page=25):
     paginator = Paginator(queryset, per_page)
     return paginator.get_page(request.GET.get('page'))
 
+
+@lru_cache(maxsize=1)
+def _load_banks():
+    """Load the bundled US-bank directory once per process.
+
+    This is a static reference list shipped with the app (routing number →
+    bank name). It is a convenience for filling the transfer form, not a live
+    ACH/Fed lookup — no network call and no validation of real accounts.
+    """
+    path = Path(__file__).resolve().parent.parent / 'static' / 'data' / 'us_banks.json'
+    try:
+        with path.open(encoding='utf-8') as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return []
+
+
+@login_required
+def bank_search(request):
+    """Typeahead for the bank-transfer forms.
+
+    Matches the bundled directory by routing-number prefix or bank name and
+    returns up to 10 results as JSON. Read-only; no side effects.
+    """
+    q = (request.GET.get('q') or '').strip()
+    if len(q) < 2:
+        return JsonResponse({'results': []})
+
+    q_lower = q.lower()
+    q_digits = ''.join(ch for ch in q if ch.isdigit())
+    results = []
+    for bank in _load_banks():
+        routing = bank.get('routing', '')
+        name = bank.get('name', '')
+        if (q_digits and routing.startswith(q_digits)) or (q_lower in name.lower()):
+            results.append({
+                'routing': routing,
+                'name': name,
+                'city': bank.get('city', ''),
+                'state': bank.get('state', ''),
+            })
+        if len(results) >= 10:
+            break
+    return JsonResponse({'results': results})
+
 @login_required
 def dashboard_index(request):
     """Main dashboard view with comprehensive statistics"""
@@ -76,7 +127,6 @@ def dashboard_index(request):
         'month_label': timezone.now().strftime('%B'),
         'total_earnings': total_earnings,
         'current_balance': user.balance,
-        'btc_balance': user.btc_balance,
         'recent_transactions': recent_transactions,
         'pending_deposits': pending_deposits,
         'pending_withdrawals': pending_withdrawals,
@@ -87,25 +137,36 @@ def dashboard_index(request):
 
     return render(request, 'dashboard/index.html', context)
 
+DEPOSIT_MIN = Decimal('1')
+DEPOSIT_MAX = Decimal('10000000')
+
+
+def _deposit_reference(user):
+    return f'GC-{user.pk:06d}-{timezone.now().strftime("%Y%m%d%H%M%S")}'
+
+
 @login_required
 def deposits(request):
-    """View deposit page with payment methods"""
-    # Get active deposit payment methods
-    payment_methods = PaymentMethod.objects.filter(
-        is_active=True,
-        type__in=['deposit', 'both']
-    ).order_by('order')
-
-    # Get user's deposit history
+    """Deposit page; shows a confirmation popup after a request is submitted."""
     user_deposits = Transaction.objects.filter(
         user=request.user,
         type='deposit'
     ).order_by('-created_at')
 
+    deposit_request = None
+    request_id = request.GET.get('request')
+    if request_id and request_id.isdigit():
+        deposit_request = Transaction.objects.filter(
+            pk=request_id,
+            user=request.user,
+            type='deposit',
+        ).first()
+
     context = {
         'user': request.user,
-        'payment_methods': payment_methods,
-        'deposits': user_deposits,
+        'deposits': _paginate(request, user_deposits),
+        'quick_amounts': [100, 250, 500, 1000, 2500, 5000],
+        'deposit_request': deposit_request,
     }
 
     return render(request, 'dashboard/deposits.html', context)
@@ -113,100 +174,46 @@ def deposits(request):
 
 @login_required
 def new_deposit(request):
-    """Process new deposit request"""
-    if request.method == 'POST':
-        amount = request.POST.get('amount', '0')
-        payment_method_name = request.POST.get('payment_method')
-
-        try:
-            amount = Decimal(amount)
-        except:
-            messages.error(request, 'Invalid amount entered')
-            return redirect('dashboard:deposits')
-
-        try:
-            # Get payment method
-            payment_method = PaymentMethod.objects.get(
-                name=payment_method_name,
-                is_active=True,
-                type__in=['deposit', 'both']
-            )
-
-            # Validate amount
-            if amount < payment_method.min_amount:
-                messages.error(request, f'Minimum deposit amount for {payment_method.name} is ${payment_method.min_amount}')
-                return redirect('dashboard:deposits')
-
-            if payment_method.max_amount and amount > payment_method.max_amount:
-                messages.error(request, f'Maximum deposit amount for {payment_method.name} is ${payment_method.max_amount}')
-                return redirect('dashboard:deposits')
-
-            # Create deposit transaction
-            transaction = Transaction.objects.create(
-                user=request.user,
-                type='deposit',
-                amount=amount,
-                payment_method=payment_method.name,
-                status='pending',
-                description=f'Deposit via {payment_method.name}'
-            )
-
-            # Create deposit details
-            Deposit.objects.create(
-                transaction=transaction
-            )
-
-            # Create notification
-            Notification.objects.create(
-                user=request.user,
-                title='Deposit Request Created',
-                message=f'Your deposit request of ${amount} via {payment_method.name} is pending',
-                type='deposit'
-            )
-
-            messages.success(request, 'Deposit request created! Please proceed to payment.')
-            return redirect('dashboard:payment', transaction_id=transaction.id)
-
-        except PaymentMethod.DoesNotExist:
-            messages.error(request, 'Invalid payment method')
-            return redirect('dashboard:deposits')
-        except Exception as e:
-            messages.error(request, f'Error creating deposit: {str(e)}')
-            return redirect('dashboard:deposits')
-
-    return redirect('dashboard:deposits')
-
-
-@login_required
-def payment(request, transaction_id):
-    """Show payment instructions and upload proof"""
-    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user, type='deposit')
-
-    # Get payment method details
-    try:
-        payment_method = PaymentMethod.objects.get(name=transaction.payment_method, is_active=True)
-    except PaymentMethod.DoesNotExist:
-        messages.error(request, 'Payment method not found')
+    """Create a pending deposit request; admins credit the balance on approval."""
+    if request.method != 'POST':
         return redirect('dashboard:deposits')
 
-    if request.method == 'POST':
-        # Handle proof upload
-        if 'proof_image' in request.FILES:
-            proof_image = request.FILES['proof_image']
-            deposit = transaction.deposit_details
-            deposit.proof_image = proof_image
-            deposit.save()
+    try:
+        amount = Decimal(request.POST.get('amount', '0'))
+    except (InvalidOperation, TypeError, ValueError):
+        messages.error(request, 'Invalid amount entered')
+        return redirect('dashboard:deposits')
 
-            messages.success(request, 'Payment proof uploaded successfully! Your deposit will be reviewed.')
-            return redirect('dashboard:deposits')
+    if amount < DEPOSIT_MIN:
+        messages.error(request, f'Minimum deposit amount is ${DEPOSIT_MIN:,.2f}')
+        return redirect('dashboard:deposits')
+    if amount > DEPOSIT_MAX:
+        messages.error(request, f'Maximum deposit amount is ${DEPOSIT_MAX:,.2f}')
+        return redirect('dashboard:deposits')
 
-    context = {
-        'user': request.user,
-        'transaction': transaction,
-        'payment_method': payment_method,
-    }
+    with db_transaction.atomic():
+        locked = User.objects.select_for_update().get(pk=request.user.pk)
+        reference = _deposit_reference(locked)
+        transaction = Transaction.objects.create(
+            user=locked,
+            type='deposit',
+            amount=amount,
+            payment_method='bank_transfer',
+            payment_reference=reference,
+            status='pending',
+            description='Deposit request pending review.',
+        )
+        Deposit.objects.create(transaction=transaction)
 
-    return render(request, 'dashboard/payment.html', context)
+    Notification.objects.create(
+        user=request.user,
+        title='Deposit Request Created',
+        message=f'Your ${amount:,.2f} deposit request has been submitted and is pending review.',
+        type='deposit',
+    )
+
+    messages.info(request, f'Your ${amount:,.2f} deposit request has been submitted.')
+    return redirect(f'{reverse("dashboard:deposits")}?request={transaction.pk}')
 
 
 @login_required
@@ -325,20 +332,24 @@ def withdraw_funds(request):
             messages.error(request, 'Insufficient balance')
             return redirect('dashboard:withdraw_funds')
 
-        # Get withdrawal address based on method
-        withdrawal_address = ''
-        if withdrawal_method.name.upper() == 'USDT':
-            withdrawal_address = request.user.usdt_address
-        elif withdrawal_method.name.upper() == 'BITCOIN':
-            withdrawal_address = request.user.btc_address
-        elif withdrawal_method.name.upper() == 'ETHEREUM':
-            withdrawal_address = request.user.eth_address
-        elif withdrawal_method.name.upper() == 'LITECOIN':
-            withdrawal_address = request.user.ltc_address
+        # Collect the destination bank account from the form. The routing
+        # number is optional and validated only for shape (9 digits); the
+        # bank search that fills it is a cosmetic aid, not a real ACH lookup.
+        account_holder = request.POST.get('account_holder_name', '').strip()
+        account_number = request.POST.get('account_number', '').strip()
+        bank_name = request.POST.get('bank_name', '').strip()
+        routing_number = _clean_routing(request.POST.get('routing_number'))
 
-        if not withdrawal_address:
-            messages.error(request, f'Please add your {withdrawal_method.name} address in account settings first')
-            return redirect('dashboard:account_settings')
+        if not (account_holder and account_number and bank_name):
+            messages.error(request, 'Enter the destination bank account details.')
+            return redirect('dashboard:withdraw_funds')
+
+        # Human-readable snapshot stored on the existing 255-char field — no
+        # schema change. Only the last 4 digits are kept.
+        masked = account_number[-4:] if len(account_number) >= 4 else account_number
+        withdrawal_address = f'{bank_name} • ****{masked}'
+        if routing_number:
+            withdrawal_address += f' • routing {routing_number}'
 
         # Hold the money now, exactly as a transfer does, so a customer cannot
         # commit the same balance to several pending withdrawals.
@@ -355,9 +366,9 @@ def withdraw_funds(request):
                 type='withdrawal',
                 amount=amount,
                 funds_held=True,
-                payment_method=withdrawal_method.name,
+                payment_method='bank_transfer',
                 status='pending',
-                description=f'Withdrawal request via {withdrawal_method.name}'
+                description=f'Withdrawal to {bank_name}'
             )
         request.user.refresh_from_db(fields=['balance'])
 
@@ -365,7 +376,7 @@ def withdraw_funds(request):
         Withdrawal.objects.create(
             transaction=transaction,
             withdrawal_address=withdrawal_address,
-            withdrawal_method=withdrawal_method.name
+            withdrawal_method='Bank Transfer'
         )
 
         # The OTP was consumed by verify(); clear the legacy field too.
@@ -527,23 +538,17 @@ def account_settings(request):
                 messages.success(request, 'Password updated successfully!')
 
         elif action == 'update_payment_methods':
-            # Update payment method addresses
+            # Update the customer's own bank details
             request.user.bank_name = request.POST.get('bankName', '')
             request.user.account_name = request.POST.get('accountName', '')
             request.user.account_number = request.POST.get('accountNumber', '')
             request.user.swift_code = request.POST.get('swiftCode', '')
-            request.user.btc_address = request.POST.get('btcAddress', '')
-            request.user.eth_address = request.POST.get('ethAddress', '')
-            request.user.ltc_address = request.POST.get('ltcAddress', '')
-            request.user.usdt_address = request.POST.get('usdtAddress', '')
             request.user.save()
-            messages.success(request, 'Payment methods updated successfully!')
+            messages.success(request, 'Bank details updated successfully!')
 
         elif action == 'update_email_preferences':
             # Update email notification preferences
             request.user.email_on_withdrawal = request.POST.get('emailOnWithdrawal') == 'Yes'
-            request.user.email_on_roi = request.POST.get('emailOnRoi') == 'Yes'
-            request.user.email_on_expiration = request.POST.get('emailOnExpiration') == 'Yes'
             request.user.save()
             messages.success(request, 'Email preferences updated successfully!')
 
@@ -799,7 +804,7 @@ def send_email(request):
 
 
 # ============================================================
-#  NEW FEATURES: Swap · Transfers · Beneficiaries · Loans · Grants · Cards · PIN
+#  FEATURES: Transfers · Beneficiaries · Loans · Grants · Cards · PIN
 # ============================================================
 
 def _to_decimal(value):
@@ -807,67 +812,6 @@ def _to_decimal(value):
         return Decimal(str(value).strip())
     except (InvalidOperation, ValueError, TypeError):
         return None
-
-
-@login_required
-def swap(request):
-    """Instant USD <-> BTC swap at the admin-set rate."""
-    # Swap is optional and switched from the admin. Closing the view as well as
-    # hiding the link means a stale bookmark cannot reach it.
-    if not FeatureFlags.get().swap_enabled:
-        messages.info(request, 'Currency swap is not available on your account.')
-        return redirect('dashboard:index')
-
-    user = request.user
-    rate = SwapRate.current()
-    price = rate.btc_usd_price
-
-    if request.method == 'POST':
-        direction = request.POST.get('direction', 'usd_to_btc')
-        amount = _to_decimal(request.POST.get('amount'))
-        if amount is None or amount <= 0:
-            messages.error(request, 'Enter a valid amount.')
-            return redirect('dashboard:swap')
-
-        # Atomic read-check-mutate-save with a row lock to prevent TOCTOU double-spend.
-        with transaction.atomic():
-            locked = User.objects.select_for_update().get(pk=user.pk)
-            if direction == 'usd_to_btc':
-                if locked.balance < amount:
-                    messages.error(request, 'Insufficient USD balance.')
-                    return redirect('dashboard:swap')
-                btc = (amount / price).quantize(Decimal('0.00000001'))
-                locked.balance -= amount
-                locked.btc_balance += btc
-                locked.save()
-                Swap.objects.create(user=locked, direction='usd_to_btc', from_amount=amount,
-                                    to_amount=btc, rate_used=price)
-                Transaction.objects.create(user=locked, type='swap', amount=amount, status='approved',
-                                           description=f'Swapped ${amount} USD to {btc} BTC')
-                messages.success(request, f'Swapped ${amount} to {btc} BTC.')
-            else:  # btc_to_usd
-                if locked.btc_balance < amount:
-                    messages.error(request, 'Insufficient BTC balance.')
-                    return redirect('dashboard:swap')
-                usd = (amount * price).quantize(Decimal('0.01'))
-                locked.btc_balance -= amount
-                locked.balance += usd
-                locked.save()
-                Swap.objects.create(user=locked, direction='btc_to_usd', from_amount=amount,
-                                    to_amount=usd, rate_used=price)
-                Transaction.objects.create(user=locked, type='swap', amount=usd, status='approved',
-                                           description=f'Swapped {amount} BTC to ${usd} USD')
-                messages.success(request, f'Swapped {amount} BTC to ${usd}.')
-        return redirect('dashboard:swap')
-
-    context = {
-        'user': user,
-        'btc_usd_price': price,
-        'usd_balance': user.balance,
-        'btc_balance': user.btc_balance,
-        'swaps': Swap.objects.filter(user=user)[:10],
-    }
-    return render(request, 'dashboard/swap.html', context)
 
 
 @login_required
@@ -953,7 +897,7 @@ def _create_external_transfer(request, transfer_type, method, data):
         routing_number=data.get('routing_number', ''),
         swift_code=data.get('swift_code', ''),
         country=data.get('country', ''),
-        extra={k: v for k, v in data.items() if k in ('email', 'tag', 'wallet_address', 'phone')},
+        extra={k: v for k, v in data.items() if k in ('email', 'tag', 'phone')},
     )
     Notification.objects.create(user=user, type='withdrawal', title='Transfer Submitted',
                                 message=f'Your {transfer_type} transfer of ${amount} is pending review.')

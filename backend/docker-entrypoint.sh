@@ -1,5 +1,5 @@
 #!/bin/sh
-# Container entrypoint for the grenvillecapitals backend.
+# Container entrypoint for the grenvillecrest backend.
 # Applies migrations against the configured DATABASE_URL (Railway Postgres
 # in production), then execs gunicorn as PID 1.
 set -e

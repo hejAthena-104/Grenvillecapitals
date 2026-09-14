@@ -1,6 +1,6 @@
 
-// Service Worker for Grenville Capitals PWA
-const CACHE_NAME = 'grenville-pwa-v1';
+// Service Worker for Grenville Crest PWA
+const CACHE_NAME = 'grenville-pwa-v2';
 const OFFLINE_URL = '/offline/';
 
 // Assets to cache on install
@@ -133,7 +133,7 @@ self.addEventListener('push', (event) => {
     console.log('[ServiceWorker] Push received');
 
     let data = {};
-    let title = 'Grenville Capitals';
+    let title = 'Grenville Crest';
     let options = {
         body: 'You have a new notification',
         icon: '/static/images/pwa/icon-192x192.png',
@@ -150,7 +150,7 @@ self.addEventListener('push', (event) => {
         try {
             // Try to parse as JSON
             data = event.data.json();
-            title = data.title || 'Grenville Capitals';
+            title = data.title || 'Grenville Crest';
             options.body = data.body || options.body;
             options.icon = data.icon || options.icon;
             options.badge = data.badge || options.badge;

@@ -10,7 +10,7 @@ import uuid
 class User(AbstractUser):
     """
     Custom User model extending Django's AbstractUser
-    Adds investment-related fields for the platform
+    Adds banking fields for the platform
     """
     # Contact Information
     phone = models.CharField(max_length=20, blank=True, null=True)
@@ -26,12 +26,6 @@ class User(AbstractUser):
         default=0.00,
         help_text="User's available balance"
     )
-    total_profit = models.DecimalField(
-        max_digits=15,
-        decimal_places=2,
-        default=0.00,
-        help_text="Total profit earned from investments"
-    )
     total_bonus = models.DecimalField(
         max_digits=15,
         decimal_places=2,
@@ -44,13 +38,6 @@ class User(AbstractUser):
         default=0.00,
         help_text="Total earnings from referrals"
     )
-    btc_balance = models.DecimalField(
-        max_digits=20,
-        decimal_places=8,
-        default=0,
-        help_text="User's BTC balance (from USD<->BTC swaps)"
-    )
-
     # Referral System
     referral_code = models.CharField(
         max_length=10,
@@ -91,16 +78,8 @@ class User(AbstractUser):
     account_number = models.CharField(max_length=100, blank=True)
     swift_code = models.CharField(max_length=50, blank=True)
 
-    # Cryptocurrency Addresses
-    btc_address = models.CharField(max_length=200, blank=True, verbose_name="Bitcoin Address")
-    eth_address = models.CharField(max_length=200, blank=True, verbose_name="Ethereum Address")
-    ltc_address = models.CharField(max_length=200, blank=True, verbose_name="Litecoin Address")
-    usdt_address = models.CharField(max_length=200, blank=True, verbose_name="USDT Address")
-
     # Email Notification Preferences
     email_on_withdrawal = models.BooleanField(default=True, help_text="Receive email on withdrawal requests")
-    email_on_roi = models.BooleanField(default=True, help_text="Receive email on ROI/profit credits")
-    email_on_expiration = models.BooleanField(default=True, help_text="Receive email on plan expiration")
 
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -150,9 +129,8 @@ class User(AbstractUser):
     # Money in / out for the current calendar month.
     #
     # The type split mirrors Transaction.approve() exactly, which is the
-    # ledger's own definition of what moves a balance. 'swap' is excluded
-    # from both sides because it is balance-neutral (USD out, BTC in).
-    INCOME_TYPES = ('deposit', 'bonus', 'referral', 'profit', 'loan', 'grant')
+    # ledger's own definition of what moves a balance.
+    INCOME_TYPES = ('deposit', 'bonus', 'referral', 'loan', 'grant')
     EXPENSE_TYPES = ('withdrawal',)
 
     def _month_total(self, types, include_held=False):
@@ -277,8 +255,6 @@ class Notification(models.Model):
     TYPE_CHOICES = [
         ('deposit', 'Deposit'),
         ('withdrawal', 'Withdrawal'),
-        ('investment', 'Investment'),
-        ('profit', 'Profit'),
         ('bonus', 'Bonus'),
         ('referral', 'Referral'),
         ('system', 'System'),

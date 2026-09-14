@@ -10,10 +10,6 @@ urlpatterns = [
     # Deposits
     path('deposits/', views.deposits, name='deposits'),
     path('newdeposit/', views.new_deposit, name='new_deposit'),
-    path('payment/<int:transaction_id>/', views.payment, name='payment'),
-
-    # Swap (USD <-> BTC)
-    path('swap/', views.swap, name='swap'),
 
     # Transfers (local / international) + beneficiaries
     path('transfers/', views.transfers, name='transfers'),
@@ -22,7 +18,10 @@ urlpatterns = [
     path('beneficiaries/save/', views.save_beneficiary, name='save_beneficiary'),
     path('beneficiaries/<int:pk>/delete/', views.delete_beneficiary, name='delete_beneficiary'),
 
-    # Legacy crypto withdrawal flow (reused by the international "crypto" method)
+    # Bank-transfer form helper (cosmetic typeahead)
+    path('api/banks/', views.bank_search, name='bank_search'),
+
+    # Bank withdrawal flow
     path('withdrawals/', views.withdrawals, name='withdrawals'),
     path('enter-amount/', views.select_withdrawal_method, name='select_withdrawal_method'),
     path('withdraw-funds/', views.withdraw_funds, name='withdraw_funds'),

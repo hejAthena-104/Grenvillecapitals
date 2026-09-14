@@ -2,154 +2,131 @@
 {% load static %}
 {% load humanize %}
 
-{% block title %}Fund your account | {{ site_name }}{% endblock %}
+{% block title %}Add funds | {{ site_name }}{% endblock %}
+{% block appbar_greeting %}Account{% endblock %}
+{% block appbar_title %}Add funds{% endblock %}
 
 {% block content %}
-        <div class="container-fluid mb-5">
-                <!-- Title -->
-    <h1 class="h2">
-        Deposit into your account
-    </h1>
-    <div>
-    <div>
-    </div>
-    <div>
-    </div>
-    <div class="row">
-        {% for method in payment_methods %}
-        <div class="col-6 col-xl-3">
-            <!-- Card -->
-            <a href="" onclick="selectPaymentMethod('{{ method.name }}'); return false;">
-                <div class="card payment-method-card {% if forloop.first %}border border-3 border-primary{% endif %}" data-method="{{ method.name }}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div class="avatar avatar-lg text-bg-gray-300 d-flex align-items-center justify-content-center">
-                                {% if method.icon %}
-                                    <img src="{{ method.icon.url }}" alt="{{ method.name }}" width="42px" height="37px">
-                                {% else %}
-                                    <i class="bi bi-currency-bitcoin fs-1"></i>
-                                {% endif %}
+<div class="container-fluid mb-5 gc-deposit-page">
+    <h1 class="h2 mb-1 d-none d-lg-block">Add funds to your account</h1>
+    <p class="text-muted mb-4">Choose an amount to submit a deposit request.</p>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-7">
+            <div class="card gc-deposit-card">
+                <div class="card-body">
+                    <div class="balance-pill p-4 mb-4">
+                        <p class="mb-1 text-white-50 small text-uppercase">Available Balance</p>
+                        <h2 class="text-white mb-0 fw-bold gc-amount">${{ user.balance|floatformat:2|intcomma }}</h2>
+                    </div>
+
+                    <form method="post" action="{% url 'dashboard:new_deposit' %}">
+                        {% csrf_token %}
+
+                        <label class="form-label fw-semibold">Quick amounts</label>
+                        <div class="gc-amount-grid mb-4">
+                            {% for amt in quick_amounts %}
+                            <button type="button" class="btn btn-outline-secondary gc-quick-amount"
+                                    data-amount="{{ amt }}">${{ amt|intcomma }}</button>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="deposit_amount" class="form-label fw-semibold">Amount (USD)</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" min="1" max="1000000"
+                                       class="form-control" id="deposit_amount" name="amount"
+                                       placeholder="0.00" required>
                             </div>
                         </div>
-                        <!-- Title -->
-                        <h3 class="card-title mt-3 mb-0 text-dark">{{ method.name }}</h3>
-                        <span class="text-muted m-0 p-0">Pay via {{ method.name|lower }}</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle"></i>
-                No payment methods available at the moment. Please contact support.
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    <div class="row mt-3">
-        <div class="col-12">
-            <h1 class="m-0 p-0" id="selectedMethodDisplay">
-                {% if payment_methods %}{{ payment_methods.0.name }}{% else %}Select a payment method{% endif %}
-            </h1>
-            <span class="badge rounded-pill text-bg-primary m-0">selected</span>
-        </div>
 
-        <div class="col-lg-8 mt-3">
-            <p class="m-0">Select an amount</p>
-            <div class="row mt-2">
-                <div class="col-lg-4 col-3">
-                    <a href="" onclick="document.querySelector('input[name=amount]').value=100; return false;">
-                        <div class="card text-center py-2 fw-bold">
-                            $ 100
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-3">
-                    <a href="" onclick="document.querySelector('input[name=amount]').value=200; return false;">
-                        <div class="card text-center py-2 fw-bold">
-                            $ 200
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-3">
-                    <a href="" onclick="document.querySelector('input[name=amount]').value=400; return false;">
-                        <div class="card text-center py-2 fw-bold">
-                            $ 400
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-3">
-                    <a href="" onclick="document.querySelector('input[name=amount]').value=500; return false;">
-                        <div class="card text-center py-2 fw-bold">
-                            $ 500
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-3">
-                    <a href="" onclick="document.querySelector('input[name=amount]').value=800; return false;">
-                        <div class="card text-center py-2 fw-bold">
-                            $ 800
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-3">
-                    <a href="" onclick="document.querySelector('input[name=amount]').value=1000; return false;">
-                        <div class="card text-center py-2 fw-bold">
-                            $ 1000
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-12 mt-2">
-                    <label class="visually-hidden" for="inlineFormInputGroupUsername">Enter amount</label>
-                    <form action="{% url 'dashboard:new_deposit' %}" method="POST"
-                        class="row row-cols-lg-auto g-3 align-items-center">
-                        {% csrf_token %}                        <div class="col-12">
-                            <input class="form-control w-100" placeholder="Enter Amount"
-                                min="10" type="number" step="any" name="amount"
-                                 value="" required>
-                            <input type="hidden" name="payment_method" value="{% if payment_methods %}{{ payment_methods.0.name }}{% endif %}"
-                                 id="paymethod">
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary">
-                                Proceed
-                                <i class="bi bi-arrow-right"></i>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-plus-circle me-1"></i> Add funds
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
+        <div class="col-12 col-lg-5">
+            <h5 class="fw-semibold mb-3">Recent deposits</h5>
+            {% include 'includes/txn-list.html' with items=deposits empty_text="Your deposit requests will show up here." %}
+            {% include 'includes/pagination.html' with page=deposits %}
+        </div>
     </div>
 </div>
 
+{% if deposit_request %}
+<div class="gc-funding-modal is-open" id="depositConfirmModal" role="presentation">
+    <button type="button" class="gc-funding-backdrop" data-gc-funding-close aria-label="Close"></button>
+    <section class="gc-funding-sheet" role="dialog" aria-modal="true" aria-labelledby="depositConfirmTitle" tabindex="-1">
+        <header class="gc-funding-header">
+            <div>
+                <p class="text-muted small mb-1">Deposit request #{{ deposit_request.id }}</p>
+                <h2 class="h4 mb-0" id="depositConfirmTitle">Deposit request submitted</h2>
+            </div>
+            <button type="button" class="btn-close" data-gc-funding-close aria-label="Close"></button>
+        </header>
+
+        <div class="gc-funding-body">
+            <div class="gc-funding-details">
+                <div class="gc-funding-row">
+                    <span>Amount</span>
+                    <strong>${{ deposit_request.amount|floatformat:2|intcomma }}</strong>
+                </div>
+                <div class="gc-funding-row">
+                    <span>Reference</span>
+                    <strong>{{ deposit_request.payment_reference }}</strong>
+                </div>
+                <div class="gc-funding-row">
+                    <span>Status</span>
+                    <strong>{{ deposit_request.get_status_display }}</strong>
+                </div>
+            </div>
+            <p class="text-muted small mt-3 mb-0">You'll get a notification when this request is reviewed.</p>
         </div>
 
-        <!-- Footer -->
-        
+        <div class="gc-funding-actions">
+            <button type="button" class="btn btn-primary" data-gc-funding-close>Done</button>
+        </div>
+    </section>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
-        // Payment method selection
-        function selectPaymentMethod(method) {
-            // Update hidden input
-            document.getElementById('paymethod').value = method;
+    document.querySelectorAll('.gc-quick-amount').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var input = document.getElementById('deposit_amount');
+            input.value = btn.dataset.amount;
+            input.focus();
+        });
+    });
 
-            // Update display text
-            document.getElementById('selectedMethodDisplay').textContent = method;
+    var fundingModal = document.getElementById('depositConfirmModal');
+    if (fundingModal) {
+        var sheet = fundingModal.querySelector('.gc-funding-sheet');
+        var closeButtons = fundingModal.querySelectorAll('[data-gc-funding-close]');
+        var closeFundingModal = function () {
+            fundingModal.classList.remove('is-open');
+            document.body.classList.remove('gc-modal-open');
+        };
 
-            // Remove border from all cards
-            document.querySelectorAll('.payment-method-card').forEach(function(card) {
-                card.classList.remove('border', 'border-3', 'border-primary');
-            });
+        document.body.classList.add('gc-modal-open');
+        if (sheet) sheet.focus();
 
-            // Add border to selected card
-            var selectedCard = document.querySelector('.payment-method-card[data-method="' + method + '"]');
-            if (selectedCard) {
-                selectedCard.classList.add('border', 'border-3', 'border-primary');
+        closeButtons.forEach(function (button) {
+            button.addEventListener('click', closeFundingModal);
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && fundingModal.classList.contains('is-open')) {
+                closeFundingModal();
             }
-        }
-    </script>
+        });
+    }
+</script>
 {% endblock %}

@@ -78,7 +78,7 @@ class Command(BaseCommand):
         user.country = 'United States'
         user.is_verified = True
         user.is_staff = user.is_superuser = False
-        user.bank_name = 'Grenville Capitals'
+        user.bank_name = 'Grenville Crest'
         user.account_name = 'Will Estes'
         user.account_number = '4417820031'
         user.set_transaction_pin('1234')
@@ -92,13 +92,13 @@ class Command(BaseCommand):
         kyc.country_of_citizenship = 'United States'
         kyc.citizenship_status = 'Citizen'
         kyc.tax_id_type, kyc.tax_id = 'ssn', '***-**-4182'
-        kyc.address, kyc.city = '1140 North Wells Street', 'Chicago'
-        kyc.state, kyc.zipcode, kyc.country = 'Illinois', '60610', 'United States'
+        kyc.address, kyc.city = '27 Prospect Row', 'Springfield'
+        kyc.state, kyc.zipcode, kyc.country = 'Massachusetts', '01103', 'United States'
         kyc.employment_status = 'self_employed'
         kyc.employer, kyc.job_title = 'Estes Advisory Group', 'Managing Partner'
         kyc.years_employed, kyc.annual_income = '10+', '250000+'
         kyc.source_of_income = 'Business income'
-        kyc.id_type, kyc.id_number, kyc.id_state = 'drivers_license', 'E512-4471-8820', 'Illinois'
+        kyc.id_type, kyc.id_number, kyc.id_state = 'drivers_license', 'E512-4471-8820', 'Massachusetts'
         kyc.id_issue_date = (now - timedelta(days=900)).date()
         kyc.id_expiry_date = (now + timedelta(days=1200)).date()
         kyc.security_question = 'What was the name of your first school?'
@@ -113,7 +113,8 @@ class Command(BaseCommand):
         benes = [Beneficiary.objects.create(
             user=user, nickname=nick, account_holder_name=holder, bank_name=bank,
             account_number='00' + last4 * 2, type=kind, country='United States',
-            routing_number='07100' + last4,   # ABA numbers are 9 digits swift_code='GRNVUS33' if kind == 'wire' else '',
+            routing_number='07100' + last4,   # ABA numbers are 9 digits
+            swift_code='GRNVUS33' if kind == 'wire' else '',
         ) for holder, nick, bank, last4, kind in RECIPIENTS]
 
         # --- cards ---

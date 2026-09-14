@@ -10396,3 +10396,188 @@ textarea {
       .site-footer .social li a:hover {
         background: #fff;
         color: #12325a; }
+
+
+/* ==========================================================================
+   Inner-page title band
+   Replaces the inherited photographic hero. The motif is the keystone arch
+   from the Grenville mark, drawn as concentric brass hairlines - an
+   elevation drawing rather than a stock photograph.
+
+   The site header is position:fixed, ~105px tall, and the document has no
+   body offset, so this band carries enough top padding to clear it.
+   ========================================================================== */
+.hero.overlay.inner-page,
+.hero.overlay.inner-page > .container > .row {
+  height: auto;
+  min-height: 0; }
+
+.hero.overlay.inner-page {
+  position: relative;
+  background: linear-gradient(180deg, #0a1526 0%, #143562 100%);
+  padding: 9.5rem 0 3.75rem;
+  border-bottom: 1px solid rgba(176, 118, 46, 0.45);
+  overflow: hidden; }
+
+/* no photograph underneath any more, so the scrim has nothing to do */
+.hero.overlay.inner-page:before { display: none; }
+
+.hero.overlay.inner-page > .hero-bg-img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 320'%3E%3Cg fill='none' stroke='%23b0762e' stroke-opacity='.45' stroke-width='1.4'%3E%3Cpath d='M160 320V200a150 150 0 0 1 300 0v120'/%3E%3Cpath d='M200 320V200a110 110 0 0 1 220 0v120'/%3E%3Cpath d='M240 320V200a70 70 0 0 1 140 0v120'/%3E%3Cpath d='M280 320V200a30 30 0 0 1 60 0v120'/%3E%3C/g%3E%3Cpath d='M310 320V50' stroke='%23b0762e' stroke-opacity='.20' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6% bottom;
+  background-size: auto 100%; }
+
+.hero.overlay.inner-page > .container {
+  position: relative;
+  z-index: 2; }
+
+.hero.overlay.inner-page .heading {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.9rem, 3.6vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.01em; }
+
+/* short rule sitting where the arch springs from its pier */
+.hero.overlay.inner-page .heading:after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin-top: 1.15rem;
+  background: #b0762e; }
+
+@media (max-width: 991.98px) {
+  .hero.overlay.inner-page {
+    padding: 5.5rem 0 2.5rem; }
+  .hero.overlay.inner-page > .hero-bg-img {
+    background-position: right -46px bottom;
+    opacity: 0.65; } }
+
+/* Feature panel - same arch elevation, standing in where the inherited
+   template carried a stock photograph. */
+.motif-panel {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 520'%3E%3Crect width='520' height='520' fill='%2312325a'/%3E%3Cg fill='none' stroke='%23f6f4ef' stroke-opacity='.20' stroke-width='1.2'%3E%3Cpath d='M110 520V300a150 150 0 0 1 300 0v220'/%3E%3Cpath d='M150 520V300a110 110 0 0 1 220 0v220'/%3E%3Cpath d='M190 520V300a70 70 0 0 1 140 0v220'/%3E%3C/g%3E%3Cpath d='M230 520V300a30 30 0 0 1 60 0v220' fill='none' stroke='%23b0762e' stroke-opacity='.85' stroke-width='2'/%3E%3Cpath d='M0 452h520' stroke='%23f6f4ef' stroke-opacity='.14'/%3E%3Cpath d='M0 486h520' stroke='%23f6f4ef' stroke-opacity='.10'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 420px; }
+
+/* ==========================================================================
+   Page body
+   Shared reading column for the refreshed marketing pages. Measure is capped
+   near 70 characters; the brass rule marks section starts so the eye can find
+   them without an all-caps label above every heading.
+   ========================================================================== */
+.page-body {
+  padding: 3.5rem 0 4rem; }
+
+.page-body .lede {
+  font-size: 1.14rem;
+  line-height: 1.65;
+  color: #26364c;
+  max-width: 62ch;
+  margin-bottom: 2.4rem; }
+
+.page-body h2 {
+  position: relative;
+  margin: 2.9rem 0 0.9rem;
+  padding-top: 1.5rem;
+  font-size: 1.34rem;
+  font-weight: 600;
+  color: #0a1526;
+  letter-spacing: -0.005em; }
+
+.page-body h2:first-of-type { margin-top: 0; }
+
+.page-body h2:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 2px;
+  background: #b0762e; }
+
+.page-body h3 {
+  margin: 1.9rem 0 0.5rem;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: #12325a; }
+
+.page-body p,
+.page-body li {
+  max-width: 70ch;
+  line-height: 1.68;
+  color: #3d4a5c; }
+
+.page-body p { margin-bottom: 1rem; }
+
+.page-body ul {
+  padding-left: 1.1rem;
+  margin-bottom: 1.2rem; }
+
+.page-body li { margin-bottom: 0.4rem; }
+
+/* a plain definition row - used for "what it costs" style facts */
+.page-body .facts {
+  border-top: 1px solid #e3e0da;
+  margin: 1.4rem 0 1.8rem;
+  max-width: 70ch; }
+
+.page-body .facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 0.72rem 0;
+  border-bottom: 1px solid #e3e0da; }
+
+.page-body .facts dt,
+.page-body .facts span:first-child {
+  color: #0a1526;
+  font-weight: 500; }
+
+.page-body .facts span:last-child {
+  color: #5a6472;
+  text-align: right; }
+
+.page-body .note {
+  margin-top: 2.2rem;
+  padding: 1rem 1.15rem;
+  border-left: 3px solid #b0762e;
+  background: #faf8f4;
+  font-size: 0.92rem;
+  color: #4a5462;
+  max-width: 70ch; }
+
+.page-body .note p:last-child { margin-bottom: 0; }
+
+@media (max-width: 767.98px) {
+  .page-body { padding: 2.5rem 0 3rem; }
+  .page-body .facts div { flex-direction: column; gap: 0.15rem; }
+  .page-body .facts span:last-child { text-align: left; } }
+
+/* FAQ list - flush accordion inside the reading column */
+.page-body .faq-list { margin-bottom: 0.5rem; }
+.page-body .faq-list .accordion-item {
+  border: 0;
+  border-bottom: 1px solid #e3e0da;
+  background: transparent; }
+.page-body .faq-list .accordion-button {
+  padding: 0.95rem 2rem 0.95rem 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 0.99rem;
+  font-weight: 500;
+  color: #12325a; }
+.page-body .faq-list .accordion-button:not(.collapsed) { color: #0a1526; }
+.page-body .faq-list .accordion-button:focus-visible {
+  outline: 2px solid #b0762e;
+  outline-offset: 2px; }
+.page-body .faq-list .accordion-body { padding: 0 0 1.1rem; }
+.page-body .faq-list .accordion-body p { margin-bottom: 0; }

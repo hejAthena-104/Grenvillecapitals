@@ -275,7 +275,7 @@ def _status_badge(status):
         color, str(status).upper())
 
 
-from .models import PaymentMethod, SwapRate, Swap, Beneficiary, ExternalTransfer, FeatureFlags
+from .models import PaymentMethod, Beneficiary, ExternalTransfer, FeatureFlags
 
 
 @admin.register(PaymentMethod)
@@ -284,20 +284,6 @@ class PaymentMethodAdmin(admin.ModelAdmin):
     list_filter = ('type', 'is_active')
     search_fields = ('name',)
     list_editable = ('is_active', 'order')
-
-
-@admin.register(SwapRate)
-class SwapRateAdmin(admin.ModelAdmin):
-    list_display = ('btc_usd_price', 'is_active', 'updated_at')
-    list_editable = ('is_active',)
-
-
-@admin.register(Swap)
-class SwapAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'direction', 'from_amount', 'to_amount', 'rate_used', 'created_at')
-    list_filter = ('direction', 'created_at')
-    search_fields = ('user__username', 'user__email')
-    readonly_fields = ('created_at',)
 
 
 @admin.register(Beneficiary)
@@ -365,7 +351,6 @@ for _model, _admin_cls in (
     (Deposit, DepositAdmin),
     (Withdrawal, WithdrawalAdmin),
     (Transfer, TransferAdmin),
-    (Swap, SwapAdmin),
     (ExternalTransfer, ExternalTransferAdmin),
     (Beneficiary, BeneficiaryAdmin),
 ):
@@ -375,8 +360,8 @@ for _model, _admin_cls in (
 @admin.register(FeatureFlags)
 class FeatureFlagsAdmin(admin.ModelAdmin):
     """Singleton — one row, edited in place."""
-    list_display = ('__str__', 'swap_enabled', 'loans_enabled', 'grants_enabled', 'updated_at')
-    list_editable = ('swap_enabled', 'loans_enabled', 'grants_enabled')
+    list_display = ('__str__', 'loans_enabled', 'grants_enabled', 'updated_at')
+    list_editable = ('loans_enabled', 'grants_enabled')
 
     def has_add_permission(self, request):
         return not FeatureFlags.objects.exists()

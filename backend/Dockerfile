@@ -1,7 +1,7 @@
-# grenvillecapitals backend — Django 4.2 + gunicorn + WhiteNoise
+# grenvillecrest backend — Django 4.2 + gunicorn + WhiteNoise
 #
 # Built and run on the Contabo VPS alongside SwiftEagle (Caddy reverse-proxies
-# dashboard.grenvillecapitals.com to the published port). DB is the existing
+# dashboard.grenvillecrest.com to the published port). DB is the existing
 # Railway Postgres — no local DB on this host.
 FROM python:3.10-slim AS base
 

@@ -14,10 +14,10 @@ register = template.Library()
 TABS = {
     'home':     {'index'},
     'activity': {'account_history', 'accounthistory', 'withdrawal_history',
-                 'other_history', 'deposits', 'new_deposit', 'payment',
+                 'other_history', 'deposits', 'new_deposit',
                  'withdrawals', 'select_withdrawal_method', 'withdraw_funds'},
     'send':     {'transfers', 'local_transfer', 'international_transfer',
-                 'transfer_funds', 'save_beneficiary', 'delete_beneficiary', 'swap'},
+                 'transfer_funds', 'save_beneficiary', 'delete_beneficiary'},
     'cards':    {'cards'},
     'profile':  {'profile', 'account_settings', 'manage_account_security',
                  'set_transaction_pin', 'kyc', 'refer_user', 'referuser',

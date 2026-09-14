@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
                 ('card_type', models.CharField(default='virtual_debit', max_length=20)),
                 ('card_brand', models.CharField(default='Visa', max_length=20)),
                 ('card_holder', models.CharField(blank=True, max_length=150)),
-                ('card_number', models.CharField(blank=True, help_text='Demo card number (display only)', max_length=19)),
+                ('card_number', models.CharField(blank=True, help_text='Card number (display only)', max_length=19)),
                 ('expiry', models.CharField(blank=True, help_text='MM/YY', max_length=7)),
                 ('cvv', models.CharField(blank=True, max_length=4)),
                 ('status', models.CharField(choices=[('active', 'Active'), ('frozen', 'Frozen'), ('blocked', 'Blocked')], default='active', max_length=20)),

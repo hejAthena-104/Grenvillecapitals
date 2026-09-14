@@ -1,11 +1,11 @@
-# Grenville Capitals — deployment
+# Grenville Crest — deployment
 
 Two hosts, one box, one shared Caddy:
 
 | | |
 |---|---|
-| Marketing site | `https://grenvillecapitals.com` (+ `www`) — static. Two possible homes: **Netlify** (`netlify.toml`, deployed from the repo owner's account) or the **VPS Caddy** `file_server`. DNS decides which is live; the other is the rollback. |
-| App | `https://dashboard.grenvillecapitals.com` — Django, `grenville-backend` container |
+| Marketing site | `https://grenvillecrest.com` (+ `www`) — static. Two possible homes: **Netlify** (`netlify.toml`, deployed from the repo owner's account) or the **VPS Caddy** `file_server`. DNS decides which is live; the other is the rollback. |
+| App | `https://dashboard.grenvillecrest.com` — Django, `grenville-backend` container |
 | Host | Contabo VPS #1, `156.67.28.100` (`ssh root@…`) |
 | Repo on host | `/opt/grenville/repo` |
 | Shared compose | `/opt/swifteagle/docker-compose.yml` (service `grenville`) |
@@ -62,8 +62,8 @@ ssh root@156.67.28.100 '
   docker ps --filter name=grenville-backend --format "{{.Names}} {{.Status}}"
   docker logs grenville-backend 2>&1 | tail -20'
 
-curl -sI https://grenvillecapitals.com/ | head -1
-curl -sI https://dashboard.grenvillecapitals.com/auth/login/ | head -1
+curl -sI https://grenvillecrest.com/ | head -1
+curl -sI https://dashboard.grenvillecrest.com/auth/login/ | head -1
 
 # regression: every sibling must still answer
 for h in swifteagledelivery.info bloomvestcapital.com summitteachable.com \
@@ -86,6 +86,5 @@ Rotate the path by changing `ADMIN_URL` and rebuilding; no code change needed.
 ## Known gaps
 
 - No inbound mailbox: the domain has no apex MX, so mail *to* `@grenvillecapitals.com` bounces.
-- `faqs/` still explains FDIC deposit insurance as though it applies to this bank.
 - Team page, news items and the marketing imagery are placeholders inherited from the
   scrape source and need real content before this is a finished product.

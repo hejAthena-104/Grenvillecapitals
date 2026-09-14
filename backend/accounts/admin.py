@@ -23,7 +23,6 @@ class UserAdmin(BaseUserAdmin):
         'first_name',
         'last_name',
         'balance',
-        'total_profit',
         'referral_code',
         'is_verified',
         'is_staff',
@@ -70,7 +69,6 @@ class UserAdmin(BaseUserAdmin):
         ('Financial Information', {
             'fields': (
                 'balance',
-                'total_profit',
                 'total_bonus',
                 'referral_bonus'
             )

@@ -11,24 +11,27 @@
 
 	var preloader = function() {
 
-		var loader = document.querySelector('.loader');
-		var overlay = document.getElementById('overlayer');
-
+		// Hide the preloader with a CSS transition rather than a
+		// requestAnimationFrame countdown. rAF is throttled in background tabs,
+		// which left the spinner stranded at opacity 0.1 over every page; and
+		// the old loop subtracted 0.1 from a string, so it relied on float
+		// drift to ever reach zero. Guard for missing nodes - #overlayer does
+		// not exist on these pages.
 		function fadeOut(el) {
-			el.style.opacity = 1;
-			(function fade() {
-				if ((el.style.opacity -= .1) < 0) {
-					el.style.display = "none";
-				} else {
-					requestAnimationFrame(fade);
-				}
-			})();
-		};
+			if (!el) return;
+			el.style.transition = 'opacity .3s ease';
+			el.style.opacity = '0';
+			setTimeout(function () { el.style.display = 'none'; }, 320);
+		}
 
-		setTimeout(function() {
-			fadeOut(loader);
-			fadeOut(overlay);
-		}, 200);
+		function hideAll() {
+			fadeOut(document.querySelector('.loader'));
+			fadeOut(document.getElementById('overlayer'));
+		}
+
+		setTimeout(hideAll, 200);
+		// belt and braces: if anything above is missed, clear it on full load
+		window.addEventListener('load', function () { setTimeout(hideAll, 400); });
 	};
 	preloader();
 

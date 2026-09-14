@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from decimal import Decimal
 from accounts.models import User
 
 
@@ -13,8 +12,6 @@ class Transaction(models.Model):
         ('transfer', 'Transfer'),
         ('bonus', 'Bonus'),
         ('referral', 'Referral Bonus'),
-        ('profit', 'Profit'),
-        ('swap', 'Currency Swap'),
         ('loan', 'Loan Disbursement'),
         ('grant', 'Grant Disbursement'),
     ]
@@ -28,9 +25,6 @@ class Transaction(models.Model):
     ]
 
     PAYMENT_METHOD_CHOICES = [
-        ('bitcoin', 'Bitcoin'),
-        ('ethereum', 'Ethereum'),
-        ('usdt', 'USDT (TRC20)'),
         ('bank_transfer', 'Bank Transfer'),
         ('paypal', 'PayPal'),
         ('stripe', 'Credit/Debit Card'),
@@ -46,7 +40,7 @@ class Transaction(models.Model):
     # Payment details
     payment_method = models.CharField(max_length=50, choices=PAYMENT_METHOD_CHOICES, null=True, blank=True)
     payment_reference = models.CharField(max_length=255, blank=True, help_text="Transaction ID or reference")
-    payment_address = models.CharField(max_length=255, blank=True, help_text="Wallet address or account number")
+    payment_address = models.CharField(max_length=255, blank=True, help_text="Bank account details")
 
     # Additional info
     description = models.TextField(blank=True)
@@ -91,7 +85,7 @@ class Transaction(models.Model):
                     self.user.balance -= self.amount
                 else:
                     return False  # Insufficient balance
-        elif self.type in ['bonus', 'referral', 'profit', 'loan', 'grant']:
+        elif self.type in ['bonus', 'referral', 'loan', 'grant']:
             self.user.balance += self.amount
 
         self.user.save()
@@ -236,7 +230,7 @@ class PaymentMethod(models.Model):
         ('percentage', 'Percentage'),
     ]
 
-    name = models.CharField(max_length=50, unique=True, help_text="e.g., USDT, Bitcoin, Ethereum")
+    name = models.CharField(max_length=50, unique=True, help_text="e.g., Bank Transfer")
     type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='both')
     icon = models.ImageField(upload_to='payment_methods/', blank=True, null=True)
 
@@ -247,9 +241,6 @@ class PaymentMethod(models.Model):
     charge_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Amount or percentage based on charge type")
 
     duration = models.CharField(max_length=100, blank=True, help_text="e.g., '1-24 hours', 'Instant'")
-
-    wallet_address = models.CharField(max_length=200, blank=True, help_text="Platform wallet address for receiving payments")
-    qr_code = models.ImageField(upload_to='payment_qr_codes/', blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
     order = models.IntegerField(default=0, help_text="Display order")
@@ -274,59 +265,11 @@ class PaymentMethod(models.Model):
         return base_amount + self.calculate_charge(base_amount)
 
 
-class SwapRate(models.Model):
-    """Admin-set USD price of 1 BTC. Single active row drives the USD<->BTC swap."""
-    btc_usd_price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('65000.00'),
-                                        help_text="Price of 1 BTC in USD")
-    is_active = models.BooleanField(default=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = 'Swap Rate'
-        verbose_name_plural = 'Swap Rate'
-        ordering = ['-updated_at']
-
-    def __str__(self):
-        return f"1 BTC = ${self.btc_usd_price}"
-
-    @classmethod
-    def current(cls):
-        rate = cls.objects.filter(is_active=True).order_by('-updated_at').first()
-        if not rate:
-            rate = cls.objects.create()
-        return rate
-
-
-class Swap(models.Model):
-    """Instant USD<->BTC conversion at the admin-set rate."""
-    DIRECTION_CHOICES = [
-        ('usd_to_btc', 'USD to BTC'),
-        ('btc_to_usd', 'BTC to USD'),
-    ]
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='swaps')
-    direction = models.CharField(max_length=20, choices=DIRECTION_CHOICES)
-    from_amount = models.DecimalField(max_digits=20, decimal_places=8)
-    to_amount = models.DecimalField(max_digits=20, decimal_places=8)
-    rate_used = models.DecimalField(max_digits=15, decimal_places=2, help_text="BTC/USD price applied")
-    status = models.CharField(max_length=20, default='completed')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = 'Swap'
-        verbose_name_plural = 'Swaps'
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f"{self.user.username} - {self.get_direction_display()} - {self.from_amount}"
-
-
 class Beneficiary(models.Model):
-    """Saved transfer recipient (bank / wire / crypto / wallet service)."""
+    """Saved transfer recipient (bank / wire / wallet service)."""
     TYPE_CHOICES = [
         ('local_bank', 'Local Bank'),
         ('wire', 'International Wire'),
-        ('crypto', 'Cryptocurrency'),
         ('paypal', 'PayPal'),
         ('wise', 'Wise'),
         ('cashapp', 'Cash App'),
@@ -344,7 +287,7 @@ class Beneficiary(models.Model):
     routing_number = models.CharField(max_length=50, blank=True)
     swift_code = models.CharField(max_length=50, blank=True)
     country = models.CharField(max_length=100, blank=True)
-    extra = models.JSONField(default=dict, blank=True, help_text="Method-specific details (email, tag, wallet, etc.)")
+    extra = models.JSONField(default=dict, blank=True, help_text="Method-specific details (email, tag, etc.)")
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -367,7 +310,6 @@ class ExternalTransfer(models.Model):
     METHOD_CHOICES = [
         ('local_bank', 'Local Bank'),
         ('wire', 'Wire Transfer'),
-        ('crypto', 'Cryptocurrency'),
         ('paypal', 'PayPal'),
         ('wise', 'Wise'),
         ('cashapp', 'Cash App'),
@@ -403,16 +345,10 @@ class ExternalTransfer(models.Model):
 class FeatureFlags(models.Model):
     """Singleton switchboard for optional features.
 
-    Swap is the reason this exists: it is a real capability, but not every
-    deployment wants a currency-exchange surface on a banking product. The
-    flag hides it from the navigation and the dashboard and closes the view,
-    so turning it off leaves no dangling links.
+    The flag hides a feature from the navigation and the dashboard and closes
+    its view, so turning it off leaves no dangling links.
     """
 
-    swap_enabled = models.BooleanField(
-        default=False,
-        help_text='Show currency swap in the app. Off by default.',
-    )
     loans_enabled = models.BooleanField(default=True, help_text='Show loan applications.')
     grants_enabled = models.BooleanField(default=True, help_text='Show grant applications.')
     updated_at = models.DateTimeField(auto_now=True)
