@@ -11,7 +11,7 @@ reconcile. Nothing is invented independently of the rows.
 Every amount is sized for the account it belongs to. A ledger carrying a
 seven-figure balance cannot be built out of three-figure rows: the ranges
 below are tuned so the history reads like an established practice's and the
-derived balance still lands near $1.2M. Change a range and the balance moves
+derived balance still lands near $1.08M. Change a range and the balance moves
 with it — the command prints the result, so re-run it and read the total.
 
 This is demo data. It is namespaced to one username and `--reset` removes it.
@@ -51,10 +51,10 @@ WITHDRAWAL_NOTES = [
 # Amount ranges, in dollars. Income is what the practice bills; expense is what
 # it spends. The gap between them, compounded over `--months`, IS the balance —
 # so these two are tuned as a pair, not independently.
-RETAINER      = (120_000, 185_000)   # one a month, first few days
+RETAINER       = (120_000, 185_000)   # one a month, first few days
 CLIENT_PAYMENT = (28_000, 96_000)    # one or two a month
-OUTGOING      = (26_000, 96_500)     # payroll, rent, equipment: 2-4 a month
-LOYALTY_BONUS = (4_200, 12_500)      # occasional
+OUTGOING       = (26_000, 101_825)   # payroll, rent, equipment: 2-4 a month
+LOYALTY_BONUS  = (4_200, 12_500)     # occasional
 REFERRAL_BONUS = (2_600, 6_800)      # rarer still
 
 # The two rows left in flight so pending styling is visible on every screen.
