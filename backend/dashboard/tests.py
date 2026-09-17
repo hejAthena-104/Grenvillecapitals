@@ -2,12 +2,14 @@
 
 Runs on SQLite with `python manage.py test dashboard`.
 """
+import io
 from decimal import Decimal
 
 from django.conf import settings
 from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
 
 from accounts.models import EmailOTP, User
 from transactions import models as tmodels
@@ -200,3 +202,62 @@ class BankWithdrawalTests(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(self.user.balance, Decimal('1000.00'))     # nothing held
         self.assertFalse(Transaction.objects.filter(user=self.user, type='withdrawal').exists())
+
+
+class DemoUserSeedTests(TestCase):
+    """The demo customer is what every screen is reviewed against.
+
+    Two things have to hold: the headline balance must reconcile with the rows
+    that produced it, and no row may be small enough to look out of place
+    beside a seven-figure balance — the history is a wealthy account's, so a
+    hundred-dollar line in it reads as leftover test data.
+    """
+
+    # Nothing in the ledger should sit below this. Well under the seeded
+    # minimum (a loyalty bonus), so tuning the ranges does not trip it, but
+    # far above the three-figure rows that prompted the floor.
+    SMALLEST_SENSIBLE = Decimal('2500.00')
+
+    @classmethod
+    def setUpTestData(cls):
+        # The command reports to stdout unconditionally; swallow it so the
+        # test run stays readable.
+        call_command('seed_demo_user', '--reset', stdout=io.StringIO())
+        cls.user = User.objects.get(username='willestes4')
+
+    def test_balance_reconciles_with_the_ledger(self):
+        """Balance == approved income - (approved out + pending out still held)."""
+        rows = Transaction.objects.filter(user=self.user)
+        income = sum((t.amount for t in rows
+                      if t.status == 'approved' and t.type in User.INCOME_TYPES),
+                     Decimal('0'))
+        out = sum((t.amount for t in rows
+                   if t.type == 'withdrawal'
+                   and (t.status == 'approved'
+                        or (t.status == 'pending' and t.funds_held))),
+                  Decimal('0'))
+        self.assertEqual(self.user.balance, income - out)
+
+    def test_balance_is_in_the_seven_figure_range_the_demo_is_built_around(self):
+        self.assertGreater(self.user.balance, Decimal('1000000'))
+        self.assertLess(self.user.balance, Decimal('1500000'))
+
+    def test_no_row_is_small_enough_to_look_like_test_data(self):
+        smallest = Transaction.objects.filter(user=self.user).order_by('amount').first()
+        self.assertIsNotNone(smallest)
+        self.assertGreaterEqual(
+            smallest.amount, self.SMALLEST_SENSIBLE,
+            f'{smallest.type} of ${smallest.amount} ("{smallest.description}") '
+            f'is too small for an account holding ${self.user.balance:,.2f}')
+
+    def test_pending_transfer_holds_its_funds_like_a_real_submission(self):
+        """Otherwise approving it in admin would debit the balance a second time."""
+        pending = Transaction.objects.filter(
+            user=self.user, type='withdrawal', status='pending')
+        self.assertTrue(pending.exists())
+        for t in pending:
+            self.assertTrue(t.funds_held)
+
+    def test_no_row_is_dated_in_the_future(self):
+        latest = Transaction.objects.filter(user=self.user).order_by('-created_at').first()
+        self.assertLessEqual(latest.created_at, timezone.now())

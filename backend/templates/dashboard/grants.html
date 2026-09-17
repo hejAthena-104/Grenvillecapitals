@@ -122,7 +122,7 @@
                                     <tr>
                                         <td>{{ application.created_at|date:"M d, Y" }}</td>
                                         <td>{{ application.get_applicant_type_display }}</td>
-                                        <td>${{ application.amount }}</td>
+                                        <td>${{ application.amount|floatformat:2|intcomma }}</td>
                                         <td>{{ application.purpose }}</td>
                                         <td>
                                             {% if application.status == 'approved' %}

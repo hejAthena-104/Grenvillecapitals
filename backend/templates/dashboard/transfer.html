@@ -553,7 +553,7 @@
                             <tr>
                                 <td>{{ transfer.created_at|date:"M d, Y" }}</td>
                                 <td>{{ transfer.description|default:"Transfer" }}</td>
-                                <td>${{ transfer.amount }}</td>
+                                <td>${{ transfer.amount|floatformat:2|intcomma }}</td>
                                 <td>
                                     {% if transfer.status == 'approved' or transfer.status == 'completed' %}
                                         <span class="badge bg-success-subtle text-success">{{ transfer.get_status_display }}</span>

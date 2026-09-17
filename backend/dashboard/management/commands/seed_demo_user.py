@@ -8,6 +8,12 @@ The balance is DERIVED from the ledger — income minus expenses — so the
 dashboard's headline figure, the month KPIs and the transaction list all
 reconcile. Nothing is invented independently of the rows.
 
+Every amount is sized for the account it belongs to. A ledger carrying a
+seven-figure balance cannot be built out of three-figure rows: the ranges
+below are tuned so the history reads like an established practice's and the
+derived balance still lands near $1.2M. Change a range and the balance moves
+with it — the command prints the result, so re-run it and read the total.
+
 This is demo data. It is namespaced to one username and `--reset` removes it.
 """
 import calendar
@@ -28,9 +34,8 @@ INCOME_TYPES = ('deposit', 'bonus', 'referral', 'loan', 'grant')
 
 RECIPIENTS = [
     ('Marcus Kane',    'Marcus',    'Chase',            '3041', 'local_bank'),
-    ('Jade Okoro',     'Jade',      'Wells Fargo',      '8827', 'local_bank'),
+    ('Jade Brown',     'Jade',      'Wells Fargo',      '8827', 'local_bank'),
     ('Halden Estates', 'Landlord',  'Citibank',         '5510', 'local_bank'),
-    ('Nkem Adeyemi',   'Nkem',      'Access Bank',      '9902', 'wire'),
     ('Sofia Ruiz',     'Sofia',     'Banco Santander',  '4416', 'wire'),
 ]
 
@@ -42,6 +47,19 @@ WITHDRAWAL_NOTES = [
     'Office rent', 'Payroll run', 'Equipment purchase',
     'Insurance premium', 'Contractor payment', 'Travel expenses',
 ]
+
+# Amount ranges, in dollars. Income is what the practice bills; expense is what
+# it spends. The gap between them, compounded over `--months`, IS the balance —
+# so these two are tuned as a pair, not independently.
+RETAINER      = (120_000, 185_000)   # one a month, first few days
+CLIENT_PAYMENT = (28_000, 96_000)    # one or two a month
+OUTGOING      = (26_000, 96_500)     # payroll, rent, equipment: 2-4 a month
+LOYALTY_BONUS = (4_200, 12_500)      # occasional
+REFERRAL_BONUS = (2_600, 6_800)      # rarer still
+
+# The two rows left in flight so pending styling is visible on every screen.
+PENDING_DEPOSIT = 84_500
+PENDING_WITHDRAWAL = 41_200
 
 
 class Command(BaseCommand):
@@ -119,8 +137,8 @@ class Command(BaseCommand):
 
         # --- cards ---
         Card.objects.filter(user=user).delete()
-        for brand, ctype, last4, bal in (('Visa', 'virtual_debit', '4471', '4200.00'),
-                                         ('Mastercard', 'physical_debit', '8830', '1150.00')):
+        for brand, ctype, last4, bal in (('Visa', 'virtual_debit', '4471', '38400.00'),
+                                         ('Mastercard', 'physical_debit', '8830', '12750.00')):
             Card.objects.create(
                 user=user, card_brand=brand, card_type=ctype,
                 card_holder='WILL ESTES', card_number='4' + last4 * 3 + last4,
@@ -130,7 +148,7 @@ class Command(BaseCommand):
         Transaction.objects.filter(user=user).delete()
         rows, income, expense = [], Decimal('0'), Decimal('0')
 
-        def add(kind, amount, when, note, method=None, status='approved'):
+        def add(kind, amount, when, note, method=None, status='approved', held=False):
             nonlocal income, expense
             # A ledger must never contain a future-dated row. The month walk
             # works in 30-day steps, so the newest month can overshoot today.
@@ -139,7 +157,7 @@ class Command(BaseCommand):
             amount = Decimal(amount).quantize(Decimal('0.01'))
             t = Transaction.objects.create(
                 user=user, type=kind, amount=amount, status=status,
-                payment_method=method, description=note)
+                payment_method=method, description=note, funds_held=held)
             Transaction.objects.filter(pk=t.pk).update(created_at=when, updated_at=when,
                                                        processed_at=when if status == 'approved' else None)
             t.refresh_from_db()
@@ -148,6 +166,10 @@ class Command(BaseCommand):
                     income += amount
                 elif kind == 'withdrawal':
                     expense += amount
+            elif held:
+                # Held money has already left the balance, exactly as it would
+                # had the customer submitted the transfer through the form.
+                expense += amount
             rows.append(t)
             return t
 
@@ -176,12 +198,12 @@ class Command(BaseCommand):
             # income: a retainer plus one or two client payments
             when = day_in(ms, 1, 3, 9)
             if when:
-                add('deposit', rng.uniform(48000, 72000), when,
+                add('deposit', rng.uniform(*RETAINER), when,
                     'Monthly retainer', 'bank_transfer')
             for _ in range(rng.randint(1, 2)):
                 when = day_in(ms, 4, 26, rng.randint(9, 17))
                 if when:
-                    add('deposit', rng.uniform(9000, 41000), when,
+                    add('deposit', rng.uniform(*CLIENT_PAYMENT), when,
                         rng.choice(DEPOSIT_NOTES), 'bank_transfer')
 
             # outgoings: rent, plus a few operating costs
@@ -189,7 +211,7 @@ class Command(BaseCommand):
                 when = day_in(ms, 2, 27, rng.randint(8, 19))
                 if not when:
                     continue
-                txn = add('withdrawal', rng.uniform(2400, 17000), when,
+                txn = add('withdrawal', rng.uniform(*OUTGOING), when,
                           rng.choice(WITHDRAWAL_NOTES), 'bank_transfer')
                 if txn is None:
                     continue
@@ -206,16 +228,20 @@ class Command(BaseCommand):
             if rng.random() < 0.22:
                 when = day_in(ms, 5, 20, 12)
                 if when:
-                    add('bonus', rng.uniform(400, 2200), when, 'Loyalty bonus')
+                    add('bonus', rng.uniform(*LOYALTY_BONUS), when, 'Loyalty bonus')
             if rng.random() < 0.12:
                 when = day_in(ms, 5, 20, 12)
                 if when:
-                    add('referral', rng.uniform(150, 600), when, 'Referral bonus')
+                    add('referral', rng.uniform(*REFERRAL_BONUS), when, 'Referral bonus')
 
-        # a couple in flight, so the status styling is visible
-        add('deposit', 26500, now - timedelta(hours=6), 'Client settlement', 'bank_transfer', status='pending')
-        pend = add('withdrawal', 7400, now - timedelta(hours=2), 'Contractor payment',
-                   'bank_transfer', status='pending')
+        # A couple left in flight, so pending styling is visible. The outgoing
+        # one holds its funds because that is what submitting a transfer does —
+        # seeding it unheld would model a state the app never produces, and
+        # approving it later would debit the balance a second time.
+        add('deposit', PENDING_DEPOSIT, now - timedelta(hours=6), 'Client settlement',
+            'bank_transfer', status='pending')
+        pend = add('withdrawal', PENDING_WITHDRAWAL, now - timedelta(hours=2),
+                   'Contractor payment', 'bank_transfer', status='pending', held=True)
         ExternalTransfer.objects.create(
             transaction=pend, beneficiary=benes[0], transfer_type='local', method='local_bank',
             fee=Decimal('0.00'), account_holder_name=benes[0].account_holder_name,

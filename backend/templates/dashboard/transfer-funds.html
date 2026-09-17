@@ -86,8 +86,8 @@
                                 {% for transfer in sent_transfers %}
                                     <tr>
                                         <td>{{ transfer.recipient.username }}</td>
-                                        <td>${{ transfer.amount }}</td>
-                                        <td>${{ transfer.fee_amount }}</td>
+                                        <td>${{ transfer.amount|floatformat:2|intcomma }}</td>
+                                        <td>${{ transfer.fee_amount|floatformat:2|intcomma }}</td>
                                         <td>
                                             <span class="badge
                                                 {% if transfer.status == 'completed' %}bg-success
@@ -136,7 +136,7 @@
                                 {% for transfer in received_transfers %}
                                     <tr>
                                         <td>{{ transfer.sender.username }}</td>
-                                        <td>${{ transfer.amount }}</td>
+                                        <td>${{ transfer.amount|floatformat:2|intcomma }}</td>
                                         <td>
                                             <span class="badge
                                                 {% if transfer.status == 'completed' %}bg-success

@@ -93,7 +93,7 @@
                                     {% for application in applications %}
                                     <tr>
                                         <td>{{ application.created_at|date:"M d, Y" }}</td>
-                                        <td>${{ application.amount }}</td>
+                                        <td>${{ application.amount|floatformat:2|intcomma }}</td>
                                         <td>{{ application.get_purpose_display }}</td>
                                         <td>{{ application.term_months }} mo</td>
                                         <td>

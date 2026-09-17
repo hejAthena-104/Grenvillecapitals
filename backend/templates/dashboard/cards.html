@@ -155,7 +155,7 @@
                     <!-- Card meta -->
                     <div class="d-flex justify-content-between align-items-center mt-2 px-1">
                         <span class="text-muted small">{{ card.get_card_type_display }}</span>
-                        <span class="fw-bold">Balance: ${{ card.balance }}</span>
+                        <span class="fw-bold">Balance: ${{ card.balance|floatformat:2|intcomma }}</span>
                     </div>
                 </div>
                 {% empty %}
