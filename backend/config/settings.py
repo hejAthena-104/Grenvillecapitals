@@ -40,6 +40,24 @@ EMAIL_FROM = config('EMAIL_FROM', default='onboarding@resend.dev')
 EMAIL_FROM_NAME = config('EMAIL_FROM_NAME', default=SITE_NAME)
 RESEND_API_KEY = config('RESEND_API_KEY', default='')
 
+# --- Funding account --------------------------------------------------------
+# The account customers wire/ACH into when they add funds. It is the same
+# account for every customer — the deposit request's own reference is what
+# ties an incoming payment back to the person who made it, not the account
+# number. Shown on the deposit confirmation popup; override per environment.
+DEPOSIT_BANK = {
+    'bank_name': config('DEPOSIT_BANK_NAME', default=SITE_NAME + ' Bank'),
+    'account_name': config('DEPOSIT_ACCOUNT_NAME', default=SITE_NAME + ' Funding'),
+    'account_number': config('DEPOSIT_ACCOUNT_NUMBER', default='8300451927'),
+    'routing_number': config('DEPOSIT_ROUTING_NUMBER', default='450000016'),
+    'account_type': config('DEPOSIT_ACCOUNT_TYPE', default='Checking'),
+    'swift_code': config('DEPOSIT_SWIFT_CODE', default='GRCRUS33'),
+    'bank_address': config(
+        'DEPOSIT_BANK_ADDRESS',
+        default='1201 Market Street, Suite 400, Wilmington, DE 19801',
+    ),
+}
+
 
 
 # Application definition

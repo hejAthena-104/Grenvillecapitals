@@ -4,6 +4,7 @@ Runs on SQLite with `python manage.py test dashboard`.
 """
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.urls import reverse
@@ -72,13 +73,48 @@ class DepositRequestTests(TestCase):
         self.assertTrue(tmodels.Deposit.objects.filter(transaction=txn).exists())
         self.assertContains(resp, 'Deposit request submitted')
         self.assertContains(resp, txn.payment_reference)
-        self.assertNotContains(resp, 'Grenville Crest Bank')
+        # The popup now tells the customer where to send the money.
+        self.assertContains(resp, settings.DEPOSIT_BANK['bank_name'])
+        self.assertContains(resp, settings.DEPOSIT_BANK['account_number'])
+        self.assertContains(resp, settings.DEPOSIT_BANK['routing_number'])
+        # ...in full. Nothing is blurred out or hidden behind a placeholder.
         self.assertNotContains(resp, 'gc-blurred-detail')
 
     def test_deposit_rejects_bad_amount(self):
         self.client.post(reverse('dashboard:new_deposit'), {'amount': 'abc'})
         self.user.refresh_from_db()
         self.assertEqual(self.user.balance, Decimal('0.00'))
+
+    def test_funding_details_are_the_same_account_for_everyone(self):
+        """One shared funding account; the reference identifies the payer."""
+        other = User.objects.create_user(
+            username='other', password='pw12345678', email='o@example.com')
+        mine = self.client.post(reverse('dashboard:new_deposit'),
+                                {'amount': '100'}, follow=True)
+        self.client.force_login(other)
+        theirs = self.client.post(reverse('dashboard:new_deposit'),
+                                  {'amount': '100'}, follow=True)
+        for resp in (mine, theirs):
+            for key in ('bank_name', 'account_name', 'account_number',
+                        'routing_number', 'account_type', 'swift_code',
+                        'bank_address'):
+                self.assertContains(resp, settings.DEPOSIT_BANK[key])
+
+    def test_routing_number_is_a_valid_aba(self):
+        """Nine digits with a correct checksum, as the transfer form requires."""
+        r = settings.DEPOSIT_BANK['routing_number']
+        self.assertEqual(len(r), 9)
+        self.assertTrue(r.isdigit())
+        d = [int(c) for c in r]
+        checksum = (3 * (d[0] + d[3] + d[6])
+                    + 7 * (d[1] + d[4] + d[7])
+                    + (d[2] + d[5] + d[8]))
+        self.assertEqual(checksum % 10, 0)
+
+    def test_no_funding_details_before_a_request_is_made(self):
+        resp = self.client.get(reverse('dashboard:deposits'))
+        self.assertNotContains(resp, 'depositConfirmTitle')
+        self.assertNotContains(resp, settings.DEPOSIT_BANK['account_number'])
 
     def test_no_payment_route(self):
         from django.urls import NoReverseMatch

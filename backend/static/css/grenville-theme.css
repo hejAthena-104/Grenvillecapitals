@@ -497,6 +497,21 @@ body.gc-modal-open .gc-toasts { z-index: 1080; }
 .gc-funding-row > span { color: var(--gc-ink-2); font-size: 13px; font-weight: 600; flex-shrink: 0; }
 .gc-funding-row > strong { text-align: right; overflow-wrap: anywhere; min-width: 0; }
 
+/* A detail the customer has to retype into their own bank — shown beside a
+   copy button so nobody transcribes a routing number by hand. */
+.gc-funding-copy { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.gc-funding-num { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.gc-copy-btn {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  border: 1px solid var(--gc-line); border-radius: 8px;
+  background: var(--gc-surface); color: var(--gc-ink-2);
+  font-size: 14px; line-height: 1; cursor: pointer;
+  transition: color .15s ease, border-color .15s ease;
+}
+.gc-copy-btn:hover { color: var(--gc-ink); border-color: var(--gc-ink-3); }
+.gc-copy-btn.is-copied { color: var(--gc-in); border-color: currentColor; }
+
 /* ---- bank-search typeahead -------------------------------------------- */
 .bank-search-menu {
   position: absolute; z-index: 40; top: 100%; left: 0; right: 0;

@@ -65,7 +65,6 @@
     <section class="gc-funding-sheet" role="dialog" aria-modal="true" aria-labelledby="depositConfirmTitle" tabindex="-1">
         <header class="gc-funding-header">
             <div>
-                <p class="text-muted small mb-1">Deposit request #{{ deposit_request.id }}</p>
                 <h2 class="h4 mb-0" id="depositConfirmTitle">Deposit request submitted</h2>
             </div>
             <button type="button" class="btn-close" data-gc-funding-close aria-label="Close"></button>
@@ -79,14 +78,66 @@
                 </div>
                 <div class="gc-funding-row">
                     <span>Reference</span>
-                    <strong>{{ deposit_request.payment_reference }}</strong>
+                    <strong class="gc-funding-copy">
+                        <span class="gc-funding-value">{{ deposit_request.payment_reference }}</span>
+                        <button type="button" class="gc-copy-btn" data-gc-copy="{{ deposit_request.payment_reference }}"
+                                aria-label="Copy reference"><i class="bi bi-clipboard"></i></button>
+                    </strong>
                 </div>
                 <div class="gc-funding-row">
                     <span>Status</span>
                     <strong>{{ deposit_request.get_status_display }}</strong>
                 </div>
             </div>
-            <p class="text-muted small mt-3 mb-0">You'll get a notification when this request is reviewed.</p>
+
+            <p class="fw-semibold small text-uppercase text-muted mt-4 mb-2">Transfer to this account</p>
+            <div class="gc-funding-details">
+                <div class="gc-funding-row">
+                    <span>Bank</span>
+                    <strong>{{ deposit_bank.bank_name }}</strong>
+                </div>
+                <div class="gc-funding-row">
+                    <span>Account name</span>
+                    <strong>{{ deposit_bank.account_name }}</strong>
+                </div>
+                <div class="gc-funding-row">
+                    <span>Account number</span>
+                    <strong class="gc-funding-copy">
+                        <span class="gc-funding-value gc-funding-num">{{ deposit_bank.account_number }}</span>
+                        <button type="button" class="gc-copy-btn" data-gc-copy="{{ deposit_bank.account_number }}"
+                                aria-label="Copy account number"><i class="bi bi-clipboard"></i></button>
+                    </strong>
+                </div>
+                <div class="gc-funding-row">
+                    <span>Routing number (ACH/wire)</span>
+                    <strong class="gc-funding-copy">
+                        <span class="gc-funding-value gc-funding-num">{{ deposit_bank.routing_number }}</span>
+                        <button type="button" class="gc-copy-btn" data-gc-copy="{{ deposit_bank.routing_number }}"
+                                aria-label="Copy routing number"><i class="bi bi-clipboard"></i></button>
+                    </strong>
+                </div>
+                <div class="gc-funding-row">
+                    <span>Account type</span>
+                    <strong>{{ deposit_bank.account_type }}</strong>
+                </div>
+                <div class="gc-funding-row">
+                    <span>SWIFT/BIC</span>
+                    <strong class="gc-funding-copy">
+                        <span class="gc-funding-value gc-funding-num">{{ deposit_bank.swift_code }}</span>
+                        <button type="button" class="gc-copy-btn" data-gc-copy="{{ deposit_bank.swift_code }}"
+                                aria-label="Copy SWIFT code"><i class="bi bi-clipboard"></i></button>
+                    </strong>
+                </div>
+                <div class="gc-funding-row">
+                    <span>Bank address</span>
+                    <strong>{{ deposit_bank.bank_address }}</strong>
+                </div>
+            </div>
+
+            <p class="text-muted small mt-3 mb-0">
+                Include reference <strong>{{ deposit_request.payment_reference }}</strong> on your transfer so we can
+                match it to this request. You'll get a notification when it is reviewed.
+            </p>
         </div>
 
         <div class="gc-funding-actions">
@@ -126,6 +177,43 @@
             if (event.key === 'Escape' && fundingModal.classList.contains('is-open')) {
                 closeFundingModal();
             }
+        });
+
+        // Copy a single account detail. Falls back to a hidden textarea where
+        // the async clipboard API is unavailable (older mobile browsers).
+        fundingModal.querySelectorAll('[data-gc-copy]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var value = button.dataset.gcCopy;
+                var done = function () {
+                    button.classList.add('is-copied');
+                    button.innerHTML = '<i class="bi bi-check2"></i>';
+                    setTimeout(function () {
+                        button.classList.remove('is-copied');
+                        button.innerHTML = '<i class="bi bi-clipboard"></i>';
+                    }, 1500);
+                };
+
+                var legacyCopy = function () {
+                    var area = document.createElement('textarea');
+                    area.value = value;
+                    area.setAttribute('readonly', '');
+                    area.style.position = 'absolute';
+                    area.style.left = '-9999px';
+                    document.body.appendChild(area);
+                    area.select();
+                    try { document.execCommand('copy'); done(); } catch (e) {}
+                    document.body.removeChild(area);
+                };
+
+                // The async API rejects when the page is not focused or the
+                // permission is denied, so a rejection falls through to the
+                // textarea rather than leaving the button doing nothing.
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(value).then(done, legacyCopy);
+                    return;
+                }
+                legacyCopy();
+            });
         });
     }
 </script>

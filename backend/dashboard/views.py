@@ -167,6 +167,9 @@ def deposits(request):
         'deposits': _paginate(request, user_deposits),
         'quick_amounts': [100, 250, 500, 1000, 2500, 5000],
         'deposit_request': deposit_request,
+        # Where to send the money. One shared funding account for everyone —
+        # the request reference is what identifies the payer.
+        'deposit_bank': settings.DEPOSIT_BANK,
     }
 
     return render(request, 'dashboard/deposits.html', context)
